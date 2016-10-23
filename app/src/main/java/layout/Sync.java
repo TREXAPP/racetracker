@@ -41,7 +41,7 @@ public class Sync extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
      //   textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
         textView.setText("Vamu ke imame kopce za sinhronizacija so mysql bazata, so takvo sto vrti loading pod nego");
