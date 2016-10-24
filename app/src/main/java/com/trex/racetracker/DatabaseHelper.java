@@ -1,6 +1,8 @@
 package com.trex.racetracker;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
@@ -46,13 +48,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_9 = "Comment";
     public static final String COL_2_10 = "Synced";
 
+    public static final String TABLE_3_NAME = "Globals";
+    public static final String COL_3_1 = "Name";
+    public static final String COL_3_2 = "Value";
+
 
     public DatabaseHelper(Context context) {
 //Environment.getExternalStorageDirectory() + File.separator + "dbtest" + File.separator + DATABASE_NAME
         super(context, DATABASE_NAME, null, 1);
         //testing:
         //SQLiteDatabase.openOrCreateDatabase(Environment.getExternalStorageDirectory() + File.separator + DATABASE_NAME,null);
-        SQLiteDatabase db = this.getWritableDatabase();
+
     }
 
 
@@ -97,13 +103,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createTable2Query);
 
+        String createTable3Query = "";
+        createTable3Query += "CREATE TABLE IF NOT EXISTS " + TABLE_3_NAME + "(";
+        createTable3Query += COL_3_1 + " VARCHAR PRIMARY KEY,";
+        createTable3Query += COL_3_2 + " VARCHAR);";
 
+        db.execSQL(createTable3Query);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_1_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_2_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_3_NAME);
         onCreate(db);
     }
+
+    public boolean insertValueIntoGlobals (String name, String value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_3_1,name);
+        contentValues.put(COL_3_2,value);
+        long result = db.insert(TABLE_3_NAME,null,contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public Cursor getValueFromGlobals(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_3_NAME + " WHERE NAME='" + name + "';",null);
+        return res;
+    }
+
+    public boolean updateValueInGlobals(String name,String value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_3_1,name);
+        contentValues.put(COL_3_2,value);
+        db.update(TABLE_3_NAME, contentValues, "NAME = ?",new String[] { name });
+        return true;
+    }
+
+    public Integer deleteValueFromGlobals (String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_3_NAME, "NAME = ?",new String[] { name });
+    }
 }
+

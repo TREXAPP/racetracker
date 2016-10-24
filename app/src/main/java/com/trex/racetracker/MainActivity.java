@@ -60,8 +60,24 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-
          myDb = new DatabaseHelper(this);
+        InitializeGlobals(myDb);
+
+    }
+
+    private void InitializeGlobals(DatabaseHelper myDb) {
+
+        if (myDb.getValueFromGlobals("LoggedIn").getCount() == 0) myDb.insertValueIntoGlobals("LoggedIn","0");
+        else myDb.updateValueInGlobals("LoggedIn","0");
+
+        if (myDb.getValueFromGlobals("Username").getCount() == 0) myDb.insertValueIntoGlobals("Username","");
+        else myDb.updateValueInGlobals("Username","");
+
+        if (myDb.getValueFromGlobals("StartTime").getCount() == 0) myDb.insertValueIntoGlobals("StartTime","");
+        else myDb.updateValueInGlobals("StartTime","");
+
+        if (myDb.getValueFromGlobals("OperatorName").getCount() == 0) myDb.insertValueIntoGlobals("OperatorName","");
+        else myDb.updateValueInGlobals("OperatorName","");
     }
 
 
