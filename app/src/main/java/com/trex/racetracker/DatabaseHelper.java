@@ -48,10 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_9 = "Comment";
     public static final String COL_2_10 = "Synced";
 
-    public static final String TABLE_3_NAME = "Globals";
-    public static final String COL_3_1 = "Name";
-    public static final String COL_3_2 = "Value";
-
 
     public DatabaseHelper(Context context) {
 //Environment.getExternalStorageDirectory() + File.separator + "dbtest" + File.separator + DATABASE_NAME
@@ -103,21 +99,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createTable2Query);
 
-        String createTable3Query = "";
-        createTable3Query += "CREATE TABLE IF NOT EXISTS " + TABLE_3_NAME + "(";
-        createTable3Query += COL_3_1 + " VARCHAR PRIMARY KEY,";
-        createTable3Query += COL_3_2 + " VARCHAR);";
-
-        db.execSQL(createTable3Query);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_1_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_2_NAME);
-        db.execSQL("DROP TABLE IF EXISTS "+TABLE_3_NAME);
         onCreate(db);
     }
+
+    /**
+    Globals is managed with SharedPreferences now, code is left for reference with SQLite db management
 
     public boolean insertValueIntoGlobals (String name, String value) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -150,5 +142,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_3_NAME, "NAME = ?",new String[] { name });
     }
+
+ **/
 }
 

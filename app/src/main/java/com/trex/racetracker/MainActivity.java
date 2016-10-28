@@ -1,4 +1,5 @@
 package com.trex.racetracker;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private static final String GLOBALS = "GLOBALS";
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -67,17 +69,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitializeGlobals(DatabaseHelper myDb) {
 
-        if (myDb.getValueFromGlobals("LoggedIn").getCount() == 0) myDb.insertValueIntoGlobals("LoggedIn","0");
-        else myDb.updateValueInGlobals("LoggedIn","0");
+        //TO DO - ability to change these in settings
 
-        if (myDb.getValueFromGlobals("Username").getCount() == 0) myDb.insertValueIntoGlobals("Username","");
-        else myDb.updateValueInGlobals("Username","");
+        SharedPreferences globals = getSharedPreferences(GLOBALS,0);
+        SharedPreferences.Editor editor = globals.edit();
 
-        if (myDb.getValueFromGlobals("StartTime").getCount() == 0) myDb.insertValueIntoGlobals("StartTime","");
-        else myDb.updateValueInGlobals("StartTime","");
+        if (!globals.contains("LoggedIn")) editor.putString("LoggedIn","0");
+        if (!globals.contains("Username")) editor.putString("Username","");
+        if (!globals.contains("StartTime")) editor.putString("StartTime","");
+        if (!globals.contains("OperatorName")) editor.putString("OperatorName","");
+        if (!globals.contains("InputDigitsNo")) editor.putString("InputDigitsNo","3");
 
-        if (myDb.getValueFromGlobals("OperatorName").getCount() == 0) myDb.insertValueIntoGlobals("OperatorName","");
-        else myDb.updateValueInGlobals("OperatorName","");
+        editor.commit();
+
     }
 
 
