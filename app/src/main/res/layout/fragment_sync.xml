@@ -4,11 +4,88 @@
     android:layout_height="match_parent"
     tools:context="layout.Sync">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- TODO: Update blank fragment layout
     <TextView
         android:id="@+id/section_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Sync fragment" />
+        -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="Not logged in!"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/tvStatusTop" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etUsername"
+            android:layout_weight="1"
+            android:hint="Username"
+            style="@style/Widget.AppCompat.AutoCompleteTextView"
+            android:maxLines="1"
+            android:padding="8dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/etPassword"
+            android:layout_weight="1"
+            android:hint="Password"
+            style="@style/Widget.AppCompat.AutoCompleteTextView"
+            android:maxLines="1"
+            android:padding="8dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etOperator"
+            android:layout_weight="1"
+            android:hint="Name (optional)"
+            style="@style/Widget.AppCompat.AutoCompleteTextView"
+            android:maxLines="1"
+            android:padding="8dp" />
+
+        <Button
+            android:text="LOGIN AND SYNCHRONIZE"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSync"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvStatusBottom"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:padding="16dp"/>
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvEmptyFiller"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:padding="16dp" />
+
+
+    </LinearLayout>
 
 </FrameLayout>
