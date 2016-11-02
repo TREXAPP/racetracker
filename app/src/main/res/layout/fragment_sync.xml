@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragmentSync"
     tools:context="layout.Sync">
 
     <!-- TODO: Update blank fragment layout
@@ -22,6 +23,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:gravity="center"
+            android:textIsSelectable="true"
+            android:layout_weight="0.01"
             android:id="@+id/tvStatusTop" />
 
         <EditText
@@ -30,7 +34,6 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/etUsername"
-            android:layout_weight="1"
             android:hint="Username"
             style="@style/Widget.AppCompat.AutoCompleteTextView"
             android:maxLines="1"
@@ -42,7 +45,6 @@
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/etPassword"
-            android:layout_weight="1"
             android:hint="Password"
             style="@style/Widget.AppCompat.AutoCompleteTextView"
             android:maxLines="1"
@@ -54,7 +56,6 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/etOperator"
-            android:layout_weight="1"
             android:hint="Name (optional)"
             style="@style/Widget.AppCompat.AutoCompleteTextView"
             android:maxLines="1"
@@ -64,26 +65,17 @@
             android:text="LOGIN AND SYNCHRONIZE"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnSync"
-            android:layout_weight="1" />
+            android:onClick="OnLogin"
+            android:id="@+id/btnLogin" />
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:gravity="center"
+            android:textIsSelectable="true"
             android:id="@+id/tvStatusBottom"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:padding="16dp"/>
-
-        <TextView
-            android:text="TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvEmptyFiller"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:padding="16dp" />
+            android:layout_weight="0.80" />
 
 
     </LinearLayout>

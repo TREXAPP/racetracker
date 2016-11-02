@@ -3,7 +3,7 @@ package layout;
 /**
  * Created by Igor on 22.10.2016.
  */
-
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.trex.racetracker.LoginWorker;
+import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
 
 /**
@@ -24,6 +27,9 @@ public class Sync extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String TYPE_LOGIN = "login";
+    private static final String URL_LOGIN = "http://app.trex.mk/login.php";
+    private static final String COMMENT_LOGIN = "";
 
     public Sync() {
     }
@@ -43,17 +49,18 @@ public class Sync extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
      //   TextView textView = (TextView) rootView.findViewById(R.id.section_label);
      //   textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
      //   textView.setText("Vamu ke imame kopce za sinhronizacija so mysql bazata, so takvo sto vrti loading pod nego");
 
-        TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
-        EditText etUsername = (EditText) rootView.findViewById(R.id.etUsername);
-        EditText etPassword = (EditText) rootView.findViewById(R.id.etPassword);
-        EditText etOperator = (EditText) rootView.findViewById(R.id.etOperator);
-        Button btnSync = (Button) rootView.findViewById(R.id.btnSync);
-        TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
+        final FrameLayout fragmentSync = (FrameLayout) rootView.findViewById(R.id.fragmentSync);
+        final TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
+        final EditText etUsername = (EditText) rootView.findViewById(R.id.etUsername);
+        final EditText etPassword = (EditText) rootView.findViewById(R.id.etPassword);
+        final EditText etOperator = (EditText) rootView.findViewById(R.id.etOperator);
+        final Button btnSync = (Button) rootView.findViewById(R.id.btnLogin);
+        final TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
 
 
 
@@ -61,18 +68,37 @@ public class Sync extends Fragment {
             public void onClick(View v) {
                 //Do stuff here:
                 //1. set status variable to Logging...
-                //2. Call a function from BackgroundWorker to login
-                //3. contact mysql db, return boolean from webservice
+                //2. Call a function from LoginWorker to login
+                //3. contact mysql db, return result from webservice
                 //4. if false print error msg
                 //5. if true: set global variables
                 //6. call oncreate again and modify it to show different things depending on the global variables
 
+                SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+                String DeviceID = globals.getString("DeviceID","").toString();
 
+             //   tvStatusTop.setText("Logging in ...");
+                LoginWorker loginWorker = new LoginWorker(getContext(),fragmentSync);
+                loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
+            //    String jsonresult = loginWorker.getResult().toString();
+             //   tvStatusTop.setText(jsonresult);
             }
         });
 
         return rootView;
 
     }
+
+
+/*
+    public void OnLogin (View view) {
+        String Username =
+                String Query = QueryET.getText().toString();
+        String Type = "query";
+        LoginWorker backgroundWorker = new LoginWorker(this);
+        backgroundWorker.execute(Type, Query);
+
+    }
+    */
 
 }

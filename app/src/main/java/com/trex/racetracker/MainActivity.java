@@ -1,4 +1,5 @@
 package com.trex.racetracker;
+import android.provider.Settings.Secure;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.TabLayout;
@@ -18,11 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
 
 import layout.input;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private static final String GLOBALS = "GLOBALS";
+    public static final String GLOBALS = "GLOBALS";
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -79,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("StartTime")) editor.putString("StartTime","");
         if (!globals.contains("OperatorName")) editor.putString("OperatorName","");
         if (!globals.contains("InputDigitsNo")) editor.putString("InputDigitsNo","3");
+        String android_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
+        if (!globals.contains("DeviceID")) editor.putString("DeviceID",android_id);
+
 
         editor.commit();
 
@@ -106,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
 
