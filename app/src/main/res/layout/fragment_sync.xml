@@ -68,6 +68,13 @@
             android:onClick="OnLogin"
             android:id="@+id/btnLogin" />
 
+        <Button
+            android:text="LOGOUT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="OnLogout"
+            android:id="@+id/btnLogout" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.trex.racetracker.LoginWorker;
+import com.trex.racetracker.LogoutWorker;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.Methods;
 import com.trex.racetracker.R;
@@ -29,8 +30,11 @@ public class Sync extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TYPE_LOGIN = "login";
+    private static final String TYPE_LOGOUT= "logout";
     private static final String URL_LOGIN = "http://app.trex.mk/login.php";
+    private static final String URL_LOGOUT = "http://app.trex.mk/login.php";
     private static final String COMMENT_LOGIN = "";
+    private static final String COMMENT_LOGOUT = "";
 
     public Sync() {
     }
@@ -57,15 +61,17 @@ public class Sync extends Fragment {
         final EditText etUsername = (EditText) rootView.findViewById(R.id.etUsername);
         final EditText etPassword = (EditText) rootView.findViewById(R.id.etPassword);
         final EditText etOperator = (EditText) rootView.findViewById(R.id.etOperator);
-        final Button btnSync = (Button) rootView.findViewById(R.id.btnLogin);
+        final Button btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
+        final Button btnLogout = (Button) rootView.findViewById(R.id.btnLogout);
         final TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
 
         //initialize views appearence
         final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        final String DeviceID = globals.getString("deviceid","");
         Methods methods = new Methods();
         methods.InitializeSyncFragment(getContext(),rootView, globals);
 
-        btnSync.setOnClickListener(new Button.OnClickListener() {
+        btnLogin.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 //Do stuff here:
                 //1. set status variable to Logging...
@@ -75,12 +81,17 @@ public class Sync extends Fragment {
                 //5. if true: set global variables
                 //6. call oncreate again and modify it to show different things depending on the global variables
 
-
-                String DeviceID = globals.getString("deviceid","");
                 LoginWorker loginWorker = new LoginWorker(getContext(),fragmentSync);
                 loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
             //    String jsonresult = loginWorker.getResult().toString();
              //   tvStatusTop.setText(jsonresult);
+            }
+        });
+
+        btnLogout.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View v) {
+                LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentSync);
+                logoutWorker.execute(TYPE_LOGOUT,URL_LOGOUT,etUsername.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGOUT);
             }
         });
 

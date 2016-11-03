@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 
 /**
@@ -47,6 +50,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_8 = "EntryTypeID";
     public static final String COL_2_9 = "Comment";
     public static final String COL_2_10 = "Synced";
+
+    public static final String TABLE_3_NAME = "LoginInfo";
+    public static final String COL_3_1 = "CPID";
+    public static final String COL_3_2 = "CPComment";
+    public static final String COL_3_3 = "CPName";
+    public static final String COL_3_4 = "CPNo";
+    public static final String COL_3_5 = "RaceID";
+    public static final String COL_3_6 = "RaceName";
+    public static final String COL_3_7 = "RaceDescription";
+    public static final String COL_3_8 = "UsersComment";
 
 
     public DatabaseHelper(Context context) {
@@ -99,17 +112,62 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createTable2Query);
 
+        String createTable3Query = "";
+        createTable3Query += "CREATE TABLE IF NOT EXISTS " + TABLE_3_NAME + "(";
+        createTable3Query += COL_3_1 + " VARCHAR,";
+        createTable3Query += COL_3_2 + " VARCHAR,";
+        createTable3Query += COL_3_3 + " VARCHAR,";
+        createTable3Query += COL_3_4 + " VARCHAR,";
+        createTable3Query += COL_3_5 + " VARCHAR,";
+        createTable3Query += COL_3_6 + " VARCHAR,";
+        createTable3Query += COL_3_7 + " VARCHAR,";
+        createTable3Query += COL_3_8 + " VARCHAR);";
+
+        db.execSQL(createTable3Query);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_1_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_2_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_3_NAME);
         onCreate(db);
     }
 
+    public boolean insertIntoLoginInfo(JSONObject jsonString) throws JSONException {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        JSONtoSQLiteLoginString jsontosqlite = new JSONtoSQLiteLoginString(jsonString);
+        long result=0;
+        int i=0;
+        while (i < jsonString.length()-2) {
+            if (result != -1) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(COL_3_1,jsontosqlite.CPID(i));
+                contentValues.put(COL_3_2,jsontosqlite.CPComment(i));
+                contentValues.put(COL_3_3,jsontosqlite.CPName(i));
+                contentValues.put(COL_3_4,jsontosqlite.CPNo(i));
+                contentValues.put(COL_3_5,jsontosqlite.RaceID(i));
+                contentValues.put(COL_3_6,jsontosqlite.RaceName(i));
+                contentValues.put(COL_3_7,jsontosqlite.RaceDescription(i));
+                contentValues.put(COL_3_8,jsontosqlite.UsersComment(i));
+
+                result = db.insert(TABLE_3_NAME,null,contentValues);
+            }
+            i++;
+        }
+        if (result == -1) return false;
+        else return true;
+    }
+
+    public int deleteAllFromLoginInfo() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_3_NAME, "",null);
+    }
+
     /**
-    Globals is managed with SharedPreferences now, code is left for reference with SQLite db management
+    Globals used to be managed with SQLite, but now it is done with SharedPreferences, the code is left for reference with SQLite db management
 
     public boolean insertValueIntoGlobals (String name, String value) {
         SQLiteDatabase db = this.getWritableDatabase();
