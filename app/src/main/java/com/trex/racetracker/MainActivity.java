@@ -78,13 +78,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences globals = getSharedPreferences(GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
 
-        if (!globals.contains("LoggedIn")) editor.putString("LoggedIn","0");
-        if (!globals.contains("Username")) editor.putString("Username","");
-        if (!globals.contains("StartTime")) editor.putString("StartTime","");
-        if (!globals.contains("OperatorName")) editor.putString("OperatorName","");
-        if (!globals.contains("InputDigitsNo")) editor.putString("InputDigitsNo","3");
+        if (!globals.contains("islogin")) editor.putString("islogin","0");
+        if (!globals.contains("username")) editor.putString("username","");
+        if (!globals.contains("starttime")) editor.putString("starttime","");
+        if (!globals.contains("operator")) editor.putString("operator","");
+        if (!globals.contains("controlpoint")) editor.putString("controlpoint","");
+        if (!globals.contains("inputdigitsno")) editor.putString("inputdigitsno","3");
         String android_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
-        if (!globals.contains("DeviceID")) editor.putString("DeviceID",android_id);
+       // if (!globals.contains("deviceid"))
+            editor.putString("deviceid",android_id);
 
 
         editor.commit();

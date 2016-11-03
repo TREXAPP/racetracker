@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.trex.racetracker.LoginWorker;
 import com.trex.racetracker.MainActivity;
+import com.trex.racetracker.Methods;
 import com.trex.racetracker.R;
 
 /**
@@ -50,9 +51,6 @@ public class Sync extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
-     //   TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-     //   textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-     //   textView.setText("Vamu ke imame kopce za sinhronizacija so mysql bazata, so takvo sto vrti loading pod nego");
 
         final FrameLayout fragmentSync = (FrameLayout) rootView.findViewById(R.id.fragmentSync);
         final TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
@@ -62,7 +60,10 @@ public class Sync extends Fragment {
         final Button btnSync = (Button) rootView.findViewById(R.id.btnLogin);
         final TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
 
-
+        //initialize views appearence
+        final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        Methods methods = new Methods();
+        methods.InitializeSyncFragment(getContext(),rootView, globals);
 
         btnSync.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -74,10 +75,8 @@ public class Sync extends Fragment {
                 //5. if true: set global variables
                 //6. call oncreate again and modify it to show different things depending on the global variables
 
-                SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-                String DeviceID = globals.getString("DeviceID","").toString();
 
-             //   tvStatusTop.setText("Logging in ...");
+                String DeviceID = globals.getString("deviceid","");
                 LoginWorker loginWorker = new LoginWorker(getContext(),fragmentSync);
                 loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
             //    String jsonresult = loginWorker.getResult().toString();
@@ -88,6 +87,8 @@ public class Sync extends Fragment {
         return rootView;
 
     }
+
+
 
 
 /*

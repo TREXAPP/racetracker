@@ -1,11 +1,17 @@
 package com.trex.racetracker;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.content.Context;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
@@ -29,6 +35,12 @@ import layout.Sync;
 public class LoginWorker extends AsyncTask<String,Void,String> {
     private Context context;
     private View rootView;
+    private String queryUrl;
+    private String Username;
+    private String Password;
+    private String Operator;
+    private String DeviceID;
+    private String LoginComment;
     AlertDialog alertDialog;
 
 
@@ -92,13 +104,13 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         //params[6]=loginComment
         //in this case the LoginWorker should be called in this manner: backgroundWorker.excecute(type,url,username,password,operator,deviceid,logincomment)
         if (type.equals("login")) try {
-            //TODO fix this!!!!
-            String queryUrl = params[1];
-            String Username = params[2];
-            String Password = params[3];
-            String Operator = params[4];
-            String DeviceID = params[5];
-            String LoginComment = params[6];
+
+            queryUrl = params[1];
+            Username = params[2];
+            Password = params[3];
+            Operator = params[4];
+            DeviceID = params[5];
+            LoginComment = params[6];
             URL url = new URL(queryUrl);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
@@ -157,16 +169,46 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPreExecute() {
-
+        TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
+        tvStatusTop.setText("Logging in ...");
        // alertDialog = new AlertDialog.Builder(context).create();
        // alertDialog.setTitle("Query returns");
     }
 
     @Override
     protected void onPostExecute(String result) {
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        SharedPreferences.Editor editor = globals.edit();
         TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
-        tvStatusTop.setText(result);
-      //  TextView tvStatus = (TextView) context.findViewById()
+
+        try {
+            JSONObject jsonResult = new JSONObject(result);
+            if (jsonResult.has("islogin")) {
+                if (jsonResult.getString("islogin").equals("1")) {
+                    String controlPoint = "PrisadTEST"; //TODO
+                    editor.putString("islogin","1");
+                    editor.putString("username",Username);
+                    editor.putString("operator",Operator);
+                    editor.putString("controlpoint",controlPoint);
+                    editor.commit();
+                    Methods methods = new Methods();
+                    methods.InitializeSyncFragment(context,rootView,globals);
+
+                    Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
+                } else {
+                    tvStatusTop.setText(jsonResult.getString("loginerror"));
+                }
+            } else {
+                tvStatusTop.setText("Error with database! Contact the administrator.");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+      //  tvStatusTop.setText(result);
+        //  TextView tvStatus = (TextView) context.findViewById()
         //alertDialog.setMessage(result);
         //alertDialog.show();
     }
