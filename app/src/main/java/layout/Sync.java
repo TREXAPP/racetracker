@@ -3,6 +3,9 @@ package layout;
 /**
  * Created by Igor on 22.10.2016.
  */
+
+import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -54,6 +57,7 @@ public class Sync extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         final View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
 
         final FrameLayout fragmentSync = (FrameLayout) rootView.findViewById(R.id.fragmentSync);
@@ -64,6 +68,7 @@ public class Sync extends Fragment {
         final Button btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
         final Button btnLogout = (Button) rootView.findViewById(R.id.btnLogout);
         final TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
+
 
         //initialize views appearence
         final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
@@ -83,6 +88,10 @@ public class Sync extends Fragment {
 
                 LoginWorker loginWorker = new LoginWorker(getContext(),fragmentSync);
                 loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
+
+                //turn off keyboard:
+                InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             //    String jsonresult = loginWorker.getResult().toString();
              //   tvStatusTop.setText(jsonresult);
             }
@@ -92,6 +101,10 @@ public class Sync extends Fragment {
             public void onClick(View v) {
                 LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentSync);
                 logoutWorker.execute(TYPE_LOGOUT,URL_LOGOUT,globals.getString("username",""),globals.getString("operator",""),DeviceID,COMMENT_LOGOUT);
+
+                //turn off keyboard:
+                InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
 

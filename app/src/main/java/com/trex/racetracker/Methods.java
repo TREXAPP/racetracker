@@ -2,6 +2,7 @@ package com.trex.racetracker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,17 +55,31 @@ public class Methods {
             etOperator.setVisibility(View.GONE);
             btnLogin.setVisibility(View.GONE);
             btnLogout.setVisibility(View.VISIBLE);
+         //   tvStatusTop.setTextColor(ctx.getResources().getColor(android.R.color.darker_gray));
+            tvStatusTop.setTextColor(ContextCompat.getColor(ctx, R.color.colorPrimary));
 
         } else {
             //user is not logged, show for for logging in
             String displayStatusTop = "Not logged in";
             tvStatusTop.setText(displayStatusTop);
+            tvStatusTop.setTextColor(ContextCompat.getColor(ctx, R.color.colorPrimary));
             etUsername.setVisibility(View.VISIBLE);
             etPassword.setVisibility(View.VISIBLE);
             etOperator.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.VISIBLE);
             btnLogout.setVisibility(View.GONE);
         }
+    }
+
+    public String FormatErrorString(String str) {
+        String myStr = str;
+        if (myStr != null && myStr.length() > 0 && myStr.charAt(myStr.length()-1)==';') {
+            myStr = myStr.substring(0, myStr.length()-1);
+        }
+        if (myStr != null && myStr.length() > 0) {
+            myStr = myStr.replace(';','\n');
+        }
+        return myStr;
     }
 
 }

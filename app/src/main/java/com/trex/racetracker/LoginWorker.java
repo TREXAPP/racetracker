@@ -2,8 +2,10 @@ package com.trex.racetracker;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -169,6 +171,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
     @Override
     protected void onPreExecute() {
         TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
+        tvStatusTop.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         tvStatusTop.setText("Logging in ...");
        // alertDialog = new AlertDialog.Builder(context).create();
        // alertDialog.setTitle("Query returns");
@@ -198,10 +201,12 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
                     Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
                 } else {
-                    tvStatusTop.setText(jsonResult.getString("loginerror"));
+                   tvStatusTop.setText(methods.FormatErrorString(jsonResult.getString("loginerror")));
+                   tvStatusTop.setTextColor(Color.RED);
                 }
             } else {
                 tvStatusTop.setText("Error with database! Contact the administrator.");
+                tvStatusTop.setTextColor(Color.RED);
             }
         } catch (JSONException e) {
             e.printStackTrace();
