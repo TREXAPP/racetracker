@@ -32,7 +32,7 @@ public class Sync extends Fragment {
     private static final String TYPE_LOGIN = "login";
     private static final String TYPE_LOGOUT= "logout";
     private static final String URL_LOGIN = "http://app.trex.mk/login.php";
-    private static final String URL_LOGOUT = "http://app.trex.mk/login.php";
+    private static final String URL_LOGOUT = "http://app.trex.mk/logout.php";
     private static final String COMMENT_LOGIN = "";
     private static final String COMMENT_LOGOUT = "";
 
@@ -91,7 +91,7 @@ public class Sync extends Fragment {
         btnLogout.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v) {
                 LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentSync);
-                logoutWorker.execute(TYPE_LOGOUT,URL_LOGOUT,etUsername.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGOUT);
+                logoutWorker.execute(TYPE_LOGOUT,URL_LOGOUT,globals.getString("username",""),globals.getString("operator",""),DeviceID,COMMENT_LOGOUT);
             }
         });
 

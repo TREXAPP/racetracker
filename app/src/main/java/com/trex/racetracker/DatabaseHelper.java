@@ -106,7 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable2Query += COL_2_5 + " INTEGER,";
         createTable2Query += COL_2_6 + " TEXT,";
         createTable2Query += COL_2_7 + " DATETIME,";
-        createTable2Query += COL_2_8 + " INTEGER";
+        createTable2Query += COL_2_8 + " INTEGER,";
         createTable2Query += COL_2_9 + " TEXT,";
         createTable2Query += COL_2_10 + " BOOLEAN);";
 
