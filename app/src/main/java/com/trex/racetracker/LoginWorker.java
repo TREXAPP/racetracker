@@ -182,6 +182,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
         TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
+        TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
         Methods methods = new Methods();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
@@ -197,7 +198,18 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     editor.commit();
 
                     methods.InitializeSyncFragment(context,rootView,globals);
+                    if (!dbHelper.insertIntoLoginInfo(jsonResult)) {
+                        tvStatusBottom.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
+                    }
                     dbHelper.insertIntoLoginInfo(jsonResult);
+
+                    //login successful. Now synchronize the racers
+                    final String TYPE_SYNC = "sync";
+                    final String URL_SYNC = "http://app.trex.mk/sync.php";
+                    final String COMMENT_SYNC = "";
+
+                    SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context,rootView);
+                    synchronizeWorker.execute(TYPE_SYNC,URL_SYNC,Username,Password,DeviceID,COMMENT_SYNC);
 
                     Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -219,6 +231,8 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
         EditText etOperator = (EditText) rootView.findViewById(R.id.etOperator);
         etOperator.setText("");
+
+
 
 
 

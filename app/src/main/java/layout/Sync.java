@@ -92,8 +92,7 @@ public class Sync extends Fragment {
                 //turn off keyboard:
                 InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            //    String jsonresult = loginWorker.getResult().toString();
-             //   tvStatusTop.setText(jsonresult);
+
             }
         });
 

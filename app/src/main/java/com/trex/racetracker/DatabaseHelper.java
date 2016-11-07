@@ -5,12 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Environment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
 
 /**
  * Created by Igor_2 on 22.10.2016.
@@ -20,24 +17,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Racetracker.db";
     public static final String TABLE_1_NAME = "ActiveRacers";
     public static final String COL_1_1 = "ActiveRacerID";
-    public static final String COL_1_2 = "FirstName";
-    public static final String COL_1_3 = "LastName";
-    public static final String COL_1_4 = "Gender";
-    public static final String COL_1_5 = "DateOfBirth";
-    public static final String COL_1_6 = "Nationality";
-    public static final String COL_1_7 = "Country";
-    public static final String COL_1_8 = "CityOfResidence";
-    public static final String COL_1_9 = "TShirtSize";
-    public static final String COL_1_10 = "Email";
-    public static final String COL_1_11 = "Tel";
-    public static final String COL_1_12 = "Food";
-    public static final String COL_1_13 = "Comment_Racers";
-    public static final String COL_1_14 = "BIB";
-    public static final String COL_1_15 = "BarCode";
-    public static final String COL_1_16 = "Comment_ActiveRacers";
-    public static final String COL_1_17 = "Started";
-    public static final String COL_1_18 = "Registered";
-    public static final String COL_1_19 = "TeamName";
+    public static final String COL_1_2 = "RacerID";
+    public static final String COL_1_3 = "RaceID";
+    public static final String COL_1_4 = "Age";
+    public static final String COL_1_5 = "BIB";
+    public static final String COL_1_6 = "ChipCode";
+    public static final String COL_1_7= "Started";
+    public static final String COL_1_8 = "Registered";
+    public static final String COL_1_9 = "ActiveRacersTS";
+    public static final String COL_1_10 = "ActiveRacersComment";
+    public static final String COL_1_11 = "FirstName";
+    public static final String COL_1_12 = "LastName";
+    public static final String COL_1_13 = "Gender";
+    public static final String COL_1_14 = "DateOfBirth";
+    public static final String COL_1_15 = "YearBirth";
+    public static final String COL_1_16 = "Nationality";
+    public static final String COL_1_17 = "Country";
+    public static final String COL_1_18 = "TeamID";
+    public static final String COL_1_19 = "CityOfResidence";
+    public static final String COL_1_20 = "TShirtSize";
+    public static final String COL_1_21 = "Email";
+    public static final String COL_1_22 = "Tel";
+    public static final String COL_1_23 = "Food";
+    public static final String COL_1_24 = "RacersTS";
+    public static final String COL_1_25 = "Racers_Comment";
+    public static final String COL_1_26 = "TeamName";
+    public static final String COL_1_27 = "TeamDescription";
 
     public static final String TABLE_2_NAME = "CPEntries";
     public static final String COL_2_1 = "EntryID";
@@ -75,25 +80,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable1Query = "";
         createTable1Query += "CREATE TABLE IF NOT EXISTS " + TABLE_1_NAME + "(";
-        createTable1Query += COL_1_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,";
-        createTable1Query += COL_1_2 + " TEXT,";
-        createTable1Query += COL_1_3 + " TEXT,";
-        createTable1Query += COL_1_4 + " TEXT,";
-        createTable1Query += COL_1_5 + " TEXT,";
-        createTable1Query += COL_1_6 + " TEXT,";
-        createTable1Query += COL_1_7 + " TEXT,";
-        createTable1Query += COL_1_8 + " TEXT,";
-        createTable1Query += COL_1_9 + " TEXT,";
+        createTable1Query += COL_1_1 + " INTEGER,";
+        createTable1Query += COL_1_2 + " INTEGER,";
+        createTable1Query += COL_1_3 + " INTEGER,";
+        createTable1Query += COL_1_4 + " INTEGER,";
+        createTable1Query += COL_1_5 + " VARCHAR,";
+        createTable1Query += COL_1_6 + " VARCHAR,";
+        createTable1Query += COL_1_7 + " BOOLEAN,";
+        createTable1Query += COL_1_8 + " BOOLEAN,";
+        createTable1Query += COL_1_9 + " DATETIME,";
         createTable1Query += COL_1_10 + " TEXT,";
-        createTable1Query += COL_1_11 + " TEXT,";
-        createTable1Query += COL_1_12 + " TEXT,";
-        createTable1Query += COL_1_13 + " TEXT,";
-        createTable1Query += COL_1_14 + " TEXT,";
-        createTable1Query += COL_1_15 + " TEXT,";
-        createTable1Query += COL_1_16 + " TEXT,";
-        createTable1Query += COL_1_17 + " BOOLEAN,";
-        createTable1Query += COL_1_18 + " BOOLEAN,";
-        createTable1Query += COL_1_19 + " TEXT);";
+        createTable1Query += COL_1_11 + " VARCHAR,";
+        createTable1Query += COL_1_12 + " VARCHAR,";
+        createTable1Query += COL_1_13 + " VARCHAR,";
+        createTable1Query += COL_1_14 + " DATETIME,";
+        createTable1Query += COL_1_15 + " VARCHAR,";
+        createTable1Query += COL_1_16 + " VARCHAR,";
+        createTable1Query += COL_1_17 + " VARCHAR,";
+        createTable1Query += COL_1_18 + " INTEGER,";
+        createTable1Query += COL_1_19 + " VARCHAR,";
+        createTable1Query += COL_1_20 + " VARCHAR,";
+        createTable1Query += COL_1_21 + " VARCHAR,";
+        createTable1Query += COL_1_22 + " VARCHAR,";
+        createTable1Query += COL_1_23 + " VARCHAR,";
+        createTable1Query += COL_1_24 + " DATETIME,";
+        createTable1Query += COL_1_25 + " TEXT,";
+        createTable1Query += COL_1_26 + " VARCHAR,";
+        createTable1Query += COL_1_27 + " VARCHAR);";
 
         db.execSQL(createTable1Query);
 
@@ -138,7 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean insertIntoLoginInfo(JSONObject jsonString) throws JSONException {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        JSONtoSQLiteLoginString jsontosqlite = new JSONtoSQLiteLoginString(jsonString);
+        JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
         long result=0;
         int i=0;
         while (i < jsonString.length()-2) {
@@ -164,6 +177,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int deleteAllFromLoginInfo() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_3_NAME, "",null);
+    }
+
+    public Cursor getDistinctRacesFromLoginInfo() {
+        String query = "SELECT DISTINCT RaceID FROM " + TABLE_3_NAME + ";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery(query,null);
+    }
+
+    public boolean insertIntoActiveRacers(JSONObject jsonString) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
+        long result=0;
+        int i=0;
+        while (i < jsonString.length()-3) {
+            if (result != -1) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(COL_1_1,jsontosqlite.ActiveRacerID(i));
+                contentValues.put(COL_1_2,jsontosqlite.RacerID(i));
+                contentValues.put(COL_1_3,jsontosqlite.RaceID(i));
+                contentValues.put(COL_1_4,jsontosqlite.Age(i));
+                contentValues.put(COL_1_5,jsontosqlite.BIB(i));
+                contentValues.put(COL_1_6,jsontosqlite.ChipCode(i));
+                contentValues.put(COL_1_7,jsontosqlite.Started(i));
+                contentValues.put(COL_1_8,jsontosqlite.Registered(i));
+                contentValues.put(COL_1_9,jsontosqlite.ActiveRacersTS(i));
+                contentValues.put(COL_1_10,jsontosqlite.ActiveRacersComment(i));
+                contentValues.put(COL_1_11,jsontosqlite.FirstName(i));
+                contentValues.put(COL_1_12,jsontosqlite.LastName(i));
+                contentValues.put(COL_1_13,jsontosqlite.Gender(i));
+                contentValues.put(COL_1_14,jsontosqlite.DateOfBirth(i));
+                contentValues.put(COL_1_15,jsontosqlite.YearBirth(i));
+                contentValues.put(COL_1_16,jsontosqlite.Nationality(i));
+                contentValues.put(COL_1_17,jsontosqlite.Country(i));
+                contentValues.put(COL_1_18,jsontosqlite.TeamID(i));
+                contentValues.put(COL_1_19,jsontosqlite.CityOfResidence(i));
+                contentValues.put(COL_1_20,jsontosqlite.TShirtSize(i));
+                contentValues.put(COL_1_21,jsontosqlite.Email(i));
+                contentValues.put(COL_1_22,jsontosqlite.Tel(i));
+                contentValues.put(COL_1_23,jsontosqlite.Food(i));
+                contentValues.put(COL_1_24,jsontosqlite.RacersTS(i));
+                contentValues.put(COL_1_25,jsontosqlite.Racers_Comment(i));
+                contentValues.put(COL_1_26,jsontosqlite.TeamName(i));
+                contentValues.put(COL_1_27,jsontosqlite.TeamDescription(i));
+
+                result = db.insert(TABLE_1_NAME,null,contentValues);
+            }
+            i++;
+        }
+        if (result == -1) return false;
+        else return true;
     }
 
     /**
