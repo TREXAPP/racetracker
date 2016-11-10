@@ -33,7 +33,8 @@ import java.net.URLEncoder;
 
 public class LoginWorker extends AsyncTask<String,Void,String> {
     private Context context;
-    private View rootView;
+    private View fragmentSync;
+    private View viewRacers;
     private String queryUrl;
     private String Username;
     private String Password;
@@ -44,9 +45,10 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
 
     //constructor
-    public LoginWorker(Context ctx, View view) {
+    public LoginWorker(Context ctx, View viewSync, View viewRacers) {
         context = ctx;
-        this.rootView = view;
+        this.fragmentSync = viewSync;
+        this.viewRacers = viewRacers;
     }
 
     @Override
@@ -170,7 +172,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPreExecute() {
-        TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
+        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
         tvStatusTop.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         tvStatusTop.setText("Logging in ...");
        // alertDialog = new AlertDialog.Builder(context).create();
@@ -181,8 +183,8 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
     protected void onPostExecute(String result) {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
-        TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
-        TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
+        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
+        TextView tvStatusBottom = (TextView) fragmentSync.findViewById(R.id.tvStatusBottom);
         Methods methods = new Methods();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
@@ -197,7 +199,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     editor.putString("controlpoint",controlPoint);
                     editor.commit();
 
-                    methods.InitializeSyncFragment(context,rootView,globals);
+                    methods.InitializeSyncFragment(context,fragmentSync,globals);
                     if (!dbHelper.insertIntoLoginInfo(jsonResult)) {
                         tvStatusBottom.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
                     }
@@ -208,7 +210,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     final String URL_SYNC = "http://app.trex.mk/sync.php";
                     final String COMMENT_SYNC = "";
 
-                    SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context,rootView);
+                    SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context,fragmentSync, viewRacers);
                     synchronizeWorker.execute(TYPE_SYNC,URL_SYNC,Username,Password,DeviceID,COMMENT_SYNC);
 
                     Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
@@ -223,13 +225,13 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        EditText etUsername = (EditText) rootView.findViewById(R.id.etUsername);
+        EditText etUsername = (EditText) fragmentSync.findViewById(R.id.etUsername);
         etUsername.setText("");
 
-        EditText etPassword = (EditText) rootView.findViewById(R.id.etPassword);
+        EditText etPassword = (EditText) fragmentSync.findViewById(R.id.etPassword);
         etPassword.setText("");
 
-        EditText etOperator = (EditText) rootView.findViewById(R.id.etOperator);
+        EditText etOperator = (EditText) fragmentSync.findViewById(R.id.etOperator);
         etOperator.setText("");
 
 

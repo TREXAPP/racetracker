@@ -58,23 +58,23 @@ public class Sync extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
+        final View fragmentSync = inflater.inflate(R.layout.fragment_sync, container, false); //rootview == fragment_sync
+        final View fragmentRacers = inflater.inflate(R.layout.fragment_racers, container, false);
 
-        final FrameLayout fragmentSync = (FrameLayout) rootView.findViewById(R.id.fragmentSync);
-        final TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
-        final EditText etUsername = (EditText) rootView.findViewById(R.id.etUsername);
-        final EditText etPassword = (EditText) rootView.findViewById(R.id.etPassword);
-        final EditText etOperator = (EditText) rootView.findViewById(R.id.etOperator);
-        final Button btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
-        final Button btnLogout = (Button) rootView.findViewById(R.id.btnLogout);
-        final TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
+        final TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
+        final EditText etUsername = (EditText) fragmentSync.findViewById(R.id.etUsername);
+        final EditText etPassword = (EditText) fragmentSync.findViewById(R.id.etPassword);
+        final EditText etOperator = (EditText) fragmentSync.findViewById(R.id.etOperator);
+        final Button btnLogin = (Button) fragmentSync.findViewById(R.id.btnLogin);
+        final Button btnLogout = (Button) fragmentSync.findViewById(R.id.btnLogout);
+        final TextView tvStatusBottom = (TextView) fragmentSync.findViewById(R.id.tvStatusBottom);
 
 
         //initialize views appearence
         final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
         final String DeviceID = globals.getString("deviceid","");
         Methods methods = new Methods();
-        methods.InitializeSyncFragment(getContext(),rootView, globals);
+        methods.InitializeSyncFragment(getContext(),fragmentSync, globals);
 
         btnLogin.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -86,7 +86,7 @@ public class Sync extends Fragment {
                 //5. if true: set global variables
                 //6. call oncreate again and modify it to show different things depending on the global variables
 
-                LoginWorker loginWorker = new LoginWorker(getContext(),fragmentSync);
+                LoginWorker loginWorker = new LoginWorker(getContext(),fragmentSync, fragmentRacers);
                 loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
 
                 //turn off keyboard:
@@ -107,7 +107,7 @@ public class Sync extends Fragment {
             }
         });
 
-        return rootView;
+        return fragmentSync;
 
     }
 

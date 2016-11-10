@@ -4,6 +4,7 @@ package layout;
  * Created by Igor on 22.10.2016.
  */
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.trex.racetracker.MainActivity;
+import com.trex.racetracker.Methods;
 import com.trex.racetracker.R;
 
 /**
@@ -41,11 +44,15 @@ public class Racers extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_racers, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText("Vamu ke gi lista site momentalni trkaci");
+        View fragmentRacers = inflater.inflate(R.layout.fragment_racers, container, false);
+
+        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        Methods methods = new Methods();
+        methods.InitializeRacersFragment(getContext(),fragmentRacers,globals);
+     //   TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+     //   textView.setText("Vamu ke gi lista site momentalni trkaci");
       //  textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-        return rootView;
+        return fragmentRacers;
 
     }
 

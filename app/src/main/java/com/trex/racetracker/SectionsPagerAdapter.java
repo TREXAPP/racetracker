@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import layout.Entries;
+import layout.Input;
 
 /**
  * Created by Igor on 22.10.2016.
@@ -28,7 +28,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Fragment returnFragment = new Fragment();
         switch (position) {
             case 0:
-                returnFragment = layout.input.newInstance(position+1);
+                returnFragment = Input.newInstance(position+1);
                 break;
             case 1:
                 returnFragment = layout.Entries.newInstance(position+1);

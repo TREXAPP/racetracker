@@ -88,12 +88,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable1Query += COL_1_6 + " VARCHAR,";
         createTable1Query += COL_1_7 + " BOOLEAN,";
         createTable1Query += COL_1_8 + " BOOLEAN,";
-        createTable1Query += COL_1_9 + " DATETIME,";
+        createTable1Query += COL_1_9 + " VARCHAR,";
         createTable1Query += COL_1_10 + " TEXT,";
         createTable1Query += COL_1_11 + " VARCHAR,";
         createTable1Query += COL_1_12 + " VARCHAR,";
         createTable1Query += COL_1_13 + " VARCHAR,";
-        createTable1Query += COL_1_14 + " DATETIME,";
+        createTable1Query += COL_1_14 + " DATE,";
         createTable1Query += COL_1_15 + " VARCHAR,";
         createTable1Query += COL_1_16 + " VARCHAR,";
         createTable1Query += COL_1_17 + " VARCHAR,";
@@ -228,6 +228,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         if (result == -1) return false;
         else return true;
+    }
+
+    public int deleteAllFromActiveRacers() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_1_NAME, "1",null);
     }
 
     /**

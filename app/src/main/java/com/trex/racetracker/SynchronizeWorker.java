@@ -1,10 +1,14 @@
 package com.trex.racetracker;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +33,8 @@ import java.net.URLEncoder;
 
 public class SynchronizeWorker extends AsyncTask<String,Void,String> {
     private Context context;
-    private View rootView;
+    private View fragmentSync;
+    private View viewRacers;
     private String queryUrl;
     private String Username;
     private String Operator;
@@ -38,9 +43,10 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
     private String mysqlQuery;
 
     //constructor
-    public SynchronizeWorker(Context ctx, View view) {
+    public SynchronizeWorker(Context ctx, View view, View viewRacers) {
         this.context = ctx;
-        this.rootView = view;
+        this.fragmentSync = view;
+        this.viewRacers = viewRacers;
     }
 
     @Override
@@ -136,7 +142,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
     @Override
     protected void onPreExecute() {
         //TODO - set for testing, remove when done
-        TextView tvStatusBottom = (TextView) rootView.findViewById(R.id.tvStatusBottom);
+        TextView tvStatusBottom = (TextView) fragmentSync.findViewById(R.id.tvStatusBottom);
         tvStatusBottom.setText("Synchronization started, please wait ...");
     }
 
@@ -150,6 +156,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
         //      else delete it if it exists with older timestamp and insert it again
         //2. Fill in a scrollable list view in tab Racers with record from the already inserted data into SQLite
         //  (if there are records inserted already, clear them all before inserting
+        TextView tvStatusBottom = (TextView) fragmentSync.findViewById(R.id.tvStatusBottom);
         String error = "";
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
@@ -158,6 +165,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
             if (jsonResult.has("issync")) {
                 if (jsonResult.getString("issync").equals("1")) {
                     //TODO - a logic not to write only in sqlite, but also to check for update if the record already exists
+                    dbHelper.deleteAllFromActiveRacers();
                     if (!dbHelper.insertIntoActiveRacers(jsonResult)) {
                         error += "Error while writing in SQLite, ActiveRaces table. Contact the administrator;";
                     };
@@ -175,6 +183,14 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
 
         if (error.equals("")) {
             //TODO - frontend stuff, create a listview in Racers tab
+            //TODO - testing
+            Methods methods = new Methods();
+            SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+            methods.InitializeRacersFragment(context, viewRacers, globals);
+
+            tvStatusBottom.setText("Sync done!");
+        } else {
+            tvStatusBottom.setText(error);
         }
     }
 

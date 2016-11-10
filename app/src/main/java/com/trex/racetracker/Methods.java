@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -69,6 +72,13 @@ public class Methods {
             btnLogin.setVisibility(View.VISIBLE);
             btnLogout.setVisibility(View.GONE);
         }
+    }
+
+    public void InitializeRacersFragment(Context context, View viewRacers, SharedPreferences globals) {
+        String[] racersString = {"racer1","racer2","racer3","racer4","racer5","racer6","racer7"};
+        ListAdapter racersAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, racersString);
+        ListView lvRacers = (ListView) viewRacers.findViewById(R.id.lvRacers);
+        lvRacers.setAdapter(racersAdapter);
     }
 
     public String FormatErrorString(String str) {
