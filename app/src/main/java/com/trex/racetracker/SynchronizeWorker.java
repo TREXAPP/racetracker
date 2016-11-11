@@ -182,11 +182,11 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
         }
 
         if (error.equals("")) {
-            //TODO - frontend stuff, create a listview in Racers tab
             //TODO - testing
-            Methods methods = new Methods();
-            SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-            methods.InitializeRacersFragment(context, viewRacers, globals);
+            //moved to loginworker!
+           // Methods methods = new Methods();
+           // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+           // methods.InitializeRacersFragment(context, viewRacers, globals);
 
             tvStatusBottom.setText("Sync done!");
         } else {

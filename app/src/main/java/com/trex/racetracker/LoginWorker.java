@@ -26,6 +26,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import layout.Racers;
+
 
 /**
  * Created by Igor on 16.10.2016.
@@ -234,6 +236,9 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         EditText etOperator = (EditText) fragmentSync.findViewById(R.id.etOperator);
         etOperator.setText("");
 
+        // Methods methods = new Methods();
+        // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+//         methods.InitializeRacersFragment(context, viewRacers, globals);
 
 
 

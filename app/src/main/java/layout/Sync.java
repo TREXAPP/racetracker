@@ -98,7 +98,7 @@ public class Sync extends Fragment {
 
         btnLogout.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v) {
-                LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentSync);
+                LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentSync,fragmentRacers);
                 logoutWorker.execute(TYPE_LOGOUT,URL_LOGOUT,globals.getString("username",""),globals.getString("operator",""),DeviceID,COMMENT_LOGOUT);
 
                 //turn off keyboard:

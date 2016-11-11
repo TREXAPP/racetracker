@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:layout_margin="3dp">
+    android:layout_margin="3dp"
+    android:id="@+id/row_racers">
 
     <TextView
         android:text="222"
@@ -11,7 +12,7 @@
         android:id="@+id/tvBIB"
         android:gravity="center"
         android:layout_width="100dp"
-        android:textSize="56sp"
+        android:textSize="50sp"
         android:textStyle="bold"
         android:fontFamily="sans-serif-condensed"
         android:background="@color/colorLightestGray"
@@ -125,7 +126,8 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textStyle="italic"
                 android:fontFamily="sans-serif-condensed"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorAccent"
+                android:textSize="10sp" />
 
             <TextView
                 android:text="CP2 - Prisad"
@@ -138,7 +140,8 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textStyle="italic"
                 android:fontFamily="sans-serif-condensed"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/colorAccent"
+                android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -4,7 +4,7 @@ package com.trex.racetracker;
  * Created by Igor_2 on 11.11.2016.
  */
 
-public class Racer {
+public class ActiveRacer {
 
     private String BIB;
     private String FirstName;
@@ -15,7 +15,18 @@ public class Racer {
     private String TimeLast;
     private String CPLast;
 
-    public Racer(String myBIB, String myFirstName, String myLastName, String myCountry, String myAge, String myGender, String myTimeLast, String myCPLast) {
+    public ActiveRacer() {
+        this.BIB = "";
+        this.FirstName = "";
+        this.LastName = "";
+        this.Country = "";
+        this.Age = "";
+        this.Gender = "";
+        this.TimeLast = "";
+        this.CPLast = "";
+    }
+
+    public ActiveRacer(String myBIB, String myFirstName, String myLastName, String myCountry, String myAge, String myGender, String myTimeLast, String myCPLast) {
        if (myBIB != null) {
            this.BIB = myBIB;
        } else {

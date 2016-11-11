@@ -31,7 +31,8 @@ import java.net.URLEncoder;
 
 public class LogoutWorker extends AsyncTask<String,Void,String> {
     private Context context;
-    private View rootView;
+    private View fragmentSync;
+    private View fragmentRacers;
     private String queryUrl;
     private String Username;
     private String Password;
@@ -42,9 +43,10 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
 
 
     //constructor
-    public LogoutWorker(Context ctx, View view) {
+    public LogoutWorker(Context ctx, View fragmentSync, View fragmentRacers) {
         context = ctx;
-        this.rootView = view;
+        this.fragmentSync = fragmentSync;
+        this.fragmentRacers = fragmentRacers;
     }
 
     @Override
@@ -162,7 +164,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPreExecute() {
-        TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
+        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
         tvStatusTop.setText("Logging out ...");
         // alertDialog = new AlertDialog.Builder(context).create();
         // alertDialog.setTitle("Query returns");
@@ -172,7 +174,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
     protected void onPostExecute(String result) {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
-        TextView tvStatusTop = (TextView) rootView.findViewById(R.id.tvStatusTop);
+        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
         Methods methods = new Methods();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
@@ -186,7 +188,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
                     editor.putString("controlpoint","");
                     editor.commit();
 
-                    methods.InitializeSyncFragment(context,rootView,globals);
+                    methods.InitializeSyncFragment(context,fragmentSync,globals);
                     dbHelper.deleteAllFromLoginInfo();
 
                     Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();
@@ -199,16 +201,21 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        EditText etUsername = (EditText) rootView.findViewById(R.id.etUsername);
+        EditText etUsername = (EditText) fragmentSync.findViewById(R.id.etUsername);
         etUsername.setText("");
 
-        EditText etPassword = (EditText) rootView.findViewById(R.id.etPassword);
+        EditText etPassword = (EditText) fragmentSync.findViewById(R.id.etPassword);
         etPassword.setText("");
 
-        EditText etOperator = (EditText) rootView.findViewById(R.id.etOperator);
+        EditText etOperator = (EditText) fragmentSync.findViewById(R.id.etOperator);
         etOperator.setText("");
 
+        dbHelper.deleteAllFromActiveRacers();
+        methods.InitializeRacersFragment(context, fragmentRacers, globals);
 
+        // Methods methods = new Methods();
+        // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        // methods.InitializeRacersFragment(context, viewRacers, globals);
 
 
         //  tvStatusTop.setText(result);

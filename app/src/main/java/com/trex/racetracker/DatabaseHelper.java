@@ -55,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_8 = "EntryTypeID";
     public static final String COL_2_9 = "Comment";
     public static final String COL_2_10 = "Synced";
+    public static final String COL_2_11 = "myEntry";
 
     public static final String TABLE_3_NAME = "LoginInfo";
     public static final String COL_3_1 = "CPID";
@@ -112,16 +113,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String createTable2Query = "";
         createTable2Query += "CREATE TABLE IF NOT EXISTS " + TABLE_2_NAME + "(";
-        createTable2Query += COL_2_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,";
-        createTable2Query += COL_2_2 + " INTEGER,";
-        createTable2Query += COL_2_3 + " TEXT,";
-        createTable2Query += COL_2_4 + " INTEGER,";
-        createTable2Query += COL_2_5 + " INTEGER,";
-        createTable2Query += COL_2_6 + " TEXT,";
-        createTable2Query += COL_2_7 + " DATETIME,";
-        createTable2Query += COL_2_8 + " INTEGER,";
-        createTable2Query += COL_2_9 + " TEXT,";
-        createTable2Query += COL_2_10 + " BOOLEAN);";
+        createTable2Query += COL_2_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,";   //EntryID
+        createTable2Query += COL_2_2 + " INTEGER,";     //CPID
+        createTable2Query += COL_2_3 + " TEXT,";        //CPName
+        createTable2Query += COL_2_4 + " INTEGER,";     //UserID
+        createTable2Query += COL_2_5 + " INTEGER,";     //ActiveRacerID
+        createTable2Query += COL_2_6 + " TEXT,";        //BIBCode
+        createTable2Query += COL_2_7 + " DATETIME,";    //Time
+        createTable2Query += COL_2_8 + " INTEGER,";     //EntryTypeID - ID of the type of entry used (DIRECT, INDIRECT, NFC, BARCODE, OTHER...)
+        createTable2Query += COL_2_9 + " TEXT,";        //Comment
+        createTable2Query += COL_2_10 + " BOOLEAN,";    //Synced - Only valid when myEntry = true, shows if it has been sent to the server. For entries from another devices is always true
+        createTable2Query += COL_2_11 + " BOOLEAN);";   //myEntry - is this my entry, or from another device, synced from the server
 
         db.execSQL(createTable2Query);
 
@@ -230,9 +232,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return true;
     }
 
+    /**  get 6 columns from ActiveRacers to form the array used for the adapter on the listview
+        (the last 2 columns will be gotten from CPEntries)
+    **/
+    public Cursor getActiveRacersForListView(String whereClause) {
+
+        String query = "SELECT BIB, FirstName, LastName, Country, Age, Gender, ActiveRacerID FROM " + TABLE_1_NAME + " WHERE ";
+        if (whereClause.equals("")) query += "1;";
+        else query += whereClause + ";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery(query,null);
+    }
+
     public int deleteAllFromActiveRacers() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_1_NAME, "1",null);
+    }
+
+    public Cursor getLastEntryRow(String ActiveRacerID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT Time, CPID, CPName FROM " + TABLE_2_NAME + " WHERE ActiveRacerID='" + ActiveRacerID + "' ORDER BY Time DESC LIMIT 1";
+        return db.rawQuery(query,null);
     }
 
     /**

@@ -12,10 +12,10 @@ import android.widget.TextView;
  * Created by Igor_2 on 10.11.2016.
  */
 
-class RacersListviewAdapter extends ArrayAdapter<Racer> {
+class ActiveRacersAdapter extends ArrayAdapter<ActiveRacer> {
 
-    public RacersListviewAdapter(Context context, Racer[] racer) {
-        super(context,R.layout.row_racers, racer);
+    public ActiveRacersAdapter(Context context, ActiveRacer[] activeRacer) {
+        super(context,R.layout.row_racers, activeRacer);
     }
 
     @NonNull
@@ -24,7 +24,7 @@ class RacersListviewAdapter extends ArrayAdapter<Racer> {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View customView = layoutInflater.inflate(R.layout.row_racers,parent,false);
 
-        Racer racer = getItem(position);
+        ActiveRacer activeRacer = getItem(position);
         TextView tvBIB = (TextView) customView.findViewById(R.id.tvBIB);
         TextView tvName = (TextView) customView.findViewById(R.id.tvName);
         TextView tvLastName = (TextView) customView.findViewById(R.id.tvLastName);
@@ -34,15 +34,15 @@ class RacersListviewAdapter extends ArrayAdapter<Racer> {
         TextView tvTimeLast = (TextView) customView.findViewById(R.id.tvTimeLast);
         TextView tvCPLast = (TextView) customView.findViewById(R.id.tvCPLast);
 
-        if (racer != null) {
-            tvBIB.setText(racer.getBIB());
-            tvName.setText(racer.getFirstName());
-            tvLastName.setText(racer.getLastName());
-            tvCountry.setText(racer.getCountry());
-            tvAge.setText(racer.getAge());
-            tvGender.setText(racer.getGender());
-            tvTimeLast.setText(racer.getTimeLast());
-            tvCPLast.setText(racer.getCPLast());
+        if (activeRacer != null) {
+            tvBIB.setText(activeRacer.getBIB());
+            tvName.setText(activeRacer.getFirstName());
+            tvLastName.setText(activeRacer.getLastName());
+            tvCountry.setText(activeRacer.getCountry());
+            tvAge.setText(activeRacer.getAge());
+            tvGender.setText(activeRacer.getGender());
+            tvTimeLast.setText(activeRacer.getTimeLast());
+            tvCPLast.setText(activeRacer.getCPLast());
         }
         return customView;
 
