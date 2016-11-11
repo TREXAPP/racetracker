@@ -16,22 +16,22 @@ import com.trex.racetracker.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class Input extends Fragment {
+public class InputR extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    public Input() {
+    public InputR() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static Input newInstance(int sectionNumber) {
-        Input fragment = new Input();
+    public static InputR newInstance(int sectionNumber) {
+        InputR fragment = new InputR();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
