@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.Methods;
 import com.trex.racetracker.R;
+import static com.trex.racetracker.Methods.*;
+
+import java.lang.reflect.Method;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -25,8 +28,19 @@ public class Racers extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private boolean viewInflated;
 
     public Racers() {
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getView() == null) viewInflated = false;
+        if (isVisibleToUser && viewInflated) {
+            final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+            InitializeRacersFragment(getContext(),getView(),globals);
+        }
     }
 
     /**
@@ -45,10 +59,11 @@ public class Racers extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragmentRacers = inflater.inflate(R.layout.fragment_racers, container, false);
-
-        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-        Methods methods = new Methods();
-        methods.InitializeRacersFragment(getContext(),fragmentRacers,globals);
+        if (!viewInflated) {
+                SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+                InitializeRacersFragment(getContext(),fragmentRacers,globals);
+        }
+        viewInflated = true;
      //   TextView textView = (TextView) rootView.findViewById(R.id.section_label);
      //   textView.setText("Vamu ke gi lista site momentalni trkaci");
       //  textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));

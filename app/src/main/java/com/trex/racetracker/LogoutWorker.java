@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import static com.trex.racetracker.Methods.*;
+
 /**
  * Created by Igor on 03.11.2016.
  */
@@ -175,7 +177,6 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
         TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
-        Methods methods = new Methods();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
         try {
@@ -188,7 +189,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
                     editor.putString("controlpoint","");
                     editor.commit();
 
-                    methods.InitializeSyncFragment(context,fragmentSync,globals);
+                    InitializeSyncFragment(context,fragmentSync,globals);
                     dbHelper.deleteAllFromLoginInfo();
 
                     Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();
@@ -211,7 +212,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         etOperator.setText("");
 
         dbHelper.deleteAllFromActiveRacers();
-        methods.InitializeRacersFragment(context, fragmentRacers, globals);
+      //  InitializeRacersFragment(context, fragmentRacers, globals);
 
         // Methods methods = new Methods();
         // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);

@@ -26,7 +26,7 @@ public class Methods {
     }
 
 
-    public void InitializeSyncFragment(Context ctx, View rootview, SharedPreferences globals) {
+    public static void InitializeSyncFragment(Context ctx, View rootview, SharedPreferences globals) {
 
         FrameLayout fragmentSync = (FrameLayout) rootview.findViewById(R.id.fragmentSync);
         TextView tvStatusTop = (TextView) rootview.findViewById(R.id.tvStatusTop);
@@ -76,7 +76,7 @@ public class Methods {
     }
 
     //Populate the listview in the Racers fragment
-    public void InitializeRacersFragment(Context context, View viewRacers, SharedPreferences globals) {
+    public static void InitializeRacersFragment(Context context, View viewRacers, SharedPreferences globals) {
 
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         Cursor cursorRacers = dbHelper.getActiveRacersForListView("");
@@ -136,7 +136,7 @@ public class Methods {
         lvRacers.setAdapter(racersAdapter);
     }
 
-    public String FormatErrorString(String str) {
+    public static String FormatErrorString(String str) {
         String myStr = str;
         if (myStr != null && myStr.length() > 0 && myStr.charAt(myStr.length()-1)==';') {
             myStr = myStr.substring(0, myStr.length()-1);

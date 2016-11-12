@@ -23,6 +23,8 @@ import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.Methods;
 import com.trex.racetracker.R;
 
+import static com.trex.racetracker.Methods.*;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -73,8 +75,8 @@ public class Sync extends Fragment {
         //initialize views appearence
         final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
         final String DeviceID = globals.getString("deviceid","");
-        Methods methods = new Methods();
-        methods.InitializeSyncFragment(getContext(),fragmentSync, globals);
+
+        InitializeSyncFragment(getContext(),fragmentSync, globals);
 
         btnLogin.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {

@@ -28,6 +28,8 @@ import java.net.URLEncoder;
 
 import layout.Racers;
 
+import static com.trex.racetracker.Methods.*;
+
 
 /**
  * Created by Igor on 16.10.2016.
@@ -187,7 +189,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         SharedPreferences.Editor editor = globals.edit();
         TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
         TextView tvStatusBottom = (TextView) fragmentSync.findViewById(R.id.tvStatusBottom);
-        Methods methods = new Methods();
+      //  Methods methods = new Methods();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
         try {
@@ -201,7 +203,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     editor.putString("controlpoint",controlPoint);
                     editor.commit();
 
-                    methods.InitializeSyncFragment(context,fragmentSync,globals);
+                    InitializeSyncFragment(context,fragmentSync,globals);
                     if (!dbHelper.insertIntoLoginInfo(jsonResult)) {
                         tvStatusBottom.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
                     }
@@ -217,7 +219,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
                     Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
                 } else {
-                   tvStatusTop.setText(methods.FormatErrorString(jsonResult.getString("loginerror")));
+                   tvStatusTop.setText(FormatErrorString(jsonResult.getString("loginerror")));
                    tvStatusTop.setTextColor(Color.RED);
                 }
             } else {
@@ -235,14 +237,6 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
         EditText etOperator = (EditText) fragmentSync.findViewById(R.id.etOperator);
         etOperator.setText("");
-
-        // Methods methods = new Methods();
-        // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-//         methods.InitializeRacersFragment(context, viewRacers, globals);
-
-
-
-
 
       //  tvStatusTop.setText(result);
         //  TextView tvStatus = (TextView) context.findViewById()
