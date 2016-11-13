@@ -182,7 +182,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getDistinctRacesFromLoginInfo() {
-        String query = "SELECT DISTINCT RaceID FROM " + TABLE_3_NAME + ";";
+        String query = "SELECT DISTINCT RaceID, RaceDescription FROM " + TABLE_3_NAME + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery(query,null);
     }
@@ -238,9 +238,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getActiveRacersForListView(String whereClause) {
 
         String query = "SELECT BIB, FirstName, LastName, Country, Age, Gender, ActiveRacerID FROM " + TABLE_1_NAME + " WHERE ";
-        if (whereClause.equals("")) query += "1;";
-        else query += whereClause + ";";
-        SQLiteDatabase db = this.getWritableDatabase();
+        if (whereClause.equals("")) {
+            query += "1";
+        }
+        else {
+            query += whereClause;
+        }
+        query += " ORDER BY BIB ASC;";
+                SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery(query,null);
     }
 

@@ -4,7 +4,7 @@ package com.trex.racetracker;
  * Created by Igor_2 on 11.11.2016.
  */
 
-public class ActiveRacer {
+public class ActiveRacerObj {
 
     private String BIB;
     private String FirstName;
@@ -13,9 +13,10 @@ public class ActiveRacer {
     private String Age;
     private String Gender;
     private String TimeLast;
-    private String CPLast;
+    private String CPNo;
+    private String CPName;
 
-    public ActiveRacer() {
+    public ActiveRacerObj() {
         this.BIB = "";
         this.FirstName = "";
         this.LastName = "";
@@ -23,10 +24,11 @@ public class ActiveRacer {
         this.Age = "";
         this.Gender = "";
         this.TimeLast = "";
-        this.CPLast = "";
+        this.CPNo = "";
+        this.CPName = "";
     }
 
-    public ActiveRacer(String myBIB, String myFirstName, String myLastName, String myCountry, String myAge, String myGender, String myTimeLast, String myCPLast) {
+    public ActiveRacerObj(String myBIB, String myFirstName, String myLastName, String myCountry, String myAge, String myGender, String myTimeLast, String myCPNo, String myCPName) {
        if (myBIB != null) {
            this.BIB = myBIB;
        } else {
@@ -69,10 +71,16 @@ public class ActiveRacer {
             this.TimeLast = "";
         }
 
-        if (myCPLast != null) {
-            this.CPLast = myCPLast;
+        if (myCPNo != null) {
+            this.CPNo = myCPNo;
         } else {
-            this.CPLast = "";
+            this.CPNo = "";
+        }
+
+        if (myCPName != null) {
+            this.CPName = myCPName;
+        } else {
+            this.CPName = "";
         }
 
     }
@@ -98,8 +106,11 @@ public class ActiveRacer {
     public String getTimeLast() {
         return TimeLast;
     }
-    public String getCPLast() {
-        return CPLast;
+    public String getCPNo() {
+        return CPNo;
+    }
+    public String getCPName() {
+        return CPName;
     }
 
     public void setBIB(String myBIB) {
@@ -152,11 +163,20 @@ public class ActiveRacer {
             this.TimeLast = "";
         }
     }
-    public void setCPLast(String myCPLast) {
-        if (myCPLast != null) {
-            this.CPLast = myCPLast;
+    public void setCPNo(String myCPNo) {
+        if (myCPNo != null) {
+            this.CPNo = myCPNo;
         } else {
-            this.CPLast = "";
+            this.CPNo = "";
         }
     }
+    public void setCPName(String myCPName) {
+        if (CPName != null) {
+            this.CPName = myCPName;
+        } else {
+            this.CPName = "";
+        }
+    }
+
+
 }

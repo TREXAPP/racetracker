@@ -2,6 +2,7 @@ package com.trex.racetracker;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.content.Context;
@@ -26,9 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import layout.Racers;
-
-import static com.trex.racetracker.Methods.*;
+import static com.trex.racetracker.StaticMethods.*;
 
 
 /**
@@ -37,7 +36,7 @@ import static com.trex.racetracker.Methods.*;
 
 public class LoginWorker extends AsyncTask<String,Void,String> {
     private Context context;
-    private View fragmentSync;
+    private View fragmentLogin;
     private View viewRacers;
     private String queryUrl;
     private String Username;
@@ -51,7 +50,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
     //constructor
     public LoginWorker(Context ctx, View viewSync, View viewRacers) {
         context = ctx;
-        this.fragmentSync = viewSync;
+        this.fragmentLogin = viewSync;
         this.viewRacers = viewRacers;
     }
 
@@ -176,7 +175,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPreExecute() {
-        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
+        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
         tvStatusTop.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         tvStatusTop.setText("Logging in ...");
        // alertDialog = new AlertDialog.Builder(context).create();
@@ -187,9 +186,9 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
     protected void onPostExecute(String result) {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
-        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
-        TextView tvStatusBottom = (TextView) fragmentSync.findViewById(R.id.tvStatusBottom);
-      //  Methods methods = new Methods();
+        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
+        TextView tvStatusBottom = (TextView) fragmentLogin.findViewById(R.id.tvStatusBottom);
+      //  StaticMethods methods = new StaticMethods();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
         try {
@@ -199,22 +198,40 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     String controlPoint = jsonResult.getJSONObject("0").getString("CPName");
                     editor.putString("islogin","1");
                     editor.putString("username",Username);
+                    editor.putString("password",Password);
                     editor.putString("operator",Operator);
                     editor.putString("controlpoint",controlPoint);
-                    editor.commit();
 
-                    InitializeSyncFragment(context,fragmentSync,globals);
+
+
                     if (!dbHelper.insertIntoLoginInfo(jsonResult)) {
                         tvStatusBottom.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
                     }
-                    dbHelper.insertIntoLoginInfo(jsonResult);
+
+                    //initialize globals for races
+                    Cursor racesCursor = dbHelper.getDistinctRacesFromLoginInfo();
+                    if (racesCursor.getCount() > 0) {
+                        racesCursor.moveToFirst();
+                        while (!racesCursor.isAfterLast()) {
+                            if (!racesCursor.getString(0).equals("")) {
+                                editor.putString("showRacers" + racesCursor.getString(0),"1");
+                            }
+                            racesCursor.moveToNext();
+                        }
+
+                    }
+                    racesCursor.close();
+
+
+                    editor.commit();
+                    InitializeLoginFragment(context, fragmentLogin,globals);
 
                     //login successful. Now synchronize the racers
                     final String TYPE_SYNC = "sync";
                     final String URL_SYNC = "http://app.trex.mk/sync.php";
                     final String COMMENT_SYNC = "";
 
-                    SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context,fragmentSync, viewRacers);
+                    SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context, fragmentLogin, viewRacers);
                     synchronizeWorker.execute(TYPE_SYNC,URL_SYNC,Username,Password,DeviceID,COMMENT_SYNC);
 
                     Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
@@ -229,13 +246,14 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        EditText etUsername = (EditText) fragmentSync.findViewById(R.id.etUsername);
+
+        EditText etUsername = (EditText) fragmentLogin.findViewById(R.id.etUsername);
         etUsername.setText("");
 
-        EditText etPassword = (EditText) fragmentSync.findViewById(R.id.etPassword);
+        EditText etPassword = (EditText) fragmentLogin.findViewById(R.id.etPassword);
         etPassword.setText("");
 
-        EditText etOperator = (EditText) fragmentSync.findViewById(R.id.etOperator);
+        EditText etOperator = (EditText) fragmentLogin.findViewById(R.id.etOperator);
         etOperator.setText("");
 
       //  tvStatusTop.setText(result);

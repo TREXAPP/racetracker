@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,7 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import static com.trex.racetracker.Methods.*;
+import static com.trex.racetracker.StaticMethods.*;
 
 /**
  * Created by Igor on 03.11.2016.
@@ -33,7 +34,7 @@ import static com.trex.racetracker.Methods.*;
 
 public class LogoutWorker extends AsyncTask<String,Void,String> {
     private Context context;
-    private View fragmentSync;
+    private View fragmentLogin;
     private View fragmentRacers;
     private String queryUrl;
     private String Username;
@@ -41,63 +42,30 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
     private String Operator;
     private String DeviceID;
     private String LogoutComment;
-    AlertDialog alertDialog;
+    private Handler handler;
 
 
     //constructor
-    public LogoutWorker(Context ctx, View fragmentSync, View fragmentRacers) {
+    public LogoutWorker(Context ctx, View fragmentLogin, View fragmentRacers) {
         context = ctx;
-        this.fragmentSync = fragmentSync;
+        this.fragmentLogin = fragmentLogin;
         this.fragmentRacers = fragmentRacers;
+
     }
+
+    public LogoutWorker(Context ctx, View fragmentLogin, View fragmentRacers, Handler handler) {
+        context = ctx;
+        this.fragmentLogin = fragmentLogin;
+        this.fragmentRacers = fragmentRacers;
+        this.handler = handler;
+    }
+
+
 
     @Override
     protected String doInBackground(String... params) {
         String type = params[0];
         String result = "";
-        //params[0] tells us the type of of call we are doing
-        //params[1] tells us the url to the web server that we are calling
-        //depending on params[0], if it is 'query', then params[2] will be the actual query string
-        //in this case the LoginWorker should be called in this manner: backgroundWorker.excecute(type,url,query)
-        /*
-        if (type.equals("query")) {
-            try {
-
-                String query = params[1];
-                String queryUrl = params[2]; //String queryUrl = "http://app.trex.mk/query.php"
-
-                URL url = new URL(queryUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                String post_data = URLEncoder.encode("query","UTF-8")+"="+URLEncoder.encode(query,"UTF-8");
-                bufferedWriter.write(post_data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
-
-                //now get the response
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
-                String line="";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-                return result;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        */
-
 
         //if params[0] is 'login', then
         //params[2]=Username
@@ -166,7 +134,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPreExecute() {
-        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
+        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
         tvStatusTop.setText("Logging out ...");
         // alertDialog = new AlertDialog.Builder(context).create();
         // alertDialog.setTitle("Query returns");
@@ -176,7 +144,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
     protected void onPostExecute(String result) {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
-        TextView tvStatusTop = (TextView) fragmentSync.findViewById(R.id.tvStatusTop);
+        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
         try {
@@ -185,11 +153,12 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
                 if (jsonResult.getString("islogout").equals("1")) {
                     editor.putString("islogin","0");
                     editor.putString("username","");
+                    editor.putString("password","");
                     editor.putString("operator","");
                     editor.putString("controlpoint","");
                     editor.commit();
 
-                    InitializeSyncFragment(context,fragmentSync,globals);
+                //    InitializeLoginFragment(context, fragmentLogin,globals);
                     dbHelper.deleteAllFromLoginInfo();
 
                     Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();
@@ -202,19 +171,19 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        EditText etUsername = (EditText) fragmentSync.findViewById(R.id.etUsername);
+        EditText etUsername = (EditText) fragmentLogin.findViewById(R.id.etUsername);
         etUsername.setText("");
 
-        EditText etPassword = (EditText) fragmentSync.findViewById(R.id.etPassword);
+        EditText etPassword = (EditText) fragmentLogin.findViewById(R.id.etPassword);
         etPassword.setText("");
 
-        EditText etOperator = (EditText) fragmentSync.findViewById(R.id.etOperator);
+        EditText etOperator = (EditText) fragmentLogin.findViewById(R.id.etOperator);
         etOperator.setText("");
 
         dbHelper.deleteAllFromActiveRacers();
       //  InitializeRacersFragment(context, fragmentRacers, globals);
 
-        // Methods methods = new Methods();
+        // StaticMethods methods = new StaticMethods();
         // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         // methods.InitializeRacersFragment(context, viewRacers, globals);
 
@@ -223,6 +192,8 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         //  TextView tvStatus = (TextView) context.findViewById()
         //alertDialog.setMessage(result);
         //alertDialog.show();
+
+        handler.sendEmptyMessage(0);
     }
 
     @Override

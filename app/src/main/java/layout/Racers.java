@@ -10,14 +10,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.trex.racetracker.MainActivity;
-import com.trex.racetracker.Methods;
 import com.trex.racetracker.R;
-import static com.trex.racetracker.Methods.*;
-
-import java.lang.reflect.Method;
+import static com.trex.racetracker.StaticMethods.*;
 
 /**
  * A placeholder fragment containing a simple view.

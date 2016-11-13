@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import layout.Input;
+import layout.Login;
 
 /**
  * Created by Igor on 22.10.2016.
@@ -37,7 +38,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 returnFragment = layout.Racers.newInstance(position+1);
                 break;
             case 3:
-                returnFragment = layout.Sync.newInstance(position+1);
+                returnFragment = Login.newInstance(position+1);
                 break;
         }
 
@@ -62,7 +63,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 return "RACERS";
             case 3:
-                return "SYNC";
+                return "LOGIN";
         }
         return null;
     }
