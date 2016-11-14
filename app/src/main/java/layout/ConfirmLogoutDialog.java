@@ -33,6 +33,10 @@ public class ConfirmLogoutDialog extends DialogFragment {
 
     Handler handler;
 
+    public ConfirmLogoutDialog() {
+        super();
+    }
+
     public ConfirmLogoutDialog(Handler handler) {
         this.handler = handler;
     }
@@ -56,22 +60,23 @@ public class ConfirmLogoutDialog extends DialogFragment {
         final Button btnCancel = (Button) alertDialog.findViewById(R.id.btnCancelLogout);
         final EditText etPassword = (EditText) alertDialog.findViewById(R.id.etPasswordAlert);
         final TextView tvErrorLogout = (TextView) alertDialog.findViewById(R.id.tvErrorLogout);
+        final TextView tvAlertLogoutTitle = (TextView) alertDialog.findViewById(R.id.tvAlertLogoutTitle);
+        final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        tvAlertLogoutTitle.setText("Confirm logout for user " + globals.getString("username",""));
+
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
                 if (etPassword.getText().toString().equals(globals.getString("password",""))) {
                     //LOGOUT success!
-                    tvErrorLogout.setText("Enter your password");
+                    tvErrorLogout.setText("Enter password to continue");
                     tvErrorLogout.setTextColor(ContextCompat.getColor(getContext(), R.color.colorDarkGray));
                     etPassword.setText("");
 
                     final String DeviceID = globals.getString("deviceid","");
                     LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentLogin,fragmentRacers, handler);
                     logoutWorker.execute(Login.TYPE_LOGOUT,Login.URL_LOGOUT,globals.getString("username",""),globals.getString("operator",""),DeviceID,Login.COMMENT_LOGOUT);
-
-                    fragmentLogin.postInvalidate();
 
                     getDialog().dismiss();
                     //turn off keyboard:

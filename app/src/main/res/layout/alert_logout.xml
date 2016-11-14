@@ -14,7 +14,8 @@
         style="@android:style/Widget.DeviceDefault.Light.TextView"
         android:textStyle="bold"
         android:textAllCaps="true"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:id="@+id/tvAlertLogoutTitle" />
 
     <TextView
         android:text="Enter your password"
