@@ -6,12 +6,14 @@ import android.database.Cursor;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import java.util.ArrayList;
 
@@ -87,20 +89,23 @@ public class StaticMethods {
 
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         Cursor cursorRaces = dbHelper.getDistinctRacesFromLoginInfo();
-        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        final CheckBox cbShowRace = (CheckBox) lvRacesLogin.findViewById(R.id.cbShowRace);
 
         RaceObj[] RacesObjArray = new RaceObj[cursorRaces.getCount()];
         int i=0;
         cursorRaces.moveToFirst();
         while(!cursorRaces.isAfterLast()) {
 
-            String RaceID = cursorRaces.getString(0);
+            final String RaceID = cursorRaces.getString(0);
             String RaceDescription = cursorRaces.getString(1);
             boolean ShowRacers = true;
 
             if (globals.contains("showRacers" + RaceID)) {
                 if (globals.getString("showRacers" + RaceID,"0").equals("0")) {
                     ShowRacers = false;
+                } else {
+                    ShowRacers = true;
                 }
             } else {
                 //TODO - set for testing, this Toast should never happen!
@@ -116,11 +121,16 @@ public class StaticMethods {
             i++;
             cursorRaces.moveToNext();
 
+
+
           }
         cursorRaces.close();
 
         ListAdapter racesAdapter = new RacesAdapter(context, RacesObjArray);
         lvRacesLogin.setAdapter(racesAdapter);
+
+
+
     }
 
     //Populate the listview in the Racers fragment
@@ -137,19 +147,19 @@ public class StaticMethods {
             if (cursorRacers.getString(0) != null && !cursorRacers.getString(0).equals("null")) {
                 ActiveRacersObjArray[i].setBIB(cursorRacers.getString(0));
             } else  ActiveRacersObjArray[i].setBIB("");
-            if (cursorRacers.getString(0) != null && !cursorRacers.getString(1).equals("null")) {
+            if (cursorRacers.getString(1) != null && !cursorRacers.getString(1).equals("null")) {
                 ActiveRacersObjArray[i].setFirstName(cursorRacers.getString(1));
             } else  ActiveRacersObjArray[i].setFirstName("");
-            if (cursorRacers.getString(0) != null && !cursorRacers.getString(2).equals("null")) {
+            if (cursorRacers.getString(2) != null && !cursorRacers.getString(2).equals("null")) {
                 ActiveRacersObjArray[i].setLastName(cursorRacers.getString(2));
             } else  ActiveRacersObjArray[i].setLastName("");
-            if (cursorRacers.getString(0) != null && !cursorRacers.getString(3).equals("null")) {
+            if (cursorRacers.getString(3) != null && !cursorRacers.getString(3).equals("null")) {
                 ActiveRacersObjArray[i].setCountry(cursorRacers.getString(3));
             } else  ActiveRacersObjArray[i].setCountry("");
-            if (cursorRacers.getString(0) != null && !cursorRacers.getString(4).equals("null")) {
+            if (cursorRacers.getString(4) != null && !cursorRacers.getString(4).equals("null")) {
                 ActiveRacersObjArray[i].setAge(cursorRacers.getString(4));
             } else  ActiveRacersObjArray[i].setAge("");
-            if (cursorRacers.getString(0) != null && !cursorRacers.getString(5).equals("null")) {
+            if (cursorRacers.getString(5) != null && !cursorRacers.getString(5).equals("null")) {
                 ActiveRacersObjArray[i].setGender(cursorRacers.getString(5));
             } else  ActiveRacersObjArray[i].setGender("");
 

@@ -1,6 +1,7 @@
 package com.trex.racetracker;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.widget.ArrayAdapter;
 import android.view.View;
@@ -25,15 +26,31 @@ class RacesAdapter extends ArrayAdapter<RaceObj> {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View customView = layoutInflater.inflate(R.layout.row_races_login,parent,false);
 
-        RaceObj raceObj = getItem(position);
+        final RaceObj raceObj = getItem(position);
         TextView tvRaceLong = (TextView) customView.findViewById(R.id.tvRaceLong);
-        CheckBox cbShowRace = (CheckBox) customView.findViewById(R.id.cbShowRace);
+        final CheckBox cbShowRace = (CheckBox) customView.findViewById(R.id.cbShowRace);
 
 
         if (raceObj != null) {
            tvRaceLong.setText(raceObj.getRaceDescription());
-           cbShowRace.setEnabled(raceObj.getShowRacers());
+           cbShowRace.setChecked(raceObj.getShowRacers());
         }
+
+        cbShowRace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+                 SharedPreferences.Editor editor = globals.edit();
+                if (cbShowRace.isChecked()) {
+                    editor.putString("showRacers" + raceObj.getRaceID(),"1");
+                    //put true in globals
+                } else {
+                    //put false in globals
+                    editor.putString("showRacers" + raceObj.getRaceID(),"0");
+                }
+                editor.commit();
+            }
+        });
         return customView;
 
     }
