@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Igor_2 on 03.11.2016.
@@ -133,9 +137,90 @@ public class StaticMethods {
 
     }
 
-    //Populate the listview in the Racers fragment
+    //Populate the listview in the Racers fragment. now with expandablelistview!
     public static void InitializeRacersFragment(Context context, View viewRacers, SharedPreferences globals) {
 
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        Cursor cursorDistinctRaces = dbHelper.getDistinctRacesFromLoginInfo();
+
+        List<String> listDataHeader;
+        HashMap<String, List<ActiveRacerObj>> listDataChild;
+        ActiveRacersExpandableAdapter listAdapter;
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<ActiveRacerObj>>();
+
+        int i=0;
+        cursorDistinctRaces.moveToFirst();
+        while (!cursorDistinctRaces.isAfterLast()) {
+
+            listDataHeader.add(cursorDistinctRaces.getString(1));
+            Cursor cursorRacers = dbHelper.getActiveRacersForListView("RaceID=" + cursorDistinctRaces.getString(0));
+
+            List<ActiveRacerObj> childList = new ArrayList<ActiveRacerObj>();
+            int j=0;
+            cursorRacers.moveToFirst();
+            while (!cursorRacers.isAfterLast()) {
+                //TODO - populate child array here
+                ActiveRacerObj child = new ActiveRacerObj();
+                if (cursorRacers.getString(0) != null && !cursorRacers.getString(0).equals("null")) {
+                    child.setBIB(cursorRacers.getString(0));
+                } else  child.setBIB("");
+                if (cursorRacers.getString(1) != null && !cursorRacers.getString(1).equals("null")) {
+                    child.setFirstName(cursorRacers.getString(1));
+                } else  child.setFirstName("");
+                if (cursorRacers.getString(2) != null && !cursorRacers.getString(2).equals("null")) {
+                    child.setLastName(cursorRacers.getString(2));
+                } else  child.setLastName("");
+                if (cursorRacers.getString(3) != null && !cursorRacers.getString(3).equals("null")) {
+                    child.setCountry(cursorRacers.getString(3));
+                } else  child.setCountry("");
+                if (cursorRacers.getString(4) != null && !cursorRacers.getString(4).equals("null")) {
+                    child.setAge(cursorRacers.getString(4));
+                } else  child.setAge("");
+                if (cursorRacers.getString(5) != null && !cursorRacers.getString(5).equals("null")) {
+                    child.setGender(cursorRacers.getString(5));
+                } else  child.setGender("");
+
+                Cursor lastEntryRow = dbHelper.getLastEntryRow(cursorRacers.getString(6));
+                if (lastEntryRow.getCount()>0) {
+                    if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
+                        child.setTimeLast(lastEntryRow.getString(0));
+                    } else {
+                        child.setTimeLast("");
+                    }
+
+                    String CPNoString = "";
+                    if (lastEntryRow.getString(1) != null && !lastEntryRow.getString(1).equals("null")) {
+                        CPNoString += "CP " + lastEntryRow.getString(1);
+                    }
+                    child.setCPNo(CPNoString);
+
+                    if (lastEntryRow.getString(2) != null && !lastEntryRow.getString(2).equals("null")) {
+                        child.setCPName(lastEntryRow.getString(2));
+                    }
+
+                } else {
+                    child.setTimeLast("");
+                    child.setCPNo("");
+                    child.setCPName("");
+                }
+                childList.add(child);
+                j++;
+                cursorRacers.moveToNext();
+            }
+            cursorRacers.close();
+            listDataChild.put(listDataHeader.get(i),childList);
+            i++;
+            cursorDistinctRaces.moveToNext();
+        }
+        cursorDistinctRaces.close();
+
+        listAdapter = new ActiveRacersExpandableAdapter(context, listDataHeader, listDataChild);
+        ExpandableListView expListView = (ExpandableListView) viewRacers.findViewById(R.id.elvRacers);
+        expListView.setAdapter(listAdapter);
+
+
+/*
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         Cursor cursorRacers = dbHelper.getActiveRacersForListView("");
         ActiveRacerObj[] ActiveRacersObjArray = new ActiveRacerObj[cursorRacers.getCount()];
@@ -194,6 +279,70 @@ public class StaticMethods {
 
         ListAdapter racersAdapter = new ActiveRacersAdapter(context, ActiveRacersObjArray);
         ListView lvRacers = (ListView) viewRacers.findViewById(R.id.lvRacers);
+        lvRacers.setAdapter(racersAdapter);
+        */
+    }
+    //the old method with listview. now replaced with expandablelistview
+    public static void InitializeRacersFragmentOld(Context context, View viewRacers, SharedPreferences globals) {
+
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        Cursor cursorRacers = dbHelper.getActiveRacersForListView("");
+        ActiveRacerObj[] ActiveRacersObjArray = new ActiveRacerObj[cursorRacers.getCount()];
+        int i=0;
+        cursorRacers.moveToFirst();
+        while (!cursorRacers.isAfterLast()) {
+            //populate array
+            ActiveRacersObjArray[i] = new ActiveRacerObj();
+            if (cursorRacers.getString(0) != null && !cursorRacers.getString(0).equals("null")) {
+                ActiveRacersObjArray[i].setBIB(cursorRacers.getString(0));
+            } else  ActiveRacersObjArray[i].setBIB("");
+            if (cursorRacers.getString(1) != null && !cursorRacers.getString(1).equals("null")) {
+                ActiveRacersObjArray[i].setFirstName(cursorRacers.getString(1));
+            } else  ActiveRacersObjArray[i].setFirstName("");
+            if (cursorRacers.getString(2) != null && !cursorRacers.getString(2).equals("null")) {
+                ActiveRacersObjArray[i].setLastName(cursorRacers.getString(2));
+            } else  ActiveRacersObjArray[i].setLastName("");
+            if (cursorRacers.getString(3) != null && !cursorRacers.getString(3).equals("null")) {
+                ActiveRacersObjArray[i].setCountry(cursorRacers.getString(3));
+            } else  ActiveRacersObjArray[i].setCountry("");
+            if (cursorRacers.getString(4) != null && !cursorRacers.getString(4).equals("null")) {
+                ActiveRacersObjArray[i].setAge(cursorRacers.getString(4));
+            } else  ActiveRacersObjArray[i].setAge("");
+            if (cursorRacers.getString(5) != null && !cursorRacers.getString(5).equals("null")) {
+                ActiveRacersObjArray[i].setGender(cursorRacers.getString(5));
+            } else  ActiveRacersObjArray[i].setGender("");
+
+            Cursor lastEntryRow = dbHelper.getLastEntryRow(cursorRacers.getString(6));
+            if (lastEntryRow.getCount()>0) {
+                if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
+                    ActiveRacersObjArray[i].setTimeLast(lastEntryRow.getString(0));
+                } else {
+                    ActiveRacersObjArray[i].setTimeLast("");
+                }
+
+                String CPNoString = "";
+                if (lastEntryRow.getString(1) != null && !lastEntryRow.getString(1).equals("null")) {
+                    CPNoString += "CP " + lastEntryRow.getString(1);
+                }
+                ActiveRacersObjArray[i].setCPNo(CPNoString);
+
+                if (lastEntryRow.getString(2) != null && !lastEntryRow.getString(2).equals("null")) {
+                    ActiveRacersObjArray[i].setCPName(lastEntryRow.getString(2));
+                }
+
+            } else {
+                ActiveRacersObjArray[i].setTimeLast("");
+                ActiveRacersObjArray[i].setCPNo("");
+                ActiveRacersObjArray[i].setCPName("");
+            }
+
+            i++;
+            cursorRacers.moveToNext();
+        }
+        cursorRacers.close();
+
+        ListAdapter racersAdapter = new ActiveRacersAdapter(context, ActiveRacersObjArray);
+        ListView lvRacers = (ListView) viewRacers.findViewById(R.id.elvRacers);
         lvRacers.setAdapter(racersAdapter);
     }
 
