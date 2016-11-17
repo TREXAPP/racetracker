@@ -187,6 +187,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query,null);
     }
 
+    public Cursor getDistinctCPNoFromLoginInfo(String whereClause) {
+        String query = "SELECT DISTINCT CPNo FROM " + TABLE_3_NAME + " WHERE ";
+        if (whereClause.equals("")) {
+            query += "1";
+        }
+        else {
+            query += whereClause;
+        }
+        query += " ORDER BY CPNo ASC;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery(query,null);
+    }
+
     public boolean insertIntoActiveRacers(JSONObject jsonString) {
         SQLiteDatabase db = this.getWritableDatabase();
 

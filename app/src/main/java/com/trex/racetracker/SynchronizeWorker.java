@@ -135,9 +135,9 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPreExecute() {
-        //TODO - set for testing, remove when done
-        TextView tvStatusBottom = (TextView) fragmentLogin.findViewById(R.id.tvStatusBottom);
-        tvStatusBottom.setText("Synchronization started, please wait ...");
+
+        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
+        tvStatusTop.setText("Login successful. Synchronizing Racers ...");
     }
 
     @Override
@@ -150,7 +150,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
         //      else delete it if it exists with older timestamp and insert it again
         //2. Fill in a scrollable list view in tab Racers with record from the already inserted data into SQLite
         //  (if there are records inserted already, clear them all before inserting
-        TextView tvStatusBottom = (TextView) fragmentLogin.findViewById(R.id.tvStatusBottom);
+        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
         String error = "";
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
@@ -182,9 +182,9 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
            // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
            // methods.InitializeRacersFragment(context, viewRacers, globals);
 
-            tvStatusBottom.setText("Sync done!");
+            tvStatusTop.setText("Logged in");
         } else {
-            tvStatusBottom.setText(error);
+            tvStatusTop.setText(error);
         }
     }
 

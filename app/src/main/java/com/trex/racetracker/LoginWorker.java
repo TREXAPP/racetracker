@@ -187,7 +187,6 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
         TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
-        TextView tvStatusBottom = (TextView) fragmentLogin.findViewById(R.id.tvStatusBottom);
       //  StaticMethods methods = new StaticMethods();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
 
@@ -205,9 +204,9 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
 
                     if (!dbHelper.insertIntoLoginInfo(jsonResult)) {
-                        tvStatusBottom.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
+                        tvStatusTop.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
                     }
-
+/*
                     //initialize globals for races
                     Cursor racesCursor = dbHelper.getDistinctRacesFromLoginInfo();
                     if (racesCursor.getCount() > 0) {
@@ -221,7 +220,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
                     }
                     racesCursor.close();
-
+*/
 
                     editor.commit();
                     InitializeLoginFragment(context, fragmentLogin,globals);

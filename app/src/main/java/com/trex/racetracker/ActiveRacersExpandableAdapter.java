@@ -1,11 +1,13 @@
 package com.trex.racetracker;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -76,6 +78,24 @@ public class ActiveRacersExpandableAdapter extends BaseExpandableListAdapter {
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
+        ExpandableListView eLV = (ExpandableListView) parent;
+        SharedPreferences globals = _context.getSharedPreferences(MainActivity.GLOBALS,0);
+        if (globals.contains("elvRacersState" + groupPosition)) {
+            if (globals.getString("elvRacersState" + groupPosition,"1").equals("1")) {
+                eLV.expandGroup(groupPosition);
+            } else {
+                eLV.collapseGroup(groupPosition);
+            }
+        } else {
+            eLV.collapseGroup(groupPosition);
+            SharedPreferences.Editor editor = globals.edit();
+            editor.putString("elvRacersState" + groupPosition,"0");
+            editor.commit();
+        }
+
+
+
+
         return convertView;
     }
 
@@ -116,4 +136,5 @@ public class ActiveRacersExpandableAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
 }

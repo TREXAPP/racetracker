@@ -69,15 +69,6 @@
             android:id="@+id/btnLogin"
             android:layout_height="50dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true"
-            android:id="@+id/tvStatusBottom"
-            android:gravity="center"
-            android:layout_weight="0" />
-
         <Button
             android:text="LOGOUT"
             android:layout_width="match_parent"
@@ -174,9 +165,6 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/colorPrimaryDark"
                 android:padding="5dp"
@@ -195,10 +183,10 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:text="Show Racers"
+                    android:text="Control Point(s)"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvShowRacersLabel"
+                    android:id="@+id/tvControlPoint"
                     android:layout_weight="0"
                     android:gravity="center"
                     android:textColor="@color/colorPrimaryLighest"

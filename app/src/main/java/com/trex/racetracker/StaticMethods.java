@@ -20,6 +20,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Igor_2 on 03.11.2016.
@@ -40,7 +41,6 @@ public class StaticMethods {
         EditText etOperator = (EditText) fragmentLogin.findViewById(R.id.etOperator);
         Button btnLogin = (Button) fragmentLogin.findViewById(R.id.btnLogin);
         Button btnLogout = (Button) fragmentLogin.findViewById(R.id.btnLogout);
-        TextView tvStatusBottom = (TextView) fragmentLogin.findViewById(R.id.tvStatusBottom);
         TextView tvUsername = (TextView) fragmentLogin.findViewById(R.id.tvUsername);
         TextView tvOperator = (TextView) fragmentLogin.findViewById(R.id.tvOperator);
         TextView tvControlPoint = (TextView) fragmentLogin.findViewById(R.id.tvControlPoint);
@@ -94,7 +94,6 @@ public class StaticMethods {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         Cursor cursorRaces = dbHelper.getDistinctRacesFromLoginInfo();
         final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-        final CheckBox cbShowRace = (CheckBox) lvRacesLogin.findViewById(R.id.cbShowRace);
 
         RaceObj[] RacesObjArray = new RaceObj[cursorRaces.getCount()];
         int i=0;
@@ -103,8 +102,21 @@ public class StaticMethods {
 
             final String RaceID = cursorRaces.getString(0);
             String RaceDescription = cursorRaces.getString(1);
-            boolean ShowRacers = true;
+            String CPNo = "";
+            Cursor cursorCPNo = dbHelper.getDistinctCPNoFromLoginInfo("RaceID=" + RaceID);
+            if (cursorCPNo != null && cursorCPNo.getCount()>0) {
+                cursorCPNo.moveToFirst();
+                while (!cursorCPNo.isAfterLast()) {
+                    if (!CPNo.equals("")) {
+                        CPNo += ", ";
+                    }
+                   CPNo += cursorCPNo.getString(0);
+                    cursorCPNo.moveToNext();
+                }
+                cursorCPNo.close();
+            }
 
+/*
             if (globals.contains("showRacers" + RaceID)) {
                 if (globals.getString("showRacers" + RaceID,"0").equals("0")) {
                     ShowRacers = false;
@@ -112,15 +124,15 @@ public class StaticMethods {
                     ShowRacers = true;
                 }
             } else {
-                //TODO - set for testing, this Toast should never happen!
+                // set for testing, this Toast should never happen!
                 String toastText = "Warning! Global variable showRacers" + cursorRaces.getString(0) + "is not set properly! Contact the administrator!";
                 Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
             }
-
+*/
             RacesObjArray[i] = new RaceObj();
             RacesObjArray[i].setRaceID(RaceID);
             RacesObjArray[i].setRaceDescription(RaceDescription);
-            RacesObjArray[i].setShowRacers(ShowRacers);
+            RacesObjArray[i].setCPNo(CPNo);
 
             i++;
             cursorRaces.moveToNext();
@@ -138,10 +150,10 @@ public class StaticMethods {
     }
 
     //Populate the listview in the Racers fragment. now with expandablelistview!
-    public static void InitializeRacersFragment(Context context, View viewRacers, SharedPreferences globals) {
+    public static void InitializeRacersFragment(Context context, View viewRacers, final SharedPreferences globals) {
 
         DatabaseHelper dbHelper = new DatabaseHelper(context);
-        Cursor cursorDistinctRaces = dbHelper.getDistinctRacesFromLoginInfo();
+        final Cursor cursorDistinctRaces = dbHelper.getDistinctRacesFromLoginInfo();
 
         List<String> listDataHeader;
         HashMap<String, List<ActiveRacerObj>> listDataChild;
@@ -160,8 +172,9 @@ public class StaticMethods {
             int j=0;
             cursorRacers.moveToFirst();
             while (!cursorRacers.isAfterLast()) {
-                //TODO - populate child array here
+
                 ActiveRacerObj child = new ActiveRacerObj();
+
                 if (cursorRacers.getString(0) != null && !cursorRacers.getString(0).equals("null")) {
                     child.setBIB(cursorRacers.getString(0));
                 } else  child.setBIB("");
@@ -216,8 +229,45 @@ public class StaticMethods {
         cursorDistinctRaces.close();
 
         listAdapter = new ActiveRacersExpandableAdapter(context, listDataHeader, listDataChild);
-        ExpandableListView expListView = (ExpandableListView) viewRacers.findViewById(R.id.elvRacers);
+        final ExpandableListView expListView = (ExpandableListView) viewRacers.findViewById(R.id.elvRacers);
         expListView.setAdapter(listAdapter);
+
+        //if only one race crosses this control point set specific default state for Racers expandableListView
+        if (cursorDistinctRaces.getCount() == 1 ) {
+            expListView.expandGroup(0);
+        }
+
+
+
+        // Listview Group collapsed listener
+        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                SharedPreferences.Editor editor = globals.edit();
+                if (cursorDistinctRaces.getCount() == 1) {
+                 //   editor.putString("elvRacersState" + groupPosition,"1");
+                    expListView.expandGroup(0);
+                } else {
+                    editor.putString("elvRacersState" + groupPosition,"0");
+                }
+
+                editor.apply();
+
+            }
+        });
+
+        // Listview Group expanded listener
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                SharedPreferences.Editor editor = globals.edit();
+                editor.putString("elvRacersState" + groupPosition,"1");
+                editor.apply();
+            }
+        });
+
 
 
 /*
@@ -344,6 +394,8 @@ public class StaticMethods {
         ListAdapter racersAdapter = new ActiveRacersAdapter(context, ActiveRacersObjArray);
         ListView lvRacers = (ListView) viewRacers.findViewById(R.id.elvRacers);
         lvRacers.setAdapter(racersAdapter);
+
+
     }
 
     public static String FormatErrorString(String str) {
@@ -356,5 +408,7 @@ public class StaticMethods {
         }
         return myStr;
     }
+
+
 
 }

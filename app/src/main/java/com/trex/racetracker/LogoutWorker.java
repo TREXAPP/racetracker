@@ -180,19 +180,23 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         EditText etOperator = (EditText) fragmentLogin.findViewById(R.id.etOperator);
         etOperator.setText("");
 
+        //clean up states for Racers expandableListView
+        if (globals.contains("elvRacersState0")) {
+            int i=0;
+            SharedPreferences.Editor editor1 = globals.edit();
+            boolean moreToClear = true;
+            while (moreToClear) {
+                if (globals.contains("elvRacersState" + i)) {
+                    editor1.remove("elvRacersState" + i);
+                } else {
+                    moreToClear = false;
+                }
+                i++;
+            }
+            editor1.commit();
+        }
+
         dbHelper.deleteAllFromActiveRacers();
-      //  InitializeRacersFragment(context, fragmentRacers, globals);
-
-        // StaticMethods methods = new StaticMethods();
-        // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-        // methods.InitializeRacersFragment(context, viewRacers, globals);
-
-
-        //  tvStatusTop.setText(result);
-        //  TextView tvStatus = (TextView) context.findViewById()
-        //alertDialog.setMessage(result);
-        //alertDialog.show();
-
         handler.sendEmptyMessage(0);
     }
 

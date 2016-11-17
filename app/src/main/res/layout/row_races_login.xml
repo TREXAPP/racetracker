@@ -27,15 +27,16 @@
         android:layout_weight="0"
         android:layout_gravity="center">
 
-        <CheckBox
+        <TextView
+            android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cbShowRace"
+            android:id="@+id/tvCPNo"
             android:layout_weight="0"
-            style="@android:style/Widget.DeviceDefault.CompoundButton.CheckBox"
             android:gravity="center"
-            android:checked="true"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textStyle="normal|italic"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </LinearLayout>

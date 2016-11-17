@@ -7,15 +7,15 @@ package com.trex.racetracker;
 public class RaceObj {
     private String RaceID;
     private String RaceDescription;
-    private boolean ShowRacers;
+    private String CPNo;
 
     public RaceObj() {
         this.RaceID = "";
         this.RaceDescription = "";
-        this.ShowRacers = false;
+        this.CPNo = "";
     }
 
-    public RaceObj(String myRaceID, String myRaceDescription, boolean myShowRacers) {
+    public RaceObj(String myRaceID, String myRaceDescription, String myCPNo) {
         if (myRaceID != null) {
             this.RaceID = myRaceID;
         } else {
@@ -28,10 +28,10 @@ public class RaceObj {
             this.RaceDescription = "";
         }
 
-        if (myShowRacers) {
-            this.ShowRacers = true;
+        if (myCPNo != null) {
+            this.CPNo = myCPNo;
         } else {
-            this.ShowRacers = false;
+            this.CPNo = "";
         }
     }
 
@@ -41,8 +41,8 @@ public class RaceObj {
     public String getRaceDescription() {
         return RaceDescription;
     }
-    public boolean getShowRacers() {
-        return ShowRacers;
+    public String getCPNo() {
+        return CPNo;
     }
 
     public void setRaceID(String myRaceID) {
@@ -60,11 +60,11 @@ public class RaceObj {
             this.RaceDescription = "";
         }
     }
-    public void setShowRacers(boolean myShowRacers) {
-        if (myShowRacers) {
-            this.ShowRacers = true;
+    public void setCPNo(String myCPNo) {
+        if (myCPNo != null) {
+            this.CPNo = myCPNo;
         } else {
-            this.ShowRacers = false;
+            this.CPNo = "";
         }
     }
 

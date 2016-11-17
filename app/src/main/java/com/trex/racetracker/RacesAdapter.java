@@ -28,14 +28,15 @@ class RacesAdapter extends ArrayAdapter<RaceObj> {
 
         final RaceObj raceObj = getItem(position);
         TextView tvRaceLong = (TextView) customView.findViewById(R.id.tvRaceLong);
-        final CheckBox cbShowRace = (CheckBox) customView.findViewById(R.id.cbShowRace);
+        TextView tvCPNo = (TextView) customView.findViewById(R.id.tvCPNo);
 
 
         if (raceObj != null) {
            tvRaceLong.setText(raceObj.getRaceDescription());
-           cbShowRace.setChecked(raceObj.getShowRacers());
+            tvCPNo.setText(raceObj.getCPNo());
         }
 
+        /*
         cbShowRace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -51,6 +52,7 @@ class RacesAdapter extends ArrayAdapter<RaceObj> {
                 editor.commit();
             }
         });
+        */
         return customView;
 
     }

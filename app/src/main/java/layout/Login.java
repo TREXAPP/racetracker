@@ -76,7 +76,6 @@ public class Login extends Fragment {
         final EditText etOperator = (EditText) fragmentLogin.findViewById(R.id.etOperator);
         final Button btnLogin = (Button) fragmentLogin.findViewById(R.id.btnLogin);
         final Button btnLogout = (Button) fragmentLogin.findViewById(R.id.btnLogout);
-        final TextView tvStatusBottom = (TextView) fragmentLogin.findViewById(R.id.tvStatusBottom);
 
 
         //initialize views appearence
