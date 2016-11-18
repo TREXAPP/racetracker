@@ -10,9 +10,10 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_height="60dp"
+        android:layout_weight="0">
 
-        <TextView
+        <TextClock
             android:text="05:12:31"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -24,7 +25,9 @@
             android:textColor="@color/colorPrimaryLighest"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:fontFamily="serif-monospace" />
+            android:fontFamily="serif-monospace"
+            android:format12Hour="h:mm:ssa"
+            android:format24Hour="H:mm:ss" />
 
         <TextView
             android:text="999"
@@ -37,7 +40,7 @@
             android:background="@color/colorPrimaryLighest"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textStyle="bold"
-            android:textSize="50sp"
+            android:textSize="36sp"
             android:textColor="@android:color/black"
             android:fontFamily="monospace" />
     </LinearLayout>
@@ -45,7 +48,8 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -59,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn1"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <Button
                 android:text="2"
@@ -67,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn2"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
         <LinearLayout
@@ -82,14 +86,15 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn3"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -103,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn4"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <Button
                 android:text="5"
@@ -111,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn5"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
         <LinearLayout
@@ -126,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn6"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
     </LinearLayout>
@@ -134,7 +139,8 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -148,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn7"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <Button
                 android:text="8"
@@ -156,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn8"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
         <LinearLayout
@@ -171,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn9"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
     </LinearLayout>
@@ -179,7 +185,8 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -192,8 +199,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn0"
-                android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:layout_weight="1.55"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         </LinearLayout>
 
@@ -205,19 +212,18 @@
 
             <Button
                 android:text=" ←"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnErase"
-                android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
     </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_weight="9999999999999999999999999" />
 
 
 </LinearLayout>

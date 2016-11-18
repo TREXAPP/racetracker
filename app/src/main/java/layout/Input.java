@@ -9,9 +9,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DigitalClock;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.trex.racetracker.R;
+
+import org.w3c.dom.Text;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -42,10 +46,10 @@ public class Input extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_input, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-    //    textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+    //TODO do stuff here
+      //  TextClock clock = new TextClock(getContext());
 
-        textView.setText("Vamu ke imame edna numericka tastatura za vnes na novi trkaci kako sto ke pominuvaat niz kontrolna");
+
         return rootView;
 
     }
