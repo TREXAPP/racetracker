@@ -1,4 +1,5 @@
 package com.trex.racetracker;
+import android.content.Context;
 import android.provider.Settings.Secure;
 import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
@@ -10,6 +11,10 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import layout.Input;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -98,9 +103,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 
 }

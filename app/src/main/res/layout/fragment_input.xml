@@ -25,9 +25,9 @@
             android:textColor="@color/colorPrimaryLighest"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:fontFamily="serif-monospace"
             android:format12Hour="h:mm:ssa"
-            android:format24Hour="H:mm:ss" />
+            android:format24Hour="H:mm:ss"
+            android:fontFamily="monospace" />
 
         <TextView
             android:text="999"
@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn1"
                 android:layout_weight="1"
+                android:onClick="NumberClick"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <Button
@@ -71,7 +72,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn2"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,7 +88,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn3"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -108,7 +112,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn4"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
 
             <Button
                 android:text="5"
@@ -116,7 +121,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn5"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
         </LinearLayout>
 
         <LinearLayout
@@ -131,7 +137,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn6"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
         </LinearLayout>
 
     </LinearLayout>
@@ -154,7 +161,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn7"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
 
             <Button
                 android:text="8"
@@ -162,7 +170,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn8"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
         </LinearLayout>
 
         <LinearLayout
@@ -177,7 +186,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn9"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
         </LinearLayout>
 
     </LinearLayout>
@@ -200,7 +210,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn0"
                 android:layout_weight="1.55"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
 
         </LinearLayout>
 
@@ -214,8 +225,9 @@
                 android:text=" ←"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnErase"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:id="@+id/btnE"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:onClick="NumberClick" />
         </LinearLayout>
 
     </LinearLayout>
@@ -223,7 +235,8 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="9999999999999999999999999" />
+        android:layout_weight="9999999999999999999999999"
+        android:id="@+id/lvInputEntries" />
 
 
 </LinearLayout>

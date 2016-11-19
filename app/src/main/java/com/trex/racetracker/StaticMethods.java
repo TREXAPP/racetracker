@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,6 +89,17 @@ public class StaticMethods {
             layoutLoginInfo.setVisibility(View.GONE);
             lvRacesLogin.setVisibility(View.GONE);
         }
+    }
+
+    public static void InitializeInputFragment(Context context, View fragmentInput) {
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        TextView tvBIBEntry = (TextView) fragmentInput.findViewById(R.id.tvBIBEntry);
+        if (!globals.contains("EntryNoState")) {
+            SharedPreferences.Editor editor = globals.edit();
+            editor.putString("EntryNoState","");
+            editor.commit();
+        }
+        tvBIBEntry.setText(globals.getString("EntryNoState",""));
     }
 
     public static void PopulateRacesListView(Context context, ListView lvRacesLogin) {
