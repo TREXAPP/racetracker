@@ -66,17 +66,35 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences globals = getSharedPreferences(GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
 
-        if (!globals.contains("islogin")) editor.putString("islogin","0");
-        if (!globals.contains("username")) editor.putString("username","");
-        if (!globals.contains("starttime")) editor.putString("starttime","");
-        if (!globals.contains("operator")) editor.putString("operator","");
-        if (!globals.contains("controlpoint")) editor.putString("controlpoint","");
-        if (!globals.contains("inputdigitsno")) editor.putInt("inputdigitsno",3);
-        if (!globals.contains("entryconfirmtimer")) editor.putInt("entryconfirmtimer",100);
-        String android_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
-       // if (!globals.contains("deviceid"))
-            editor.putString("deviceid",android_id);
+        //when a user gets logged in this is set true. When no user is logged in it is false
+        if (!globals.contains("islogin")) editor.putBoolean("islogin",false);
 
+        //the username for the logged user. if no user is logged, this is empty string
+        if (!globals.contains("username")) editor.putString("username","");
+
+        //the starting time of the race. So far it has no uses (TODO?)
+        if (!globals.contains("starttime")) editor.putString("starttime","");
+
+        //the operator that is set when user is logged. Can be empty string even if user is logged. If no user is logged it is also an empty string
+        if (!globals.contains("operator")) editor.putString("operator","");
+
+        //The name of the control point that corresponds to the user logged. Empty string if no user is logged.
+        if (!globals.contains("controlpoint")) editor.putString("controlpoint","");
+
+        //The default number of digits that the BIB numbers have. Default is 3, but can be changed in parameters. Important for the Input
+        if (!globals.contains("inputdigitsno")) editor.putInt("inputdigitsno",3);
+
+        //The time (in miliseconds) that the entered BIB number stays flashing before it dissapears. Default is 100ms, but can be changed in parameters
+        if (!globals.contains("entryconfirmtimer")) editor.putInt("entryconfirmtimer",100);
+
+        //whether or not to allow entry of nonexisting racers. If you are sure that all the racers are correctly syncronized and
+        //if there wont be last minute changes that is possible not to be syncronized, then you can set this false. Otherwise,
+        //it is advisable for this to be left true
+        if (!globals.contains("allowemptyentries")) editor.putBoolean("allowemptyentries",true);
+
+        //the unique ID of the device. Used to destinguish the entries
+        String android_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
+        if (!globals.contains("deviceid")) editor.putString("deviceid",android_id);
 
         editor.commit();
 

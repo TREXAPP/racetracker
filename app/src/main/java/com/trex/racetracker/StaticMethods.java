@@ -54,7 +54,7 @@ public class StaticMethods {
         String Username = globals.getString("username","");
         String Operator = globals.getString("operator","");
         String controlPoint = globals.getString("controlpoint","");
-        if (globals.getString("islogin","").equals("1")) loggedIn = true;
+        if (globals.getBoolean("islogin",false)) loggedIn = true;
         if (loggedIn) {
             //user is logged in. Show info and form for logout
             tvUsername.setText(Username);
@@ -208,6 +208,7 @@ public class StaticMethods {
                 } else  child.setGender("");
 
                 Cursor lastEntryRow = dbHelper.getLastEntryRow(cursorRacers.getString(6));
+                lastEntryRow.moveToFirst();
                 if (lastEntryRow.getCount()>0) {
                     if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
                         child.setTimeLast(lastEntryRow.getString(0));
@@ -224,6 +225,7 @@ public class StaticMethods {
                     if (lastEntryRow.getString(2) != null && !lastEntryRow.getString(2).equals("null")) {
                         child.setCPName(lastEntryRow.getString(2));
                     }
+                    lastEntryRow.close();
 
                 } else {
                     child.setTimeLast("");

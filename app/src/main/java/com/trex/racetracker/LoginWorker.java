@@ -195,7 +195,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
             if (jsonResult.has("islogin")) {
                 if (jsonResult.getString("islogin").equals("1")) {
                     String controlPoint = jsonResult.getJSONObject("0").getString("CPName");
-                    editor.putString("islogin","1");
+                    editor.putBoolean("islogin",true);
                     editor.putString("username",Username);
                     editor.putString("password",Password);
                     editor.putString("operator",Operator);

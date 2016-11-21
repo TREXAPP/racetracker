@@ -7,6 +7,7 @@ package layout;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,8 @@ import android.widget.Button;
 import android.widget.DigitalClock;
 import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import static com.trex.racetracker.StaticMethods.*;
 
 
@@ -29,6 +32,12 @@ import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
 
 import org.w3c.dom.Text;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -181,6 +190,10 @@ public class Input extends Fragment {
 
             BIBEntryString = "";
             Integer timer = globals.getInt("entryconfirmtimer",100);
+
+        /*
+
+
             new CountDownTimer(timer, timer) {
 
                 public void onTick(long millisUntilFinished) {
@@ -188,13 +201,18 @@ public class Input extends Fragment {
                 }
 
                 public void onFinish() {
+                    DatabaseHelper dbHelper = new DatabaseHelper(getContext());
                     //TODO:
                     //put entry in SQLite
                     //update listview(s)
                     //refresh fragments if neccessery
+                    
+                    //for direct entry EntryTypeID=1, Barcode = null
+                    EntryObj entryObj = PrepareEntryObj(inputedBIB,1,null,dbHelper);
 
-                    EntryObj entryObj = PrepareEntryObj(inputedBIB);
-
+                    if (!(dbHelper.insertIntoCPEntries(entryObj))) {
+                        Toast.makeText(getContext(), "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
+                    };
 
                     tvBIBEntry.setBackgroundColor(Color.parseColor("#FF7BFDB1"));
                     tvBIBEntry.setTextColor(Color.parseColor("#FF000000"));
@@ -202,48 +220,69 @@ public class Input extends Fragment {
                     //TODO: reenable keyboard (if disabled)
                 }
             }.start();
+
+         */
+
+
+            //TODO - for testing removed out of timer
+            DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            EntryObj entryObj = PrepareEntryObj(inputedBIB,1,null,dbHelper);
+            if (!(dbHelper.insertIntoCPEntries(entryObj))) {
+                Toast.makeText(getContext(), "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
+            };
+            tvBIBEntry.setBackgroundColor(Color.parseColor("#FF7BFDB1"));
+            tvBIBEntry.setTextColor(Color.parseColor("#FF000000"));
+            tvBIBEntry.setText("");
+
+
         }
 
         editor.putString("EntryNoState",BIBEntryString);
         editor.apply();
     }
 
-    private EntryObj PrepareEntryObj(String inputedBIB) {
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+    private EntryObj PrepareEntryObj(String inputedBIB, Integer EntryTypeID, String Barcode, DatabaseHelper dbHelper) {
+
         SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+
         EntryObj entryObj = new EntryObj();
-        entryObj.setActiveRacerID(dbHelper.getEntryDataFromRacers(inputedBIB));
+        entryObj.setEntryID(null);
+        entryObj.setBIB(inputedBIB);
+        entryObj.setActiveRacerID(dbHelper.getActiveRacerIDFromRacers(inputedBIB));
+        entryObj.setEntryTypeID(EntryTypeID);
+        entryObj.setBarcode(Barcode);
+        entryObj.setComment("");
+        entryObj.setSynced(false);
+        entryObj.setMyEntry(true);
+        
+      //  String currentTime = DateFormat.getDateTimeInstance().format(new Date());
 
-        if (globals.getString("islogin","0").equals("1")) {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = df.format(c.getTime());
+        entryObj.setTime(formattedDate); //example format: 2016-11-14 07:13:28
+
+        if (globals.getBoolean("islogin",false)) {
             entryObj.setUserID(globals.getString("username",""));
-
-
-            //TODO - fill in the EntryObj:
-            /*
-            EntryID		- %null za moe entry, od baza za synched
-            CPID		- od loginInfo baza row(0)
-            CPName		- od loginInfo baza row(0)
-            UserID		- %globals.("username")
-            ActiveRacerID	- sqlite query Racers by BIB
-            BIBCODE		- za entrytype=bib: bibcode; za site drugi null
-            Time		- from time.now() function
-            EntryTypeID	- za 1,2,3,9 ( direct, indirect, bib, nfc, other...)
-            Comment		- default ""
-            Operator    - %od globals.("operator")
-                Synced		- false. koga ke se prati servisot ke go napravi true i ke vrati EntryID
-                myEntry		- true
-*/
-
-                //  entryObj.setCPID(globals.getString("cpid"));
+            entryObj.setOperator(globals.getString("operator",""));
+            Cursor cursorCP = dbHelper.getEntryDataFromLoginInfo();
+            if (cursorCP.getCount() > 0) {
+                cursorCP.moveToFirst();
+                entryObj.setCPID(Integer.parseInt(cursorCP.getString(0)));
+                entryObj.setCPName(cursorCP.getString(1));
+            } else {
+                entryObj.setCPID(null);
+                entryObj.setCPName(null);
+            }
+            cursorCP.close();
 
         } else {
             entryObj.setCPID(null);
             entryObj.setCPName(null);
             entryObj.setUserID(null);
             entryObj.setOperator(null);
-
-
         }
+        
         return entryObj;
     }
 

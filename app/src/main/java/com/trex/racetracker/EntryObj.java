@@ -11,7 +11,8 @@ public class EntryObj {
     private String CPName;
     private String UserID;
     private Integer ActiveRacerID;
-    private String BIBCODE;
+    private String Barcode;
+    private String BIB;
     private String Time;
     private Integer EntryTypeID;
     private String Comment;
@@ -25,7 +26,7 @@ public class EntryObj {
         this.CPName = "";
         this.UserID = null;
         this.ActiveRacerID = null;
-        this.BIBCODE = "";
+        this.Barcode = "";
         this.Time = "";
         this.EntryTypeID = null;
         this.Comment = "";
@@ -54,8 +55,8 @@ public class EntryObj {
         return ActiveRacerID;
     }
 
-    public String getBIBCODE() {
-        return BIBCODE;
+    public String getBarcode() {
+        return Barcode;
     }
 
     public String getTime() {
@@ -102,8 +103,8 @@ public class EntryObj {
         ActiveRacerID = activeRacerID;
     }
 
-    public void setBIBCODE(String BIBCODE) {
-        this.BIBCODE = BIBCODE;
+    public void setBarcode(String Barcode) {
+        this.Barcode = Barcode;
     }
 
     public void setTime(String time) {
@@ -130,4 +131,11 @@ public class EntryObj {
         UserID = userID;
     }
 
+    public String getBIB() {
+        return BIB;
+    }
+
+    public void setBIB(String BIB) {
+        this.BIB = BIB;
+    }
 }

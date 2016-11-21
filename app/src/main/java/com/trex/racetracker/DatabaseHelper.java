@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_3 = "CPName";
     public static final String COL_2_4 = "UserID";
     public static final String COL_2_5 = "ActiveRacerID";
-    public static final String COL_2_6 = "BIBCODE";
+    public static final String COL_2_6 = "Barcode";
     public static final String COL_2_7 = "Time";
     public static final String COL_2_8 = "EntryTypeID";
     public static final String COL_2_9 = "Comment";
@@ -118,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable2Query += COL_2_3 + " TEXT,";        //CPName
         createTable2Query += COL_2_4 + " INTEGER,";     //UserID
         createTable2Query += COL_2_5 + " INTEGER,";     //ActiveRacerID
-        createTable2Query += COL_2_6 + " TEXT,";        //BIBCode
+        createTable2Query += COL_2_6 + " TEXT,";        //Barcode
         createTable2Query += COL_2_7 + " DATETIME,";    //Time
         createTable2Query += COL_2_8 + " INTEGER,";     //EntryTypeID - ID of the type of entry used (DIRECT, INDIRECT, NFC, BARCODE, OTHER...)
         createTable2Query += COL_2_9 + " TEXT,";        //Comment
@@ -273,25 +273,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query,null);
     }
 
-    public boolean insertIntoCPEntries() {
-        return false;
-    }
-
-    public Integer getEntryDataFromRacers(String inputedBIB) {
+    public Integer getActiveRacerIDFromRacers(String inputedBIB) {
         Integer ActiveRacerID;
-        String query = "SELECT ActiveRacerID FROM RACERS WHERE BIB = " +  inputedBIB + " LIMIT 1;";
+        String query = "SELECT ActiveRacerID FROM " + TABLE_1_NAME + " WHERE BIB = " +  inputedBIB + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
-        if (cursor.getCount() > 0) {
+        if (cursor.getCount() == 1) {
             cursor.moveToFirst();
             ActiveRacerID = Integer.parseInt(cursor.getString(0));
 
         } else {
             ActiveRacerID = null;
         }
+        cursor.close();
 
         return ActiveRacerID;
     }
+
+    public Cursor getEntryDataFromLoginInfo() {
+        String query = "SELECT CPID, CPName FROM " + TABLE_3_NAME + " LIMIT 1;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+
+        return cursor;
+    }
+
+
+    public boolean insertIntoCPEntries(EntryObj entryObj) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COL_2_1,entryObj.getEntryID());
+        contentValues.put(COL_2_2,entryObj.getCPName());
+        contentValues.put(COL_2_3,entryObj.getCPName());
+        contentValues.put(COL_2_4,entryObj.getUserID());
+        contentValues.put(COL_2_5,entryObj.getActiveRacerID());
+        contentValues.put(COL_2_6,entryObj.getBarcode());
+        contentValues.put(COL_2_7,entryObj.getTime());
+        contentValues.put(COL_2_8,entryObj.getEntryTypeID());
+        contentValues.put(COL_2_9,entryObj.getComment());
+        contentValues.put(COL_2_10,entryObj.isSynced());
+        contentValues.put(COL_2_11,entryObj.isMyEntry());
+
+        long result = db.insert(TABLE_2_NAME,null,contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+
+    }
+
 
 
     /**

@@ -151,7 +151,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
             JSONObject jsonResult = new JSONObject(result);
             if (jsonResult.has("islogout")) {
                 if (jsonResult.getString("islogout").equals("1")) {
-                    editor.putString("islogin","0");
+                    editor.putBoolean("islogin",false);
                     editor.putString("username","");
                     editor.putString("password","");
                     editor.putString("operator","");
