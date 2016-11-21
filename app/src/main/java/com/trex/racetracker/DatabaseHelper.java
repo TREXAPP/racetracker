@@ -273,6 +273,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query,null);
     }
 
+    public boolean insertIntoCPEntries() {
+        return false;
+    }
+
+
     /**
     Globals used to be managed with SQLite, but now it is done with SharedPreferences, the code is left for reference with SQLite db management
 

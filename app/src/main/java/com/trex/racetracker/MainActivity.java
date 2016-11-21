@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("starttime")) editor.putString("starttime","");
         if (!globals.contains("operator")) editor.putString("operator","");
         if (!globals.contains("controlpoint")) editor.putString("controlpoint","");
-        if (!globals.contains("inputdigitsno")) editor.putString("inputdigitsno","3");
+        if (!globals.contains("inputdigitsno")) editor.putInt("inputdigitsno",3);
+        if (!globals.contains("entryconfirmtimer")) editor.putInt("entryconfirmtimer",100);
         String android_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
        // if (!globals.contains("deviceid"))
             editor.putString("deviceid",android_id);

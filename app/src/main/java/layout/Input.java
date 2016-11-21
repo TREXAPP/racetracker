@@ -23,6 +23,8 @@ import android.widget.TextView;
 import static com.trex.racetracker.StaticMethods.*;
 
 
+import com.trex.racetracker.DatabaseHelper;
+import com.trex.racetracker.EntryObj;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
 
@@ -69,8 +71,7 @@ public class Input extends Fragment {
         Button btn8 = (Button) rootView.findViewById(R.id.btn8);
         Button btn9 = (Button) rootView.findViewById(R.id.btn9);
         Button btnE = (Button) rootView.findViewById(R.id.btnE);
-        //TODO do stuff here
-          //  TextClock clock = new TextClock(getContext());
+
         InitializeInputFragment(getContext(),rootView);
         tvBIBEntry = (TextView)rootView.findViewById(R.id.tvBIBEntry);
 
@@ -161,12 +162,14 @@ public class Input extends Fragment {
         } else {
             //digit button pressed
             BIBEntryString += digit;
-            if (BIBEntryString.length() >= Integer.parseInt(globals.getString("inputdigitsno","3"))) {
-
-
+            if (!globals.contains("inputdigitsno")) {
+                SharedPreferences.Editor editor1 = globals.edit();
+                editor1.putInt("inputdigitsno",3);
+                editor1.commit();
+            }
+            if (BIBEntryString.length() >= globals.getInt("inputdigitsno",3)) {
                 newEntry = true;
             }
-
         }
 
         tvBIBEntry.setText(BIBEntryString);
@@ -176,17 +179,22 @@ public class Input extends Fragment {
             //TODO: disable keyboard
 
             BIBEntryString = "";
-            new CountDownTimer(100, 100) {
+            Integer timer = globals.getInt("entryconfirmtimer",100);
+            new CountDownTimer(timer, timer) {
 
                 public void onTick(long millisUntilFinished) {
                    //nothing to do here
                 }
 
                 public void onFinish() {
-                    //TODO :
+                    //TODO:
                     //put entry in SQLite
                     //update listview(s)
                     //refresh fragments if neccessery
+
+                    EntryObj entryObj = PrepareEntryObj();
+
+
                     tvBIBEntry.setBackgroundColor(Color.parseColor("#FF7BFDB1"));
                     tvBIBEntry.setTextColor(Color.parseColor("#FF000000"));
                     tvBIBEntry.setText("");
@@ -199,8 +207,36 @@ public class Input extends Fragment {
         editor.apply();
     }
 
+    private EntryObj PrepareEntryObj() {
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        EntryObj entryObj = new EntryObj();
+        if (globals.getString("islogin","0").equals("1")) {
 
+            //TODO - fill in the EntryObj:
+            /*
+            EntryID		- null za moe entry, od baza za synched
+            CPID		- od loginInfo baza row(0)
+            CPName		- od loginInfo baza row(0)
+            UserID		- globals.("username")
+            ActiveRacerID	- sqlite query Racers by BIB
+            BIBCODE		- za entrytype=bib: bibcode; za site drugi null
+            Time		- from time.now() function
+            EntryTypeID	- za 1,2,3,9 ( direct, indirect, bib, nfc, other...)
+            Comment		- default ""
+                Synced		- false. koga ke se prati servisot ke go napravi true i ke vrati EntryID
+                myEntry		- true
+                ___________
+                operator!!!	- add!	globals
+*/
 
+                //  entryObj.setCPID(globals.getString("cpid"));
+
+        } else {
+            entryObj.setCPID(null);
+        }
+        return entryObj;
+    }
 
 
 }
