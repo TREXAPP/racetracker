@@ -277,6 +277,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    public Integer getEntryDataFromRacers(String inputedBIB) {
+        Integer ActiveRacerID;
+        String query = "SELECT ActiveRacerID FROM RACERS WHERE BIB = " +  inputedBIB + " LIMIT 1;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            ActiveRacerID = Integer.parseInt(cursor.getString(0));
+
+        } else {
+            ActiveRacerID = null;
+        }
+
+        return ActiveRacerID;
+    }
+
 
     /**
     Globals used to be managed with SQLite, but now it is done with SharedPreferences, the code is left for reference with SQLite db management

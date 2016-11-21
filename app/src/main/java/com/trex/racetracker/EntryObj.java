@@ -9,7 +9,7 @@ public class EntryObj {
     private Integer EntryID;
     private Integer CPID;
     private String CPName;
-    private Integer UserID;
+    private String UserID;
     private Integer ActiveRacerID;
     private String BIBCODE;
     private String Time;
@@ -17,6 +17,7 @@ public class EntryObj {
     private String Comment;
     private boolean Synced;
     private boolean myEntry;
+    private String Operator;
 
     public EntryObj() {
         this.EntryID = null;
@@ -30,6 +31,7 @@ public class EntryObj {
         this.Comment = "";
         this.Synced = false;
         this.myEntry = false;
+        this.Operator = "";
     }
 
     public Integer getEntryID() {
@@ -44,7 +46,7 @@ public class EntryObj {
         return CPName;
     }
 
-    public Integer getUserID() {
+    public String getUserID() {
         return UserID;
     }
 
@@ -76,6 +78,10 @@ public class EntryObj {
         return myEntry;
     }
 
+    public String getOperator() {
+        return Operator;
+    }
+
     public void setEntryID(Integer entryID) {
         EntryID = entryID;
     }
@@ -88,8 +94,8 @@ public class EntryObj {
         this.CPName = CPName;
     }
 
-    public void setUserID(Integer userID) {
-        UserID = userID;
+    public void setOperator(String operator) {
+        Operator = operator;
     }
 
     public void setActiveRacerID(Integer activeRacerID) {
@@ -119,4 +125,9 @@ public class EntryObj {
     public void setMyEntry(boolean myEntry) {
         this.myEntry = myEntry;
     }
+
+    public void setUserID(String userID) {
+        UserID = userID;
+    }
+
 }

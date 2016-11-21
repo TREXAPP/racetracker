@@ -173,6 +173,7 @@ public class Input extends Fragment {
         }
 
         tvBIBEntry.setText(BIBEntryString);
+        final String inputedBIB = BIBEntryString;
         if (newEntry) { //FF7BFDB1 lightgreen     FFFF0004 red
             tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
             tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
@@ -192,7 +193,7 @@ public class Input extends Fragment {
                     //update listview(s)
                     //refresh fragments if neccessery
 
-                    EntryObj entryObj = PrepareEntryObj();
+                    EntryObj entryObj = PrepareEntryObj(inputedBIB);
 
 
                     tvBIBEntry.setBackgroundColor(Color.parseColor("#FF7BFDB1"));
@@ -207,33 +208,41 @@ public class Input extends Fragment {
         editor.apply();
     }
 
-    private EntryObj PrepareEntryObj() {
+    private EntryObj PrepareEntryObj(String inputedBIB) {
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
         EntryObj entryObj = new EntryObj();
+        entryObj.setActiveRacerID(dbHelper.getEntryDataFromRacers(inputedBIB));
+
         if (globals.getString("islogin","0").equals("1")) {
+            entryObj.setUserID(globals.getString("username",""));
+
 
             //TODO - fill in the EntryObj:
             /*
-            EntryID		- null za moe entry, od baza za synched
+            EntryID		- %null za moe entry, od baza za synched
             CPID		- od loginInfo baza row(0)
             CPName		- od loginInfo baza row(0)
-            UserID		- globals.("username")
+            UserID		- %globals.("username")
             ActiveRacerID	- sqlite query Racers by BIB
             BIBCODE		- za entrytype=bib: bibcode; za site drugi null
             Time		- from time.now() function
             EntryTypeID	- za 1,2,3,9 ( direct, indirect, bib, nfc, other...)
             Comment		- default ""
+            Operator    - %od globals.("operator")
                 Synced		- false. koga ke se prati servisot ke go napravi true i ke vrati EntryID
                 myEntry		- true
-                ___________
-                operator!!!	- add!	globals
 */
 
                 //  entryObj.setCPID(globals.getString("cpid"));
 
         } else {
             entryObj.setCPID(null);
+            entryObj.setCPName(null);
+            entryObj.setUserID(null);
+            entryObj.setOperator(null);
+
+
         }
         return entryObj;
     }
