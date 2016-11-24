@@ -19,7 +19,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -211,7 +214,7 @@ public class StaticMethods {
                 lastEntryRow.moveToFirst();
                 if (lastEntryRow.getCount()>0) {
                     if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
-                        child.setTimeLast(lastEntryRow.getString(0));
+                        child.setTimeLast(lastEntryRow.getString(0).substring(11,19));
                     } else {
                         child.setTimeLast("");
                     }
@@ -284,133 +287,6 @@ public class StaticMethods {
         });
 
 
-
-/*
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        Cursor cursorRacers = dbHelper.getActiveRacersForListView("");
-        ActiveRacerObj[] ActiveRacersObjArray = new ActiveRacerObj[cursorRacers.getCount()];
-        int i=0;
-        cursorRacers.moveToFirst();
-        while (!cursorRacers.isAfterLast()) {
-            //populate array
-            ActiveRacersObjArray[i] = new ActiveRacerObj();
-            if (cursorRacers.getString(0) != null && !cursorRacers.getString(0).equals("null")) {
-                ActiveRacersObjArray[i].setBIB(cursorRacers.getString(0));
-            } else  ActiveRacersObjArray[i].setBIB("");
-            if (cursorRacers.getString(1) != null && !cursorRacers.getString(1).equals("null")) {
-                ActiveRacersObjArray[i].setFirstName(cursorRacers.getString(1));
-            } else  ActiveRacersObjArray[i].setFirstName("");
-            if (cursorRacers.getString(2) != null && !cursorRacers.getString(2).equals("null")) {
-                ActiveRacersObjArray[i].setLastName(cursorRacers.getString(2));
-            } else  ActiveRacersObjArray[i].setLastName("");
-            if (cursorRacers.getString(3) != null && !cursorRacers.getString(3).equals("null")) {
-                ActiveRacersObjArray[i].setCountry(cursorRacers.getString(3));
-            } else  ActiveRacersObjArray[i].setCountry("");
-            if (cursorRacers.getString(4) != null && !cursorRacers.getString(4).equals("null")) {
-                ActiveRacersObjArray[i].setAge(cursorRacers.getString(4));
-            } else  ActiveRacersObjArray[i].setAge("");
-            if (cursorRacers.getString(5) != null && !cursorRacers.getString(5).equals("null")) {
-                ActiveRacersObjArray[i].setGender(cursorRacers.getString(5));
-            } else  ActiveRacersObjArray[i].setGender("");
-
-            Cursor lastEntryRow = dbHelper.getLastEntryRow(cursorRacers.getString(6));
-            if (lastEntryRow.getCount()>0) {
-                if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
-                    ActiveRacersObjArray[i].setTimeLast(lastEntryRow.getString(0));
-                } else {
-                    ActiveRacersObjArray[i].setTimeLast("");
-                }
-
-                String CPNoString = "";
-                if (lastEntryRow.getString(1) != null && !lastEntryRow.getString(1).equals("null")) {
-                    CPNoString += "CP " + lastEntryRow.getString(1);
-                }
-                ActiveRacersObjArray[i].setCPNo(CPNoString);
-
-                if (lastEntryRow.getString(2) != null && !lastEntryRow.getString(2).equals("null")) {
-                    ActiveRacersObjArray[i].setCPName(lastEntryRow.getString(2));
-                }
-
-            } else {
-                ActiveRacersObjArray[i].setTimeLast("");
-                ActiveRacersObjArray[i].setCPNo("");
-                ActiveRacersObjArray[i].setCPName("");
-            }
-
-            i++;
-            cursorRacers.moveToNext();
-        }
-        cursorRacers.close();
-
-        ListAdapter racersAdapter = new ActiveRacersAdapter(context, ActiveRacersObjArray);
-        ListView lvRacers = (ListView) viewRacers.findViewById(R.id.lvRacers);
-        lvRacers.setAdapter(racersAdapter);
-        */
-    }
-    //the old method with listview. now replaced with expandablelistview
-    public static void InitializeRacersFragmentOld(Context context, View viewRacers, SharedPreferences globals) {
-
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        Cursor cursorRacers = dbHelper.getActiveRacersForListView("");
-        ActiveRacerObj[] ActiveRacersObjArray = new ActiveRacerObj[cursorRacers.getCount()];
-        int i=0;
-        cursorRacers.moveToFirst();
-        while (!cursorRacers.isAfterLast()) {
-            //populate array
-            ActiveRacersObjArray[i] = new ActiveRacerObj();
-            if (cursorRacers.getString(0) != null && !cursorRacers.getString(0).equals("null")) {
-                ActiveRacersObjArray[i].setBIB(cursorRacers.getString(0));
-            } else  ActiveRacersObjArray[i].setBIB("");
-            if (cursorRacers.getString(1) != null && !cursorRacers.getString(1).equals("null")) {
-                ActiveRacersObjArray[i].setFirstName(cursorRacers.getString(1));
-            } else  ActiveRacersObjArray[i].setFirstName("");
-            if (cursorRacers.getString(2) != null && !cursorRacers.getString(2).equals("null")) {
-                ActiveRacersObjArray[i].setLastName(cursorRacers.getString(2));
-            } else  ActiveRacersObjArray[i].setLastName("");
-            if (cursorRacers.getString(3) != null && !cursorRacers.getString(3).equals("null")) {
-                ActiveRacersObjArray[i].setCountry(cursorRacers.getString(3));
-            } else  ActiveRacersObjArray[i].setCountry("");
-            if (cursorRacers.getString(4) != null && !cursorRacers.getString(4).equals("null")) {
-                ActiveRacersObjArray[i].setAge(cursorRacers.getString(4));
-            } else  ActiveRacersObjArray[i].setAge("");
-            if (cursorRacers.getString(5) != null && !cursorRacers.getString(5).equals("null")) {
-                ActiveRacersObjArray[i].setGender(cursorRacers.getString(5));
-            } else  ActiveRacersObjArray[i].setGender("");
-
-            Cursor lastEntryRow = dbHelper.getLastEntryRow(cursorRacers.getString(6));
-            if (lastEntryRow.getCount()>0) {
-                if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
-                    ActiveRacersObjArray[i].setTimeLast(lastEntryRow.getString(0));
-                } else {
-                    ActiveRacersObjArray[i].setTimeLast("");
-                }
-
-                String CPNoString = "";
-                if (lastEntryRow.getString(1) != null && !lastEntryRow.getString(1).equals("null")) {
-                    CPNoString += "CP " + lastEntryRow.getString(1);
-                }
-                ActiveRacersObjArray[i].setCPNo(CPNoString);
-
-                if (lastEntryRow.getString(2) != null && !lastEntryRow.getString(2).equals("null")) {
-                    ActiveRacersObjArray[i].setCPName(lastEntryRow.getString(2));
-                }
-
-            } else {
-                ActiveRacersObjArray[i].setTimeLast("");
-                ActiveRacersObjArray[i].setCPNo("");
-                ActiveRacersObjArray[i].setCPName("");
-            }
-
-            i++;
-            cursorRacers.moveToNext();
-        }
-        cursorRacers.close();
-
-        ListAdapter racersAdapter = new ActiveRacersAdapter(context, ActiveRacersObjArray);
-        ListView lvRacers = (ListView) viewRacers.findViewById(R.id.elvRacers);
-        lvRacers.setAdapter(racersAdapter);
-
-
     }
 
     public static String FormatErrorString(String str) {
@@ -424,6 +300,20 @@ public class StaticMethods {
         return myStr;
     }
 
+    /*
+*  Convenience method to add a specified number of minutes to a Date object
+*  From: http://stackoverflow.com/questions/9043981/how-to-add-minutes-to-my-date
+*  @param  minutes  The number of minutes to add
+*  @param  beforeTime  The time that will have minutes added to it
+*  @return  A date object with the specified number of minutes added to it
+*/
+    public static Date addMinutesToDate(int minutes, Date beforeTime){
+        final long ONE_MINUTE_IN_MILLIS = 60000;//millisecs
+
+        long curTimeInMs = beforeTime.getTime();
+        Date afterAddingMins = new Date(curTimeInMs + (minutes * ONE_MINUTE_IN_MILLIS));
+        return afterAddingMins;
+    }
 
 
 }

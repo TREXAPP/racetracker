@@ -9,6 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by Igor_2 on 22.10.2016.
  */
@@ -56,6 +61,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_9 = "Comment";
     public static final String COL_2_10 = "Synced";
     public static final String COL_2_11 = "myEntry";
+    public static final String COL_2_12 = "BIB";
+    public static final String COL_2_13 = "Valid";
+    public static final String COL_2_14 = "Operator";
 
     public static final String TABLE_3_NAME = "LoginInfo";
     public static final String COL_3_1 = "CPID";
@@ -67,10 +75,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_3_7 = "RaceDescription";
     public static final String COL_3_8 = "UsersComment";
 
+    private static Context context;
 
-    public DatabaseHelper(Context context) {
+
+    public DatabaseHelper(Context mycontext) {
+
 //Environment.getExternalStorageDirectory() + File.separator + "dbtest" + File.separator + DATABASE_NAME
-        super(context, DATABASE_NAME, null, 1);
+        super(mycontext, DATABASE_NAME, null, 1);
+        context = mycontext;
         //testing:
         //SQLiteDatabase.openOrCreateDatabase(Environment.getExternalStorageDirectory() + File.separator + DATABASE_NAME,null);
 
@@ -113,18 +125,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String createTable2Query = "";
         createTable2Query += "CREATE TABLE IF NOT EXISTS " + TABLE_2_NAME + "(";
-        createTable2Query += COL_2_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,";   //EntryID
+        createTable2Query += COL_2_1 + " INTEGER,";   //EntryID
         createTable2Query += COL_2_2 + " INTEGER,";     //CPID
-        createTable2Query += COL_2_3 + " TEXT,";        //CPName
+        createTable2Query += COL_2_3 + " VARCHAR,";        //CPName
         createTable2Query += COL_2_4 + " INTEGER,";     //UserID
         createTable2Query += COL_2_5 + " INTEGER,";     //ActiveRacerID
-        createTable2Query += COL_2_6 + " TEXT,";        //Barcode
+        createTable2Query += COL_2_6 + " VARCHAR,";        //Barcode
         createTable2Query += COL_2_7 + " DATETIME,";    //Time
         createTable2Query += COL_2_8 + " INTEGER,";     //EntryTypeID - ID of the type of entry used (DIRECT, INDIRECT, NFC, BARCODE, OTHER...)
         createTable2Query += COL_2_9 + " TEXT,";        //Comment
         createTable2Query += COL_2_10 + " BOOLEAN,";    //Synced - Only valid when myEntry = true, shows if it has been sent to the server. For entries from another devices is always true
-        createTable2Query += COL_2_11 + " BOOLEAN);";   //myEntry - is this my entry, or from another device, synced from the server
-
+        createTable2Query += COL_2_11 + " BOOLEAN,";   //myEntry - is this my entry, or from another device, synced from the server
+        createTable2Query += COL_2_12 + " VARCHAR,";   //BIB - BIB entered
+        createTable2Query += COL_2_13 + " BOOLEAN,";   //valid - double entries from one control points are stored as valid=0 and are ignored. those are entries that are entered before the globals("timebetweenentries") minutes passes after the previous entry
+        createTable2Query += COL_2_14 + " VARCHAR);";   //Operator
         db.execSQL(createTable2Query);
 
         String createTable3Query = "";
@@ -269,7 +283,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getLastEntryRow(String ActiveRacerID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT Time, CPID, CPName FROM " + TABLE_2_NAME + " WHERE ActiveRacerID='" + ActiveRacerID + "' ORDER BY Time DESC LIMIT 1";
+        String query = "SELECT Time, CPID, CPName FROM " + TABLE_2_NAME + " WHERE ActiveRacerID='" + ActiveRacerID + "' AND Valid=1 ORDER BY Time DESC LIMIT 1";
         return db.rawQuery(query,null);
     }
 
@@ -305,7 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COL_2_1,entryObj.getEntryID());
-        contentValues.put(COL_2_2,entryObj.getCPName());
+        contentValues.put(COL_2_2,entryObj.getCPID());
         contentValues.put(COL_2_3,entryObj.getCPName());
         contentValues.put(COL_2_4,entryObj.getUserID());
         contentValues.put(COL_2_5,entryObj.getActiveRacerID());
@@ -315,6 +329,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_2_9,entryObj.getComment());
         contentValues.put(COL_2_10,entryObj.isSynced());
         contentValues.put(COL_2_11,entryObj.isMyEntry());
+        contentValues.put(COL_2_12,entryObj.getBIB());
+        contentValues.put(COL_2_13,entryObj.isValid());
+        contentValues.put(COL_2_14,entryObj.getOperator());
 
         long result = db.insert(TABLE_2_NAME,null,contentValues);
         if(result == -1)
@@ -324,7 +341,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public Date getDateForLastEntry() {
+        String query = "SELECT Time FROM " + TABLE_2_NAME + " WHERE Valid=1 ORDER BY Time DESC LIMIT 1;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+        Date entryTime = null;
+        if (cursor.moveToFirst()) {
+            entryTime = formatDateTime(cursor.getString(0));
+              //  entryTime = new Date(cursor.getLong(0)*1000)
+        }
+        return entryTime;
+    }
 
+    public static Date formatDateTime(String timeToFormat) {
+
+
+        SimpleDateFormat iso8601Format = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss");
+
+        Date date = null;
+        if (timeToFormat != null) {
+            try {
+                date = iso8601Format.parse(timeToFormat);
+            } catch (ParseException e) {
+                date = null;
+            }
+
+          //  if (date != null) {
+              //  long when = date.getTime();
+              //  int flags = 0;
+              //  flags |= android.text.format.DateUtils.FORMAT_SHOW_TIME;
+              //  flags |= android.text.format.DateUtils.FORMAT_SHOW_DATE;
+              //  flags |= android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
+              //  flags |= android.text.format.DateUtils.FORMAT_SHOW_YEAR;
+
+            //    finalDateTime = android.text.format.DateUtils.formatDateTime(context,
+             //           when + TimeZone.getDefault().getOffset(when), flags);
+
+
+         //   }
+        }
+        return date;
+    }
 
     /**
     Globals used to be managed with SQLite, but now it is done with SharedPreferences, the code is left for reference with SQLite db management

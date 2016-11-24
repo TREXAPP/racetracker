@@ -254,13 +254,28 @@ public class Input extends Fragment {
         entryObj.setComment("");
         entryObj.setSynced(false);
         entryObj.setMyEntry(true);
-        
-      //  String currentTime = DateFormat.getDateTimeInstance().format(new Date());
 
-        Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = df.format(c.getTime());
+        Calendar calendar = Calendar.getInstance();
+        Date timeNow = calendar.getTime();
+        String formattedDate = df.format(timeNow);
         entryObj.setTime(formattedDate); //example format: 2016-11-14 07:13:28
+
+        //check if there is a previous entry close to this, whether to flag this entry valid true or false
+        int timeBetweenEntries = globals.getInt("timebetweenentries",1);
+        Date lastEntryDate = dbHelper.getDateForLastEntry();
+        if (lastEntryDate != null) {
+            if (addMinutesToDate(timeBetweenEntries,lastEntryDate).before(timeNow)) {
+                entryObj.setValid(true);
+            } else {
+                entryObj.setValid(false);
+            }
+
+        } else {
+            entryObj.setValid(true);
+        }
+
+
 
         if (globals.getBoolean("islogin",false)) {
             entryObj.setUserID(globals.getString("username",""));

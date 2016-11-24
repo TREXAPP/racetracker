@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
         String android_id = Secure.getString(getBaseContext().getContentResolver(),Secure.ANDROID_ID);
         if (!globals.contains("deviceid")) editor.putString("deviceid",android_id);
 
+        //time (in minutes) after which all entries from one control points are ignored. They are stored for reference with flag valid=false
+        if (!globals.contains("timebetweenentries")) editor.putInt("timebetweenentries",1);
+
         editor.commit();
 
     }

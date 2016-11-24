@@ -19,6 +19,7 @@ public class EntryObj {
     private boolean Synced;
     private boolean myEntry;
     private String Operator;
+    private boolean Valid;
 
     public EntryObj() {
         this.EntryID = null;
@@ -137,5 +138,13 @@ public class EntryObj {
 
     public void setBIB(String BIB) {
         this.BIB = BIB;
+    }
+
+    public boolean isValid() {
+        return Valid;
+    }
+
+    public void setValid(boolean valid) {
+        Valid = valid;
     }
 }
