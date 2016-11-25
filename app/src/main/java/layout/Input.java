@@ -191,7 +191,7 @@ public class Input extends Fragment {
             BIBEntryString = "";
             Integer timer = globals.getInt("entryconfirmtimer",100);
 
-        /*
+
 
 
             new CountDownTimer(timer, timer) {
@@ -221,9 +221,9 @@ public class Input extends Fragment {
                 }
             }.start();
 
-         */
 
 
+/*
             //TODO - for testing removed out of timer
             DatabaseHelper dbHelper = new DatabaseHelper(getContext());
             EntryObj entryObj = PrepareEntryObj(inputedBIB,1,null,dbHelper);
@@ -234,7 +234,7 @@ public class Input extends Fragment {
             tvBIBEntry.setTextColor(Color.parseColor("#FF000000"));
             tvBIBEntry.setText("");
 
-
+*/
         }
 
         editor.putString("EntryNoState",BIBEntryString);
@@ -248,7 +248,31 @@ public class Input extends Fragment {
         EntryObj entryObj = new EntryObj();
         entryObj.setEntryID(null);
         entryObj.setBIB(inputedBIB);
-        entryObj.setActiveRacerID(dbHelper.getActiveRacerIDFromRacers(inputedBIB));
+        Cursor cursorRacers = dbHelper.getActiveRacerIDFromRacers(inputedBIB);
+
+        if (cursorRacers.getCount() == 1) {
+            cursorRacers.moveToFirst();
+            // ActiveRacerID, FirstName, LastName, Country, Gender, Age
+            entryObj.setActiveRacerID(Integer.parseInt(cursorRacers.getString(0)));
+            entryObj.setFirstName(cursorRacers.getString(1));
+            entryObj.setLastName(cursorRacers.getString(2));
+            entryObj.setCountry(cursorRacers.getString(3));
+            entryObj.setGender(cursorRacers.getString(4));
+            entryObj.setAge(cursorRacers.getString(5));
+            entryObj.setRaceID(Integer.parseInt(cursorRacers.getString(6)));
+
+        } else {
+            entryObj.setActiveRacerID(null);
+            entryObj.setFirstName(null);
+            entryObj.setLastName(null);
+            entryObj.setCountry(null);
+            entryObj.setGender(null);
+            entryObj.setAge(null);
+            entryObj.setRaceID(null);
+        }
+
+        cursorRacers.close();
+
         entryObj.setEntryTypeID(EntryTypeID);
         entryObj.setBarcode(Barcode);
         entryObj.setComment("");
@@ -270,7 +294,6 @@ public class Input extends Fragment {
             } else {
                 entryObj.setValid(false);
             }
-
         } else {
             entryObj.setValid(true);
         }
@@ -280,7 +303,13 @@ public class Input extends Fragment {
         if (globals.getBoolean("islogin",false)) {
             entryObj.setUserID(globals.getString("username",""));
             entryObj.setOperator(globals.getString("operator",""));
-            Cursor cursorCP = dbHelper.getEntryDataFromLoginInfo();
+            Cursor cursorCP = dbHelper.getEntryDataFromLoginInfo("1");
+            //set CPNo:
+            // 1. check from login info how many rows are for there for this RaceID
+            //2. If this CPNo exists check the next ... and so on... Raise alarm if all are used
+//TODO
+
+
             if (cursorCP.getCount() > 0) {
                 cursorCP.moveToFirst();
                 entryObj.setCPID(Integer.parseInt(cursorCP.getString(0)));
@@ -296,6 +325,7 @@ public class Input extends Fragment {
             entryObj.setCPName(null);
             entryObj.setUserID(null);
             entryObj.setOperator(null);
+            entryObj.setCPNo(null);
         }
         
         return entryObj;

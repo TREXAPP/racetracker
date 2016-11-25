@@ -20,6 +20,14 @@ public class EntryObj {
     private boolean myEntry;
     private String Operator;
     private boolean Valid;
+    private String CPNo;
+    private Integer RaceID;
+    private String FirstName;
+    private String LastName;
+    private String Country;
+    private String Gender;
+    private String Age;
+
 
     public EntryObj() {
         this.EntryID = null;
@@ -34,6 +42,8 @@ public class EntryObj {
         this.Synced = false;
         this.myEntry = false;
         this.Operator = "";
+        this.CPNo = "";
+        this.RaceID = null;
     }
 
     public Integer getEntryID() {
@@ -146,5 +156,61 @@ public class EntryObj {
 
     public void setValid(boolean valid) {
         Valid = valid;
+    }
+
+    public String getCPNo() {
+        return CPNo;
+    }
+
+    public void setCPNo(String CPNo) {
+        this.CPNo = CPNo;
+    }
+
+    public Integer getRaceID() {
+        return RaceID;
+    }
+
+    public void setRaceID(Integer raceID) {
+        RaceID = raceID;
+    }
+
+    public String getFirstName() {
+        return FirstName;
+    }
+
+    public void setFirstName(String firstName) {
+        FirstName = firstName;
+    }
+
+    public String getLastName() {
+        return LastName;
+    }
+
+    public void setLastName(String lastName) {
+        LastName = lastName;
+    }
+
+    public String getCountry() {
+        return Country;
+    }
+
+    public void setCountry(String country) {
+        Country = country;
+    }
+
+    public String getGender() {
+        return Gender;
+    }
+
+    public void setGender(String gender) {
+        Gender = gender;
+    }
+
+    public String getAge() {
+        return Age;
+    }
+
+    public void setAge(String age) {
+        Age = age;
     }
 }

@@ -64,6 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_12 = "BIB";
     public static final String COL_2_13 = "Valid";
     public static final String COL_2_14 = "Operator";
+    public static final String COL_2_15 = "CPNo";
 
     public static final String TABLE_3_NAME = "LoginInfo";
     public static final String COL_3_1 = "CPID";
@@ -138,7 +139,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable2Query += COL_2_11 + " BOOLEAN,";   //myEntry - is this my entry, or from another device, synced from the server
         createTable2Query += COL_2_12 + " VARCHAR,";   //BIB - BIB entered
         createTable2Query += COL_2_13 + " BOOLEAN,";   //valid - double entries from one control points are stored as valid=0 and are ignored. those are entries that are entered before the globals("timebetweenentries") minutes passes after the previous entry
-        createTable2Query += COL_2_14 + " VARCHAR);";   //Operator
+        createTable2Query += COL_2_14 + " VARCHAR,";   //Operator
+        createTable2Query += COL_2_15 + " VARCHAR);";   //CPNo
         db.execSQL(createTable2Query);
 
         String createTable3Query = "";
@@ -287,25 +289,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery(query,null);
     }
 
-    public Integer getActiveRacerIDFromRacers(String inputedBIB) {
-        Integer ActiveRacerID;
-        String query = "SELECT ActiveRacerID FROM " + TABLE_1_NAME + " WHERE BIB = " +  inputedBIB + ";";
+    public Cursor getActiveRacerIDFromRacers(String inputedBIB) {
+
+        String query = "SELECT ActiveRacerID, FirstName, LastName, Country, Gender, Age, RaceID FROM " + TABLE_1_NAME + " WHERE BIB = " +  inputedBIB + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
-        if (cursor.getCount() == 1) {
-            cursor.moveToFirst();
-            ActiveRacerID = Integer.parseInt(cursor.getString(0));
 
-        } else {
-            ActiveRacerID = null;
-        }
-        cursor.close();
-
-        return ActiveRacerID;
+        return cursor;
     }
 
-    public Cursor getEntryDataFromLoginInfo() {
-        String query = "SELECT CPID, CPName FROM " + TABLE_3_NAME + " LIMIT 1;";
+    public Cursor getEntryDataFromLoginInfo(String whereClause) {
+        if (whereClause.equals("")) whereClause = "1";
+        String query = "SELECT CPID, CPName, CPNo, RaceID FROM " + TABLE_3_NAME + " WHERE " + whereClause + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
 
@@ -332,6 +327,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_2_12,entryObj.getBIB());
         contentValues.put(COL_2_13,entryObj.isValid());
         contentValues.put(COL_2_14,entryObj.getOperator());
+        contentValues.put(COL_2_15,entryObj.getCPNo());
 
         long result = db.insert(TABLE_2_NAME,null,contentValues);
         if(result == -1)
