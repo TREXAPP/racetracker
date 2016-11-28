@@ -249,8 +249,11 @@ public class Input extends Fragment {
         entryObj.setEntryID(null);
         entryObj.setBIB(inputedBIB);
         Cursor cursorRacers = dbHelper.getActiveRacerIDFromRacers(inputedBIB);
+        boolean racerFound = false;
+        String raceID = "";
 
         if (cursorRacers.getCount() == 1) {
+            racerFound = true;
             cursorRacers.moveToFirst();
             // ActiveRacerID, FirstName, LastName, Country, Gender, Age
             entryObj.setActiveRacerID(Integer.parseInt(cursorRacers.getString(0)));
@@ -259,7 +262,8 @@ public class Input extends Fragment {
             entryObj.setCountry(cursorRacers.getString(3));
             entryObj.setGender(cursorRacers.getString(4));
             entryObj.setAge(cursorRacers.getString(5));
-            entryObj.setRaceID(Integer.parseInt(cursorRacers.getString(6)));
+            raceID = cursorRacers.getString(6);
+            entryObj.setRaceID(Integer.parseInt(raceID));
 
         } else {
             entryObj.setActiveRacerID(null);
@@ -293,6 +297,7 @@ public class Input extends Fragment {
                 entryObj.setValid(true);
             } else {
                 entryObj.setValid(false);
+                entryObj.setReasonInvalid("There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes");
             }
         } else {
             entryObj.setValid(true);
@@ -303,17 +308,43 @@ public class Input extends Fragment {
         if (globals.getBoolean("islogin",false)) {
             entryObj.setUserID(globals.getString("username",""));
             entryObj.setOperator(globals.getString("operator",""));
-            Cursor cursorCP = dbHelper.getEntryDataFromLoginInfo("1");
+            String loginInfoWhere;
+            String loginInfoOrder;
+            if (racerFound) {
+                loginInfoWhere = "RaceID='" + raceID + "'";
+                loginInfoOrder = "CPNo";
+            } else {
+                loginInfoWhere = "1";
+                loginInfoOrder = null;
+            }
+            Cursor cursorCP = dbHelper.getEntryDataFromLoginInfo(loginInfoWhere,loginInfoOrder);
             //set CPNo:
-            // 1. check from login info how many rows are for there for this RaceID
+            // 1. check from login info how many rows are there for this RaceID
             //2. If this CPNo exists check the next ... and so on... Raise alarm if all are used
 //TODO
+
 
 
             if (cursorCP.getCount() > 0) {
                 cursorCP.moveToFirst();
                 entryObj.setCPID(Integer.parseInt(cursorCP.getString(0)));
                 entryObj.setCPName(cursorCP.getString(1));
+                boolean cpnoSet = false;
+                while (!cursorCP.isAfterLast()) {
+                    String CPNo = cursorCP.getString(2);
+
+                    if (!dbHelper.hasRacerPassedThroughCP(inputedBIB,CPNo)) {
+                        entryObj.setCPNo(cursorCP.getString(2));
+                        cpnoSet = true;
+                    }
+                    cursorCP.moveToNext();
+                }
+                if (!cpnoSet) {
+                    //TODO raise alarm! entering a racer which has passed enough times through this CP
+                    Toast.makeText(getContext(), "This racer has already passed through this Checkpoint!", Toast.LENGTH_SHORT).show();
+                    entryObj.setValid(false);
+                    entryObj.setReasonInvalid("The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");
+                }
             } else {
                 entryObj.setCPID(null);
                 entryObj.setCPName(null);
@@ -327,7 +358,8 @@ public class Input extends Fragment {
             entryObj.setOperator(null);
             entryObj.setCPNo(null);
         }
-        
+
+
         return entryObj;
     }
 

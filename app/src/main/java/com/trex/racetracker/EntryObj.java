@@ -27,6 +27,7 @@ public class EntryObj {
     private String Country;
     private String Gender;
     private String Age;
+    private String ReasonInvalid;
 
 
     public EntryObj() {
@@ -44,6 +45,12 @@ public class EntryObj {
         this.Operator = "";
         this.CPNo = "";
         this.RaceID = null;
+        this.FirstName = null;
+        this.LastName = null;
+        this.Country = null;
+        this.Gender = null;
+        this.Age = null;
+        this.ReasonInvalid = null;
     }
 
     public Integer getEntryID() {
@@ -212,5 +219,13 @@ public class EntryObj {
 
     public void setAge(String age) {
         Age = age;
+    }
+
+    public String getReasonInvalid() {
+        return ReasonInvalid;
+    }
+
+    public void setReasonInvalid(String reasonInvalid) {
+        ReasonInvalid = reasonInvalid;
     }
 }

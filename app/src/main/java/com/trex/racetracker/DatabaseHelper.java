@@ -65,6 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_13 = "Valid";
     public static final String COL_2_14 = "Operator";
     public static final String COL_2_15 = "CPNo";
+    public static final String COL_2_16 = "ReasonInvalid";
 
     public static final String TABLE_3_NAME = "LoginInfo";
     public static final String COL_3_1 = "CPID";
@@ -140,7 +141,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable2Query += COL_2_12 + " VARCHAR,";   //BIB - BIB entered
         createTable2Query += COL_2_13 + " BOOLEAN,";   //valid - double entries from one control points are stored as valid=0 and are ignored. those are entries that are entered before the globals("timebetweenentries") minutes passes after the previous entry
         createTable2Query += COL_2_14 + " VARCHAR,";   //Operator
-        createTable2Query += COL_2_15 + " VARCHAR);";   //CPNo
+        createTable2Query += COL_2_15 + " VARCHAR,";   //CPNo
+        createTable2Query += COL_2_16 + " TEXT);";   //ReasonInvalid
         db.execSQL(createTable2Query);
 
         String createTable3Query = "";
@@ -298,9 +300,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getEntryDataFromLoginInfo(String whereClause) {
-        if (whereClause.equals("")) whereClause = "1";
-        String query = "SELECT CPID, CPName, CPNo, RaceID FROM " + TABLE_3_NAME + " WHERE " + whereClause + ";";
+    public Cursor getEntryDataFromLoginInfo(String whereClause, String orderbyClause) {
+        if (whereClause.equals("") || whereClause.equals(null)) whereClause = "1";
+        if (orderbyClause.equals("") || orderbyClause.equals(null)) {
+            orderbyClause = "";
+        } else {
+            orderbyClause = " ORDER BY " + orderbyClause;
+        }
+        String query = "SELECT CPID, CPName, CPNo, RaceID FROM " + TABLE_3_NAME + " WHERE " + whereClause + orderbyClause + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
 
@@ -328,6 +335,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_2_13,entryObj.isValid());
         contentValues.put(COL_2_14,entryObj.getOperator());
         contentValues.put(COL_2_15,entryObj.getCPNo());
+        contentValues.put(COL_2_16,entryObj.getReasonInvalid());
 
         long result = db.insert(TABLE_2_NAME,null,contentValues);
         if(result == -1)
@@ -378,6 +386,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          //   }
         }
         return date;
+    }
+
+    public boolean hasRacerPassedThroughCP(String inputedBIB, String cpNo) {
+        boolean result = false;
+        String query = "SELECT CPNo FROM " + TABLE_2_NAME + " WHERE BIB='" + inputedBIB + "' AND CPNo='" + cpNo + "' AND Valid=1;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query,null);
+        if (cursor.getCount()>0) {
+            result = true;
+        }
+        return result;
     }
 
     /**
