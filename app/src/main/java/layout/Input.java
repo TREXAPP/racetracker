@@ -49,6 +49,7 @@ public class Input extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     public TextView tvBIBEntry;
+    public ViewGroup layoutInput;
 
     public Input() {
     }
@@ -83,6 +84,7 @@ public class Input extends Fragment {
 
         InitializeInputFragment(getContext(),rootView);
         tvBIBEntry = (TextView)rootView.findViewById(R.id.tvBIBEntry);
+        layoutInput = container;
 
         btn0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,11 +185,8 @@ public class Input extends Fragment {
 
         tvBIBEntry.setText(BIBEntryString);
         final String inputedBIB = BIBEntryString;
-        if (newEntry) { //FF7BFDB1 lightgreen     FFFF0004 red
-            tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
-            tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
-            //TODO: disable keyboard
-
+        if (newEntry) {
+            disableEnableControls(false,layoutInput);
             BIBEntryString = "";
             Integer timer = globals.getInt("entryconfirmtimer",100);
 
@@ -201,27 +200,29 @@ public class Input extends Fragment {
                 }
 
                 public void onFinish() {
-                    DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-                    //TODO:
-                    //put entry in SQLite
-                    //update listview(s)
-                    //refresh fragments if neccessery
-                    
-                    //for direct entry EntryTypeID=1, Barcode = null
-                    EntryObj entryObj = PrepareEntryObj(inputedBIB,1,null,dbHelper);
 
-                    if (!(dbHelper.insertIntoCPEntries(entryObj))) {
-                        Toast.makeText(getContext(), "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
-                    };
+                    
+
 
                     tvBIBEntry.setBackgroundColor(Color.parseColor("#FF7BFDB1"));
                     tvBIBEntry.setTextColor(Color.parseColor("#FF000000"));
                     tvBIBEntry.setText("");
-                    //TODO: reenable keyboard (if disabled)
+                    disableEnableControls(true,layoutInput);
                 }
             }.start();
 
+            DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            //for direct entry EntryTypeID=1, Barcode = null
+            EntryObj entryObj = PrepareEntryObj(inputedBIB,1,null,dbHelper,tvBIBEntry);
 
+            if (!(dbHelper.insertIntoCPEntries(entryObj))) {
+                Toast.makeText(getContext(), "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
+            };
+
+            // FF7BFDB1 lightgreen
+            // FFFF0004 red
+          //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+          //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
 
 /*
             //TODO - for testing removed out of timer
@@ -241,7 +242,7 @@ public class Input extends Fragment {
         editor.apply();
     }
 
-    private EntryObj PrepareEntryObj(String inputedBIB, Integer EntryTypeID, String Barcode, DatabaseHelper dbHelper) {
+    private EntryObj PrepareEntryObj(String inputedBIB, Integer EntryTypeID, String Barcode, DatabaseHelper dbHelper, TextView tvBIBEntry) {
 
         SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
 
@@ -250,6 +251,8 @@ public class Input extends Fragment {
         entryObj.setBIB(inputedBIB);
         Cursor cursorRacers = dbHelper.getActiveRacerIDFromRacers(inputedBIB);
         boolean racerFound = false;
+        boolean cpnoSet = false;
+        String status = "success";
         String raceID = "";
 
         if (cursorRacers.getCount() == 1) {
@@ -291,13 +294,15 @@ public class Input extends Fragment {
 
         //check if there is a previous entry close to this, whether to flag this entry valid true or false
         int timeBetweenEntries = globals.getInt("timebetweenentries",1);
-        Date lastEntryDate = dbHelper.getDateForLastEntry();
+        Date lastEntryDate = dbHelper.getDateForLastEntry(inputedBIB);
         if (lastEntryDate != null) {
             if (addMinutesToDate(timeBetweenEntries,lastEntryDate).before(timeNow)) {
                 entryObj.setValid(true);
             } else {
                 entryObj.setValid(false);
                 entryObj.setReasonInvalid("There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes");
+                Toast.makeText(getContext(), "There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes", Toast.LENGTH_SHORT).show();
+                status = "too soon";
             }
         } else {
             entryObj.setValid(true);
@@ -312,7 +317,7 @@ public class Input extends Fragment {
             String loginInfoOrder;
             if (racerFound) {
                 loginInfoWhere = "RaceID='" + raceID + "'";
-                loginInfoOrder = "CPNo";
+                loginInfoOrder = "CPNo DESC";
             } else {
                 loginInfoWhere = "1";
                 loginInfoOrder = null;
@@ -329,7 +334,7 @@ public class Input extends Fragment {
                 cursorCP.moveToFirst();
                 entryObj.setCPID(Integer.parseInt(cursorCP.getString(0)));
                 entryObj.setCPName(cursorCP.getString(1));
-                boolean cpnoSet = false;
+
                 while (!cursorCP.isAfterLast()) {
                     String CPNo = cursorCP.getString(2);
 
@@ -344,6 +349,7 @@ public class Input extends Fragment {
                     Toast.makeText(getContext(), "This racer has already passed through this Checkpoint!", Toast.LENGTH_SHORT).show();
                     entryObj.setValid(false);
                     entryObj.setReasonInvalid("The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");
+                    status = "already passed";
                 }
             } else {
                 entryObj.setCPID(null);
@@ -359,6 +365,30 @@ public class Input extends Fragment {
             entryObj.setCPNo(null);
         }
 
+        //set colors depending on status:
+        switch (status) {
+            case "success":
+                tvBIBEntry.setBackgroundColor(Color.parseColor("#FF004F0D"));
+                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                break;
+            case "too soon":
+                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                break;
+            case "already passed":
+                tvBIBEntry.setBackgroundColor(Color.parseColor("#FF3e50ff"));
+                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                break;
+            default:
+                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                break;
+        }
+
+        // FF7BFDB1 lightgreen
+        // FFFF0004 red
+        //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+        //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
 
         return entryObj;
     }

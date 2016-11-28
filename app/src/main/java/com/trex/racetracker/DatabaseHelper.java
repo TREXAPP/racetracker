@@ -287,7 +287,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getLastEntryRow(String ActiveRacerID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT Time, CPID, CPName FROM " + TABLE_2_NAME + " WHERE ActiveRacerID='" + ActiveRacerID + "' AND Valid=1 ORDER BY Time DESC LIMIT 1";
+        String query = "SELECT Time, CPNo, CPName FROM " + TABLE_2_NAME + " WHERE ActiveRacerID='" + ActiveRacerID + "' AND Valid=1 ORDER BY Time DESC LIMIT 1";
         return db.rawQuery(query,null);
     }
 
@@ -345,15 +345,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Date getDateForLastEntry() {
-        String query = "SELECT Time FROM " + TABLE_2_NAME + " WHERE Valid=1 ORDER BY Time DESC LIMIT 1;";
+    public Date getDateForLastEntry(String inputedBIB) {
+        String query = "SELECT Time FROM " + TABLE_2_NAME + " WHERE Valid=1 AND BIB='" + inputedBIB + "' ORDER BY Time DESC LIMIT 1;";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
         Date entryTime = null;
-        if (cursor.moveToFirst()) {
-            entryTime = formatDateTime(cursor.getString(0));
-              //  entryTime = new Date(cursor.getLong(0)*1000)
+        if (cursor.getCount()>0) {
+            cursor.moveToFirst();
+                entryTime = formatDateTime(cursor.getString(0));
         }
+        cursor.close();
         return entryTime;
     }
 

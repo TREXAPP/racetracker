@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -313,6 +314,17 @@ public class StaticMethods {
         long curTimeInMs = beforeTime.getTime();
         Date afterAddingMins = new Date(curTimeInMs + (minutes * ONE_MINUTE_IN_MILLIS));
         return afterAddingMins;
+    }
+
+//disables or enables all child controls in a view
+    public static void disableEnableControls(boolean enable, ViewGroup vg){
+        for (int i = 0; i < vg.getChildCount(); i++){
+            View child = vg.getChildAt(i);
+            child.setEnabled(enable);
+            if (child instanceof ViewGroup){
+                disableEnableControls(enable, (ViewGroup)child);
+            }
+        }
     }
 
 

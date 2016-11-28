@@ -231,7 +231,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     final String COMMENT_SYNC = "";
 
                     SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context, fragmentLogin, viewRacers);
-                    synchronizeWorker.execute(TYPE_SYNC,URL_SYNC,Username,Password,DeviceID,COMMENT_SYNC);
+                    synchronizeWorker.execute(TYPE_SYNC,URL_SYNC,Username,Operator,DeviceID,COMMENT_SYNC);
 
                     Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
                 } else {

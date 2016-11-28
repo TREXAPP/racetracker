@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("inputdigitsno")) editor.putInt("inputdigitsno",3);
 
         //The time (in miliseconds) that the entered BIB number stays flashing before it dissapears. Default is 100ms, but can be changed in parameters
-        if (!globals.contains("entryconfirmtimer")) editor.putInt("entryconfirmtimer",100);
+        if (!globals.contains("entryconfirmtimer")) editor.putInt("entryconfirmtimer",300);
 
         //whether or not to allow entry of nonexisting racers. If you are sure that all the racers are correctly syncronized and
         //if there wont be last minute changes that is possible not to be syncronized, then you can set this false. Otherwise,

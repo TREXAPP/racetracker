@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="layout.Input"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/layoutInput">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -27,7 +28,8 @@
             android:textStyle="bold"
             android:format12Hour="h:mm:ssa"
             android:format24Hour="H:mm:ss"
-            android:fontFamily="monospace" />
+            android:fontFamily="monospace"
+            android:elevation="1dp" />
 
         <TextView
             android:text="999"
