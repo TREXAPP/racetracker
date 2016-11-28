@@ -145,7 +145,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
         TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 
         try {
             JSONObject jsonResult = new JSONObject(result);

@@ -57,7 +57,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
             SyncComment = params[5];
 
             //fetch all unique Races from SQLite, for which we will need the Racers from mysql
-            DatabaseHelper db = new DatabaseHelper(context);
+            DatabaseHelper db = DatabaseHelper.getInstance(context);
             Cursor rows = db.getDistinctRacesFromLoginInfo();
             String condition = "";
             rows.moveToFirst();
@@ -152,7 +152,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
         //  (if there are records inserted already, clear them all before inserting
         TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
         String error = "";
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 
         try {
             JSONObject jsonResult = new JSONObject(result);

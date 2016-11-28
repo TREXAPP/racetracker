@@ -108,7 +108,7 @@ public class StaticMethods {
 
     public static void PopulateRacesListView(Context context, ListView lvRacesLogin) {
 
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         Cursor cursorRaces = dbHelper.getDistinctRacesFromLoginInfo();
         final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
 
@@ -130,8 +130,9 @@ public class StaticMethods {
                    CPNo += cursorCPNo.getString(0);
                     cursorCPNo.moveToNext();
                 }
-                cursorCPNo.close();
+
             }
+            cursorCPNo.close();
 
 /*
             if (globals.contains("showRacers" + RaceID)) {
@@ -169,7 +170,7 @@ public class StaticMethods {
     //Populate the listview in the Racers fragment. now with expandablelistview!
     public static void InitializeRacersFragment(Context context, View viewRacers, final SharedPreferences globals) {
 
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         final Cursor cursorDistinctRaces = dbHelper.getDistinctRacesFromLoginInfo();
 
         List<String> listDataHeader;
@@ -236,6 +237,7 @@ public class StaticMethods {
                     child.setCPNo("");
                     child.setCPName("");
                 }
+                lastEntryRow.close();
                 childList.add(child);
                 j++;
                 cursorRacers.moveToNext();

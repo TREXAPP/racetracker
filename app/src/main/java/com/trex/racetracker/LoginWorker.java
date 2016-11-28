@@ -188,7 +188,8 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
         SharedPreferences.Editor editor = globals.edit();
         TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
       //  StaticMethods methods = new StaticMethods();
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
+       DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+
 
         try {
             JSONObject jsonResult = new JSONObject(result);

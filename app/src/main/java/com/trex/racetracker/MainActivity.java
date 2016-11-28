@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-         myDb = new DatabaseHelper(this);
+         myDb = DatabaseHelper.getInstance(this);
         InitializeGlobals(myDb);
 
     }

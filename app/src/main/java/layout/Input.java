@@ -211,7 +211,7 @@ public class Input extends Fragment {
                 }
             }.start();
 
-            DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
             //for direct entry EntryTypeID=1, Barcode = null
             EntryObj entryObj = PrepareEntryObj(inputedBIB,1,null,dbHelper,tvBIBEntry);
 
@@ -368,8 +368,8 @@ public class Input extends Fragment {
         //set colors depending on status:
         switch (status) {
             case "success":
-                tvBIBEntry.setBackgroundColor(Color.parseColor("#FF004F0D"));
-                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFD9DDFF"));
+                tvBIBEntry.setTextColor(Color.parseColor("#FF004F0D"));
                 break;
             case "too soon":
                 tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));

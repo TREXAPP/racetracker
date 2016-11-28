@@ -77,19 +77,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_3_7 = "RaceDescription";
     public static final String COL_3_8 = "UsersComment";
 
-    private static Context context;
+    private static Context context = null;
 
+    private static DatabaseHelper mInstance = null;
 
-    public DatabaseHelper(Context mycontext) {
+    public static DatabaseHelper getInstance(Context ctx) {
 
-//Environment.getExternalStorageDirectory() + File.separator + "dbtest" + File.separator + DATABASE_NAME
-        super(mycontext, DATABASE_NAME, null, 1);
-        context = mycontext;
-        //testing:
-        //SQLiteDatabase.openOrCreateDatabase(Environment.getExternalStorageDirectory() + File.separator + DATABASE_NAME,null);
-
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (mInstance == null) {
+            mInstance = new DatabaseHelper(ctx.getApplicationContext());
+        }
+        if (context == null) {
+            context = ctx;
+        }
+        return mInstance;
     }
 
+    /**
+     * Constructor should be private to prevent direct instantiation.
+     * make call to static factory method "getInstance()" instead.
+     */
+    private DatabaseHelper(Context ctx) {
+        super(ctx, DATABASE_NAME, null, 1);
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -301,12 +313,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getEntryDataFromLoginInfo(String whereClause, String orderbyClause) {
-        if (whereClause.equals("") || whereClause.equals(null)) whereClause = "1";
-        if (orderbyClause.equals("") || orderbyClause.equals(null)) {
-            orderbyClause = "";
+
+        if (whereClause != null) {
+            if (whereClause.equals("")) {
+                whereClause = "1";
+            } else {
+                //ok
+            }
         } else {
-            orderbyClause = " ORDER BY " + orderbyClause;
+            whereClause = "1";
         }
+
+        if (orderbyClause != null) {
+            if (!orderbyClause.equals("")) {
+                //ok
+                orderbyClause = " ORDER BY " + orderbyClause;
+            }
+        } else {
+            orderbyClause = "";
+        }
+
         String query = "SELECT CPID, CPName, CPNo, RaceID FROM " + TABLE_3_NAME + " WHERE " + whereClause + orderbyClause + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
