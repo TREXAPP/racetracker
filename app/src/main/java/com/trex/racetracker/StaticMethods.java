@@ -98,12 +98,76 @@ public class StaticMethods {
     public static void InitializeInputFragment(Context context, View fragmentInput) {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         TextView tvBIBEntry = (TextView) fragmentInput.findViewById(R.id.tvBIBEntry);
+        ListView lvInputEntries = (ListView) fragmentInput.findViewById(R.id.lvInputEntries);
         if (!globals.contains("EntryNoState")) {
             SharedPreferences.Editor editor = globals.edit();
             editor.putString("EntryNoState","");
             editor.commit();
         }
         tvBIBEntry.setText(globals.getString("EntryNoState",""));
+        PopulateInputEntriesListView(context,lvInputEntries);
+    }
+
+    public static void PopulateInputEntriesListView (Context context, ListView lvInputEntries) {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        Cursor cursorInputEntries = dbHelper.getEntries(true,true,10,"","Time DESC");
+        final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+
+        EntryObj[] EntryObjArray = new EntryObj[cursorInputEntries.getCount()];
+        int i=0;
+        cursorInputEntries.moveToFirst();
+        while (!cursorInputEntries.isAfterLast()) {
+
+            String BIB = cursorInputEntries.getString(0);
+            String Time = cursorInputEntries.getString(1);
+            String Name = null;
+            String LastName = null;
+            String Country = null;
+            String Age = null;
+            String Gender = null;
+
+            Cursor cursorRacer = dbHelper.getActiveRacerIDFromRacers(BIB);
+            if (cursorRacer.getCount() > 0) {
+                cursorRacer.moveToFirst();
+                Name = cursorRacer.getString(1);
+                LastName = cursorRacer.getString(2);
+                Country = cursorRacer.getString(3);
+                Age = cursorRacer.getString(5);
+                Gender = cursorRacer.getString(4);
+            }
+            cursorRacer.close();
+
+            EntryObjArray[i] = new EntryObj();
+
+            if (BIB != null) EntryObjArray[i].setBIB(BIB);
+            else EntryObjArray[i].setBIB("");
+
+            if (Time != null) EntryObjArray[i].setTime(Time);
+            else EntryObjArray[i].setTime("");
+
+            if (Name != null) EntryObjArray[i].setFirstName(Name);
+            else EntryObjArray[i].setFirstName("");
+
+            if (LastName != null) EntryObjArray[i].setLastName(LastName);
+            else EntryObjArray[i].setLastName("");
+
+            if (Country != null) EntryObjArray[i].setCountry(Country);
+            else EntryObjArray[i].setCountry("");
+
+            if (Age != null) EntryObjArray[i].setAge(Age);
+            else EntryObjArray[i].setAge("");
+
+            if (Gender != null) EntryObjArray[i].setGender(Gender);
+            else EntryObjArray[i].setGender("");
+
+            i++;
+            cursorInputEntries.moveToNext();
+        }
+        cursorInputEntries.close();
+
+        ListAdapter entriesInputAdapter = new EntriesInputAdapter(context, EntryObjArray);
+        lvInputEntries.setAdapter(entriesInputAdapter);
+
     }
 
     public static void PopulateRacesListView(Context context, ListView lvRacesLogin) {
@@ -328,6 +392,5 @@ public class StaticMethods {
             }
         }
     }
-
 
 }

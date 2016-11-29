@@ -340,7 +340,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-
     public boolean insertIntoCPEntries(EntryObj entryObj) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -386,7 +385,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static Date formatDateTime(String timeToFormat) {
 
-
         SimpleDateFormat iso8601Format = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss");
 
@@ -397,20 +395,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } catch (ParseException e) {
                 date = null;
             }
-
-          //  if (date != null) {
-              //  long when = date.getTime();
-              //  int flags = 0;
-              //  flags |= android.text.format.DateUtils.FORMAT_SHOW_TIME;
-              //  flags |= android.text.format.DateUtils.FORMAT_SHOW_DATE;
-              //  flags |= android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
-              //  flags |= android.text.format.DateUtils.FORMAT_SHOW_YEAR;
-
-            //    finalDateTime = android.text.format.DateUtils.formatDateTime(context,
-             //           when + TimeZone.getDefault().getOffset(when), flags);
-
-
-         //   }
         }
         return date;
     }
@@ -426,41 +410,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    /**
-    Globals used to be managed with SQLite, but now it is done with SharedPreferences, the code is left for reference with SQLite db management
+    public Cursor getEntries(boolean myEntriesOnly, boolean validOnly, Integer limit, String whereClause, String orderbyClause) {
 
-    public boolean insertValueIntoGlobals (String name, String value) {
+        if (whereClause != null) {
+            if (whereClause.equals("")) {
+                whereClause = "1";
+            } else {
+                //ok
+            }
+        } else {
+            whereClause = "1";
+        }
+
+        if (orderbyClause != null) {
+            if (!orderbyClause.equals("")) {
+                //ok
+                orderbyClause = " ORDER BY " + orderbyClause;
+            }
+        } else {
+            orderbyClause = "";
+        }
+
+        String limitClause = "";
+
+        if (limit != null) {
+            limitClause = " LIMIT " + limit;
+        }
+
+        String myEntriesClause = "";
+        if (myEntriesOnly) {
+            myEntriesClause = " AND myEntry=1 ";
+        }
+
+        String  validClause = "";
+        if (validOnly) {
+            validClause = " AND Valid=1 ";
+        }
+
+
+        String query = "SELECT BIB, Time FROM " + TABLE_2_NAME + " WHERE " + whereClause + myEntriesClause + validClause + orderbyClause + limitClause + ";";
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_3_1,name);
-        contentValues.put(COL_3_2,value);
-        long result = db.insert(TABLE_3_NAME,null,contentValues);
-        if(result == -1)
-            return false;
-        else
-            return true;
+        Cursor cursor = db.rawQuery(query,null);
+
+        return cursor;
     }
 
-    public Cursor getValueFromGlobals(String name) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_3_NAME + " WHERE NAME='" + name + "';",null);
-        return res;
-    }
-
-    public boolean updateValueInGlobals(String name,String value) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_3_1,name);
-        contentValues.put(COL_3_2,value);
-        db.update(TABLE_3_NAME, contentValues, "NAME = ?",new String[] { name });
-        return true;
-    }
-
-    public Integer deleteValueFromGlobals (String name) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_3_NAME, "NAME = ?",new String[] { name });
-    }
-
- **/
 }
-

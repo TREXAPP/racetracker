@@ -164,7 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_edit"
-            android:id="@+id/imageButton"
+            android:id="@+id/ibtEdit"
             android:layout_weight="0"
             android:scaleType="centerInside" />
 
@@ -184,7 +184,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_delete"
-            android:id="@+id/imageButton2"
+            android:id="@+id/ibtDelete"
             android:layout_weight="0"
             android:scaleType="centerInside" />
 

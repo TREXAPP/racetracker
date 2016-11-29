@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DigitalClock;
+import android.widget.ListView;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,8 @@ public class Input extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     public TextView tvBIBEntry;
     public ViewGroup layoutInput;
+    public ListView lvInputEntries;
+    private boolean viewInflated;
 
     public Input() {
     }
@@ -82,8 +85,14 @@ public class Input extends Fragment {
         Button btn9 = (Button) rootView.findViewById(R.id.btn9);
         Button btnE = (Button) rootView.findViewById(R.id.btnE);
 
-        InitializeInputFragment(getContext(),rootView);
+        if (!viewInflated) {
+            InitializeInputFragment(getContext(),rootView);
+        }
+        viewInflated = true;
+
         tvBIBEntry = (TextView)rootView.findViewById(R.id.tvBIBEntry);
+        lvInputEntries = (ListView)rootView.findViewById(R.id.lvInputEntries);
+
         layoutInput = container;
 
         btn0.setOnClickListener(new View.OnClickListener() {
@@ -201,9 +210,6 @@ public class Input extends Fragment {
 
                 public void onFinish() {
 
-                    
-
-
                     tvBIBEntry.setBackgroundColor(Color.parseColor("#FF7BFDB1"));
                     tvBIBEntry.setTextColor(Color.parseColor("#FF000000"));
                     tvBIBEntry.setText("");
@@ -217,7 +223,11 @@ public class Input extends Fragment {
 
             if (!(dbHelper.insertIntoCPEntries(entryObj))) {
                 Toast.makeText(getContext(), "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
-            };
+            }
+
+            //update listview
+         //   ListView lvInputEntries = (ListView) view.findViewById(R.id.lvInputEntries);
+            PopulateInputEntriesListView(getContext(),lvInputEntries);
 
             // FF7BFDB1 lightgreen
             // FFFF0004 red
@@ -240,6 +250,7 @@ public class Input extends Fragment {
 
         editor.putString("EntryNoState",BIBEntryString);
         editor.apply();
+
     }
 
     private EntryObj PrepareEntryObj(String inputedBIB, Integer EntryTypeID, String Barcode, DatabaseHelper dbHelper, TextView tvBIBEntry) {
@@ -391,6 +402,17 @@ public class Input extends Fragment {
         //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
 
         return entryObj;
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getView() == null) viewInflated = false;
+        if (isVisibleToUser && viewInflated) {
+           // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+            InitializeInputFragment(getContext(),getView());
+        }
     }
 
 
