@@ -119,7 +119,7 @@ public class StaticMethods {
         while (!cursorInputEntries.isAfterLast()) {
 
             String BIB = cursorInputEntries.getString(0);
-            String Time = cursorInputEntries.getString(1);
+            String Time =  cursorInputEntries.getString(1).substring(11,19);
             String Name = null;
             String LastName = null;
             String Country = null;

@@ -213,6 +213,7 @@ public class Input extends Fragment {
                     tvBIBEntry.setBackgroundColor(Color.parseColor("#FF7BFDB1"));
                     tvBIBEntry.setTextColor(Color.parseColor("#FF000000"));
                     tvBIBEntry.setText("");
+                    layoutInput.setBackgroundColor(Color.TRANSPARENT); //TRANSPARENT
                     disableEnableControls(true,layoutInput);
                 }
             }.start();
@@ -357,7 +358,7 @@ public class Input extends Fragment {
                 }
                 if (!cpnoSet) {
                     //TODO raise alarm! entering a racer which has passed enough times through this CP
-                    Toast.makeText(getContext(), "This racer has already passed through this Checkpoint!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "The runner has already passed through this checkpoint " + cursorCP.getCount() + " times", Toast.LENGTH_SHORT).show();
                     entryObj.setValid(false);
                     entryObj.setReasonInvalid("The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");
                     status = "already passed";
@@ -376,19 +377,32 @@ public class Input extends Fragment {
             entryObj.setCPNo(null);
         }
 
+        if (!globals.getBoolean("islogin",false)) {
+            if (!status.equals("too soon")) {
+                status = "not logged in";
+            }
+        }
         //set colors depending on status:
         switch (status) {
+            case "not logged in":
+              //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+              //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                layoutInput.setBackgroundColor(Color.parseColor("#FFBBD0BF"));  //light gray
+                break;
             case "success":
-                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFD9DDFF"));
-                tvBIBEntry.setTextColor(Color.parseColor("#FF004F0D"));
+              //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFD9DDFF"));
+               // tvBIBEntry.setTextColor(Color.parseColor("#FF004F0D"));
+                layoutInput.setBackgroundColor(Color.parseColor("#FF7BFDB1"));  //lightest green
                 break;
             case "too soon":
-                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
-                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));   //red
+                tvBIBEntry.setTextColor(Color.parseColor("#FFFFFFFF"));         //white
+                layoutInput.setBackgroundColor(Color.parseColor("#FFFF0004"));  //red
                 break;
             case "already passed":
-                tvBIBEntry.setBackgroundColor(Color.parseColor("#FF3e50ff"));
-                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                tvBIBEntry.setBackgroundColor(Color.parseColor("#FF3E50FF"));   //blue
+                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));         //lightest green
+                layoutInput.setBackgroundColor(Color.parseColor("#FF3E50FF"));  //blue
                 break;
             default:
                 tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));

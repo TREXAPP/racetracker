@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:id="@+id/row_racers"
+    android:id="@+id/layoutWrapper"
     android:layout_height="46dp"
     android:divider="@drawable/list_divider"
     android:gravity="center_vertical"
     app:layout_anchorGravity="center_vertical"
-    android:layout_margin="10dp">
+    android:layout_margin="10dp"
+    android:background="@color/colorLightestGray">
 
     <TextView
         android:text="222"
@@ -17,11 +18,10 @@
         android:textSize="30sp"
         android:textStyle="bold"
         android:fontFamily="sans-serif-condensed"
-        android:background="@color/colorLightestGray"
         android:textColor="@color/colorPrimaryDark"
         android:layout_weight="0"
         android:gravity="center"
-        android:layout_width="46dp" />
+        android:layout_width="60dp" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,10 +32,10 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingLeft="3dp"
             android:layout_height="20dp"
-            android:background="@color/colorLightestGray"
-            android:paddingLeft="3dp">
+            android:id="@+id/layoutName">
 
             <TextView
                 android:text="Name"
@@ -70,9 +70,9 @@
             android:orientation="horizontal"
             android:layout_weight="1"
             android:layout_width="match_parent"
+            android:paddingLeft="3dp"
             android:layout_height="20dp"
-            android:background="@color/colorLightestGray"
-            android:paddingLeft="3dp">
+            android:id="@+id/layoutTime">
 
             <TextView
                 android:id="@+id/tvTime"
@@ -112,7 +112,8 @@
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
                 android:layout_width="wrap_content"
-                android:layout_gravity="right">
+                android:layout_gravity="right"
+                android:id="@+id/layoutRacerInfo">
 
                 <TextView
                     android:text="MKD"
@@ -158,10 +159,10 @@
         android:layout_height="match_parent"
         android:layout_weight="0"
         android:layout_width="wrap_content"
-        android:background="#fff200">
+        android:background="@color/colorPrimaryLighest">
 
         <ImageButton
-            android:layout_width="match_parent"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_edit"
             android:id="@+id/ibtEdit"
@@ -175,18 +176,15 @@
         android:background="@android:color/holo_red_dark"
         android:layout_height="match_parent"
         android:layout_weight="0"
-        android:layout_marginLeft="2dp"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
         android:layout_width="wrap_content">
 
         <ImageButton
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_delete"
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
             android:id="@+id/ibtDelete"
             android:layout_weight="0"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:layout_width="50dp" />
 
     </LinearLayout>
 
