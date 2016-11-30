@@ -455,4 +455,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public void setEntriesNotMine() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_2_NAME + " SET myEntry=0 WHERE myEntry=1;";
+        db.execSQL(query);
+        /*
+        "UPDATE DB_TABLE SET YOUR_COLUMN='newValue' WHERE id=6 "
+        UPDATE Customers
+        SET ContactName='Alfred Schmidt', City='Hamburg'
+        WHERE CustomerName='Alfreds Futterkiste';
+         */
+
+
+       // return true;
+    }
+
 }

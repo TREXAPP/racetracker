@@ -72,7 +72,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         //params[3]=operator
         //params[4]=DeviceID
         //params[5]=logoutComment
-        //in this case the LoginWorker should be called in this manner: backgroundWorker.excecute(type,url,username,password,operator,deviceid,logincomment)
+        //in this case the LoginWorker should be called in this manner: backgroundWorker.execute(type,url,username,password,operator,deviceid,logincomment)
         if (type.equals("logout")) try {
 
             queryUrl = params[1];
@@ -160,6 +160,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
 
                 //    InitializeLoginFragment(context, fragmentLogin,globals);
                     dbHelper.deleteAllFromLoginInfo();
+                    dbHelper.setEntriesNotMine();
 
                     Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();
                 } else {

@@ -11,6 +11,9 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -382,31 +385,41 @@ public class Input extends Fragment {
                 status = "not logged in";
             }
         }
+
+        MediaPlayer mpSuccess = MediaPlayer.create(getContext(), R.raw.beep_short);
+        MediaPlayer mpError = MediaPlayer.create(getContext(), R.raw.beep_long);
+
+
         //set colors depending on status:
         switch (status) {
             case "not logged in":
               //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
               //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
                 layoutInput.setBackgroundColor(Color.parseColor("#FFBBD0BF"));  //light gray
+                mpSuccess.start();
                 break;
             case "success":
               //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFD9DDFF"));
                // tvBIBEntry.setTextColor(Color.parseColor("#FF004F0D"));
                 layoutInput.setBackgroundColor(Color.parseColor("#FF7BFDB1"));  //lightest green
+                mpSuccess.start();
                 break;
             case "too soon":
                 tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));   //red
                 tvBIBEntry.setTextColor(Color.parseColor("#FFFFFFFF"));         //white
                 layoutInput.setBackgroundColor(Color.parseColor("#FFFF0004"));  //red
+                mpError.start();
                 break;
             case "already passed":
                 tvBIBEntry.setBackgroundColor(Color.parseColor("#FF3E50FF"));   //blue
                 tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));         //lightest green
                 layoutInput.setBackgroundColor(Color.parseColor("#FF3E50FF"));  //blue
+                mpError.start();
                 break;
             default:
                 tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
                 tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                mpSuccess.start();
                 break;
         }
 
