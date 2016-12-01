@@ -470,4 +470,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
        // return true;
     }
 
+    public int deleteEntry(String whereClause) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_2_NAME, whereClause,null);
+    }
+
+    public void setEntryDeleted(String whereClause) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_2_NAME + " SET Valid=0, ReasonInvalid='Code 03: Manually deleted' WHERE " + whereClause + ";";
+        db.execSQL(query);
+    }
 }

@@ -315,7 +315,7 @@ public class Input extends Fragment {
                 entryObj.setValid(true);
             } else {
                 entryObj.setValid(false);
-                entryObj.setReasonInvalid("There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes");
+                entryObj.setReasonInvalid("Code 01: There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes");
                 Toast.makeText(getContext(), "There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes", Toast.LENGTH_SHORT).show();
                 status = "too soon";
             }
@@ -363,7 +363,7 @@ public class Input extends Fragment {
                     //TODO raise alarm! entering a racer which has passed enough times through this CP
                     Toast.makeText(getContext(), "The runner has already passed through this checkpoint " + cursorCP.getCount() + " times", Toast.LENGTH_SHORT).show();
                     entryObj.setValid(false);
-                    entryObj.setReasonInvalid("The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");
+                    entryObj.setReasonInvalid("Code 02: The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");
                     status = "already passed";
                 }
             } else {
