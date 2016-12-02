@@ -160,18 +160,6 @@ public class Login extends Fragment {
     }
 
 
-
-/*
-    public void OnLogin (View view) {
-        String Username =
-                String Query = QueryET.getText().toString();
-        String Type = "query";
-        LoginWorker backgroundWorker = new LoginWorker(this);
-        backgroundWorker.execute(Type, Query);
-
-    }
-    */
-
     private class LogoutDialogDismissHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -179,22 +167,6 @@ public class Login extends Fragment {
             SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
             InitializeLoginFragment(getContext(),getView(), globals);
 
-          /*
-            new CountDownTimer(500, 500) {
-                public void onFinish() {
-                    // When timer is finished
-                    // Execute your code here
-                    SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-                    InitializeLoginFragment(getContext(),getView(), globals);
-                }
-
-                public void onTick(long millisUntilFinished) {
-                    // millisUntilFinished    The amount of time until finished.
-                }
-            }.start();
-            */
-
-            // refresh your textview's here
         }
     }
 

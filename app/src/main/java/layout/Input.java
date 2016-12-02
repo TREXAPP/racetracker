@@ -16,6 +16,8 @@ import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -439,6 +441,24 @@ public class Input extends Fragment {
         if (isVisibleToUser && viewInflated) {
            // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
             InitializeInputFragment(getContext(),getView());
+        }
+    }
+
+
+
+    public class InputEditDismissHandler extends Handler {
+
+        public InputEditDismissHandler () {
+            super();
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            //TODO populate input listview here
+          //  SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+          //  InitializeLoginFragment(getContext(),getView(), globals);
+
         }
     }
 

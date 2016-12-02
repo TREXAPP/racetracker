@@ -1,9 +1,13 @@
 package com.trex.racetracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
@@ -19,7 +23,13 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
+import layout.ConfirmLogoutDialog;
+import layout.EditEntryDialog;
+import layout.Input;
+import layout.Login;
+
 import static com.trex.racetracker.StaticMethods.InitializeInputFragment;
+import static com.trex.racetracker.StaticMethods.InitializeLoginFragment;
 import static com.trex.racetracker.StaticMethods.PopulateInputEntriesListView;
 
 /**
@@ -108,12 +118,20 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
                 //TODO:
                 //open a custom popup with textview for BIB and Time(optional)
                 //on click OK, find and update the entry with the new racer (save the old bib and update with the new BIB, and all the other info - use the existing methods, modify if nessessery)
+
+               // Input.InputEditDismissHandler handler = new Input.InputEditDismissHandler();
+                final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+                EditEntryDialog dialog = new EditEntryDialog(getContext());
+            //    dialog.show(mainActivity.getFragmentManager(),"editEntry");
+             //   dialog.show(getFragmentManager(),"editEntry");
+
             }
         });
 
         return customView;
 
     }
+
 
 
 
