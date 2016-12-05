@@ -1,5 +1,6 @@
 package com.trex.racetracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -95,7 +96,7 @@ public class StaticMethods {
         }
     }
 
-    public static void InitializeInputFragment(Context context, View fragmentInput) {
+    public static void InitializeInputFragment(Context context, View fragmentInput, Activity activity) {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         TextView tvBIBEntry = (TextView) fragmentInput.findViewById(R.id.tvBIBEntry);
         ListView lvInputEntries = (ListView) fragmentInput.findViewById(R.id.lvInputEntries);
@@ -105,10 +106,10 @@ public class StaticMethods {
             editor.commit();
         }
         tvBIBEntry.setText(globals.getString("EntryNoState",""));
-        PopulateInputEntriesListView(context,lvInputEntries);
+        PopulateInputEntriesListView(context,lvInputEntries,activity);
     }
 
-    public static void PopulateInputEntriesListView (Context context, ListView lvInputEntries) {
+    public static void PopulateInputEntriesListView (Context context, ListView lvInputEntries, Activity activity) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         Cursor cursorInputEntries = dbHelper.getEntries(true,true,10,"","Time DESC");
         final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
@@ -165,7 +166,7 @@ public class StaticMethods {
         }
         cursorInputEntries.close();
 
-        ListAdapter entriesInputAdapter = new EntriesInputAdapter(context, EntryObjArray);
+        ListAdapter entriesInputAdapter = new EntriesInputAdapter(context, EntryObjArray, activity);
         lvInputEntries.setAdapter(entriesInputAdapter);
 
     }

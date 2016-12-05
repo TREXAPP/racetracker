@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
@@ -28,18 +29,19 @@ import layout.EditEntryDialog;
 import layout.Input;
 import layout.Login;
 
-import static com.trex.racetracker.StaticMethods.InitializeInputFragment;
-import static com.trex.racetracker.StaticMethods.InitializeLoginFragment;
-import static com.trex.racetracker.StaticMethods.PopulateInputEntriesListView;
+import static android.app.PendingIntent.getActivity;
+import static com.trex.racetracker.StaticMethods.*;
 
 /**
  * Created by Igor on 29.11.2016.
  */
 
 class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
+    Activity activity;
 
-    public EntriesInputAdapter(Context context, EntryObj[] entryObj) {
+    public EntriesInputAdapter(Context context, EntryObj[] entryObj, Activity act) {
         super(context,R.layout.row_entries_in_input, entryObj);
+        this.activity = act;
     }
 
     @NonNull
@@ -108,13 +110,14 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
                 ListView lvInputEntries = (ListView) parentView.findViewById(R.id.lvInputEntries);
                 DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
                 dbHelper.setEntryDeleted("BIB='" + tvBIB.getText() + "'");
-                PopulateInputEntriesListView(getContext(),lvInputEntries);
+                PopulateInputEntriesListView(getContext(),lvInputEntries, activity);
             }
         });
 
         ibtEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //TODO:
                 //open a custom popup with textview for BIB and Time(optional)
                 //on click OK, find and update the entry with the new racer (save the old bib and update with the new BIB, and all the other info - use the existing methods, modify if nessessery)
@@ -122,8 +125,9 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
                // Input.InputEditDismissHandler handler = new Input.InputEditDismissHandler();
                 final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
                 EditEntryDialog dialog = new EditEntryDialog(getContext());
-            //    dialog.show(mainActivity.getFragmentManager(),"editEntry");
+                dialog.show(activity.getFragmentManager(),"editEntry");
              //   dialog.show(getFragmentManager(),"editEntry");
+
 
             }
         });

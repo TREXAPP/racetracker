@@ -91,7 +91,7 @@ public class Input extends Fragment {
         Button btnE = (Button) rootView.findViewById(R.id.btnE);
 
         if (!viewInflated) {
-            InitializeInputFragment(getContext(),rootView);
+            InitializeInputFragment(getContext(),rootView, getActivity());
         }
         viewInflated = true;
 
@@ -233,7 +233,7 @@ public class Input extends Fragment {
 
             //update listview
          //   ListView lvInputEntries = (ListView) view.findViewById(R.id.lvInputEntries);
-            PopulateInputEntriesListView(getContext(),lvInputEntries);
+            PopulateInputEntriesListView(getContext(),lvInputEntries, getActivity());
 
             // FF7BFDB1 lightgreen
             // FFFF0004 red
@@ -440,7 +440,7 @@ public class Input extends Fragment {
         if (getView() == null) viewInflated = false;
         if (isVisibleToUser && viewInflated) {
            // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-            InitializeInputFragment(getContext(),getView());
+            InitializeInputFragment(getContext(),getView(), getActivity());
         }
     }
 

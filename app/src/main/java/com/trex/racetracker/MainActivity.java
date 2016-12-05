@@ -1,4 +1,5 @@
 package com.trex.racetracker;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.content.SharedPreferences;
