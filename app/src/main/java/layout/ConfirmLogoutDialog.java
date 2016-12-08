@@ -33,6 +33,8 @@ public class ConfirmLogoutDialog extends DialogFragment {
 
     Handler handler;
 
+
+
     public ConfirmLogoutDialog() {
         super();
     }
@@ -50,6 +52,7 @@ public class ConfirmLogoutDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View alertDialog = inflater.inflate(R.layout.alert_logout,null);
@@ -63,6 +66,8 @@ public class ConfirmLogoutDialog extends DialogFragment {
         final TextView tvAlertLogoutTitle = (TextView) alertDialog.findViewById(R.id.tvAlertLogoutTitle);
         final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
         tvAlertLogoutTitle.setText("Confirm logout for user " + globals.getString("username",""));
+
+
 
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
