@@ -64,6 +64,7 @@ public class EditEntryDialog extends DialogFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View alertDialog = inflater.inflate(R.layout.alert_edit_entry,null);
+
      //   final View fragmentLogin = inflater.inflate(R.layout.fragment_login,null);
      //   final View fragmentRacers = inflater.inflate(R.layout.fragment_racers,null);
 
@@ -76,13 +77,18 @@ public class EditEntryDialog extends DialogFragment {
         final EditText etSeconds = (EditText) alertDialog.findViewById(R.id.etSeconds);
 
         final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        final int inputDigitsNo = globals.getInt("inputdigitsno",3);
 
-        //initialize dialog
+                //initialize dialog
         etBIBAlert.setText(BIB);
         etHours.setText(hours);
         etMinutes.setText(minutes);
         etSeconds.setText(seconds);
-        etBIBAlert.setFocusable(true);
+
+        etBIBAlert.requestFocus();
+        etBIBAlert.setSelection(inputDigitsNo);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,16 +118,9 @@ public class EditEntryDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (etBIBAlert.getText().toString().length() != 3) {
-                    etBIBAlert.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
-                    btnEdit.setEnabled(false);
 
-                } else {
-                    etBIBAlert.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                    btnEdit.setEnabled(true);
-                }
-
-                if (etBIBAlert.getText().toString().length() > 3) {
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
+                if (etBIBAlert.getText().toString().length() > inputDigitsNo) {
                     etBIBAlert.setText(beforeText);
                     etBIBAlert.setSelection(etBIBAlert.getText().length());
                 }
@@ -132,17 +131,9 @@ public class EditEntryDialog extends DialogFragment {
         etBIBAlert.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    etBIBAlert.setSelection(etBIBAlert.getText().length());
-                    etBIBAlert.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                } else {
-                    etBIBAlert.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
-                    ValidateInputs();
-                }
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
             }
 
-            private void ValidateInputs() {
-            }
         });
 
         etHours.addTextChangedListener(new TextWatcher() {
@@ -159,27 +150,19 @@ public class EditEntryDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean valid;
-                String value = etHours.getText().toString();
-                if (value.length() != 2 || Integer.parseInt(value) > 23 || Integer.parseInt(value) < 0) {
-                    valid = false;
-                } else {
-                    valid = true;
+                if (!etHours.getText().toString().equals("")) {
+                    try {
+                        Integer.parseInt(etHours.getText().toString());
+                    } catch(Exception e) {
+                        etHours.setText(beforeText);
+                    }
                 }
 
-                if (valid) {
-                    etHours.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                    btnEdit.setEnabled(true);
-                } else {
-                    etHours.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
-                    btnEdit.setEnabled(false);
-                }
-
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
                 if (etHours.getText().toString().length() > 2) {
                     etHours.setText(beforeText);
                     etHours.setSelection(etHours.getText().length());
                 }
-
 
 
             }
@@ -188,17 +171,13 @@ public class EditEntryDialog extends DialogFragment {
         etHours.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    etHours.setSelection(etHours.getText().length());
-                    etHours.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                } else {
-                    etHours.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
-                }
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
             }
         });
 
 
         etMinutes.addTextChangedListener(new TextWatcher() {
+
             private String beforeText;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -212,42 +191,25 @@ public class EditEntryDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean valid;
-                String value = etMinutes.getText().toString();
-                if (value.length() != 2 || Integer.parseInt(value) > 59 || Integer.parseInt(value) < 0) {
-                    valid = false;
-                } else {
-                    valid = true;
+                if (!etMinutes.getText().toString().equals("")) {
+                    try {
+                        Integer.parseInt(etMinutes.getText().toString());
+                    } catch(Exception e) {
+                        etMinutes.setText(beforeText);
+                    }
                 }
-
-                if (valid) {
-                    etMinutes.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                    btnEdit.setEnabled(true);
-                } else {
-                    etMinutes.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
-                    btnEdit.setEnabled(false);
-
-                }
-
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
                 if (etMinutes.getText().toString().length() > 2) {
                     etMinutes.setText(beforeText);
                     etMinutes.setSelection(etMinutes.getText().length());
                 }
-
-
-
             }
         });
 
         etMinutes.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    etMinutes.setSelection(etMinutes.getText().length());
-                    etMinutes.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                } else {
-                    etMinutes.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
-                }
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
             }
         });
 
@@ -266,22 +228,15 @@ public class EditEntryDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean valid;
-                String value = etSeconds.getText().toString();
-                if (value.length() != 2 || Integer.parseInt(value) > 59 || Integer.parseInt(value) < 0) {
-                    valid = false;
-                } else {
-                    valid = true;
+                if (!etSeconds.getText().toString().equals("")) {
+                    try {
+                        Integer.parseInt(etSeconds.getText().toString());
+                    } catch(Exception e) {
+                        etSeconds.setText(beforeText);
+                    }
                 }
 
-                if (valid) {
-                    etSeconds.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                    btnEdit.setEnabled(true);
-                } else {
-                    etSeconds.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
-                    btnEdit.setEnabled(false);
-                }
-
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
                 if (etSeconds.getText().toString().length() > 2) {
                     etSeconds.setText(beforeText);
                     etSeconds.setSelection(etSeconds.getText().length());
@@ -293,18 +248,67 @@ public class EditEntryDialog extends DialogFragment {
         etSeconds.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    etSeconds.setSelection(etSeconds.getText().length());
-                    etSeconds.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //lightest gray
-                } else {
-                    etSeconds.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
-                }
+                ValidatePopup(etBIBAlert,etHours,etMinutes,etSeconds, btnEdit,inputDigitsNo);
             }
         });
 
 
 
         return builder.create();
+    }
+
+    public void ValidatePopup(EditText etBIBAlert, EditText etHours, EditText etMinutes, EditText etSeconds, Button btnEdit, int inputDigitsNo) {
+        boolean valid = true;
+        if (etBIBAlert.getText().toString().length() != inputDigitsNo) {
+            valid = false;
+            etBIBAlert.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
+        } else {
+            if (etBIBAlert.hasFocus()) {
+                etBIBAlert.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //ligthest gray
+            } else {
+                etBIBAlert.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
+            }
+        }
+
+        if (etHours.getText().toString().length() != 2 || Integer.parseInt(etHours.getText().toString()) > 23) {
+            valid = false;
+            etHours.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
+        } else {
+            if (etHours.hasFocus()) {
+                etHours.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //ligthest gray
+            } else {
+                etHours.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
+            }
+        }
+
+        if (etMinutes.getText().toString().length() != 2 || Integer.parseInt(etMinutes.getText().toString()) > 59) {
+            valid = false;
+            etMinutes.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
+        } else {
+            if (etMinutes.hasFocus()) {
+                etMinutes.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //ligthest gray
+            } else {
+                etMinutes.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
+            }
+        }
+
+        if (etSeconds.getText().toString().length() != 2 || Integer.parseInt(etSeconds.getText().toString()) > 59) {
+            valid = false;
+            etSeconds.setBackgroundColor(Color.parseColor("#FFFF0004")); //red
+        } else {
+            if (etSeconds.hasFocus()) {
+                etSeconds.setBackgroundColor(Color.parseColor("#FFF5F5F5")); //ligthest gray
+            } else {
+                etSeconds.setBackgroundColor(Color.parseColor("#FFFFFFFF")); //white
+            }
+        }
+
+        if (valid) {
+            btnEdit.setEnabled(true);
+        } else {
+            btnEdit.setEnabled(false);
+        }
+
     }
 
 
