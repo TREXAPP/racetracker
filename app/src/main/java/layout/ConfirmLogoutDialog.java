@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.trex.racetracker.LogoutWorker;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
+import com.trex.racetracker.StaticMethods;
+
 import layout.Login;
 
 import org.w3c.dom.Text;
@@ -85,8 +87,7 @@ public class ConfirmLogoutDialog extends DialogFragment {
 
                     getDialog().dismiss();
                     //turn off keyboard:
-                    InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    StaticMethods.TurnOffKeyboard(getActivity(),getContext());
                    // handler.sendEmptyMessage(0);
                 } else {
                     //LOGOUT failed, wrong password

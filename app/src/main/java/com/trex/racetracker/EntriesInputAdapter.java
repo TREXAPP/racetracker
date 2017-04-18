@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
@@ -19,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -30,6 +32,7 @@ import layout.Input;
 import layout.Login;
 
 import static android.app.PendingIntent.getActivity;
+import static com.trex.racetracker.R.id.lvInputEntries;
 import static com.trex.racetracker.StaticMethods.*;
 
 /**
@@ -38,10 +41,14 @@ import static com.trex.racetracker.StaticMethods.*;
 
 class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
     Activity activity;
+    private ListView lvInputEntries;
 
-    public EntriesInputAdapter(Context context, EntryObj[] entryObj, Activity act) {
+
+    public EntriesInputAdapter(Context context, EntryObj[] entryObj, Activity act, ListView lvInputEntries) {
         super(context,R.layout.row_entries_in_input, entryObj);
         this.activity = act;
+        this.lvInputEntries = lvInputEntries;
+
     }
 
     @NonNull
@@ -51,7 +58,7 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
         View customView = layoutInflater.inflate(R.layout.row_entries_in_input,parent,false);
         SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
 
-        EntryObj entryObj = getItem(position);
+        final EntryObj entryObj = getItem(position);
         final TextView tvBIB = (TextView) customView.findViewById(R.id.tvBIB);
         TextView tvName = (TextView) customView.findViewById(R.id.tvName);
         TextView tvLastName = (TextView) customView.findViewById(R.id.tvLastName);
@@ -71,7 +78,8 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
             tvBIB.setText(entryObj.getBIB());
             tvName.setText(entryObj.getFirstName());
             tvLastName.setText(entryObj.getLastName());
-            tvTime.setText(entryObj.getTime()); //TODO: Format if needed!
+            tvTime.setText(entryObj.getTime().substring(11,19)); //TODO: Format if needed!
+          //  tvTime.setText(entryObj.getTime()); //TODO: Format if needed!
             tvCountry.setText(entryObj.getCountry());
             tvAge.setText(entryObj.getAge());
             tvGender.setText(entryObj.getGender());
@@ -106,11 +114,13 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
             public void onClick(View v) {
                 LinearLayout layoutParent = (LinearLayout) v.getParent().getParent();
                 TextView tvBIB = (TextView) layoutParent.findViewById(R.id.tvBIB);
-                View parentView = (View) layoutParent.getParent();
-                ListView lvInputEntries = (ListView) parentView.findViewById(R.id.lvInputEntries);
+                //View parentView = (View) layoutParent.getParent();
+                //ListView lvInputEntries = (ListView) parentView.findViewById(R.id.lvInputEntries);
                 DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
                 dbHelper.setEntryDeleted("BIB='" + tvBIB.getText() + "'");
                 PopulateInputEntriesListView(getContext(),lvInputEntries, activity);
+                Toast.makeText(getContext(), "Entry deleted!", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -128,7 +138,13 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
                 String hours =  tvTime.getText().toString().substring(0,2);
                 String minutes =  tvTime.getText().toString().substring(3,5);
                 String seconds =  tvTime.getText().toString().substring(6,8);
-                EditEntryDialog dialog = new EditEntryDialog(getContext(),BIB,hours,minutes,seconds);
+
+                //InputEditDismissHandler handler = new InputEditDismissHandler();
+               // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+
+                EditEntryDialog dialog = new EditEntryDialog(getContext(),BIB,hours,minutes,seconds,entryObj,lvInputEntries);
+               // dialog.setTargetFragment(parentFragment, 300);
+               // dialog.setTargetFragment();
                 dialog.show(activity.getFragmentManager(),"editEntry");
              //   dialog.show(getFragmentManager(),"editEntry");
 

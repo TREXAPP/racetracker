@@ -66,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_14 = "Operator";
     public static final String COL_2_15 = "CPNo";
     public static final String COL_2_16 = "ReasonInvalid";
+    public static final String COL_2_17 = "TimeStamp";
 
     public static final String TABLE_3_NAME = "LoginInfo";
     public static final String COL_3_1 = "CPID";
@@ -145,7 +146,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable2Query += COL_2_4 + " INTEGER,";     //UserID
         createTable2Query += COL_2_5 + " INTEGER,";     //ActiveRacerID
         createTable2Query += COL_2_6 + " VARCHAR,";        //Barcode
-        createTable2Query += COL_2_7 + " DATETIME,";    //Time
+        createTable2Query += COL_2_7 + " VARCHAR,";    //Time
         createTable2Query += COL_2_8 + " INTEGER,";     //EntryTypeID - ID of the type of entry used (DIRECT, INDIRECT, NFC, BARCODE, OTHER...)
         createTable2Query += COL_2_9 + " TEXT,";        //Comment
         createTable2Query += COL_2_10 + " BOOLEAN,";    //Synced - Only valid when myEntry = true, shows if it has been sent to the server. For entries from another devices is always true
@@ -154,7 +155,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable2Query += COL_2_13 + " BOOLEAN,";   //valid - double entries from one control points are stored as valid=0 and are ignored. those are entries that are entered before the globals("timebetweenentries") minutes passes after the previous entry
         createTable2Query += COL_2_14 + " VARCHAR,";   //Operator
         createTable2Query += COL_2_15 + " VARCHAR,";   //CPNo
-        createTable2Query += COL_2_16 + " TEXT);";   //ReasonInvalid
+        createTable2Query += COL_2_16 + " TEXT,";    //ReasonInvalid
+        createTable2Query += COL_2_17 + " integer(4) not null default (strftime('%s','now')));";   //TimeStamp
+
         db.execSQL(createTable2Query);
 
         String createTable3Query = "";
@@ -361,6 +364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_2_14,entryObj.getOperator());
         contentValues.put(COL_2_15,entryObj.getCPNo());
         contentValues.put(COL_2_16,entryObj.getReasonInvalid());
+       // contentValues.put(COL_2_17,entryObj.getTimeStamp());
 
         long result = db.insert(TABLE_2_NAME,null,contentValues);
         if(result == -1)
@@ -448,7 +452,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
 
-        String query = "SELECT BIB, Time FROM " + TABLE_2_NAME + " WHERE " + whereClause + myEntriesClause + validClause + orderbyClause + limitClause + ";";
+        String query = "SELECT BIB, Time, TimeStamp FROM " + TABLE_2_NAME + " WHERE " + whereClause + myEntriesClause + validClause + orderbyClause + limitClause + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query,null);
 
@@ -479,5 +483,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE_2_NAME + " SET Valid=0, ReasonInvalid='Code 03: Manually deleted' WHERE " + whereClause + ";";
         db.execSQL(query);
+    }
+
+    public int updateEntry(String BIB, String newDate, String whereClause) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        //String query = "UPDATE " + TABLE_2_NAME + " SET BIB='" + BIB + "', Time='" + newDate  + "' WHERE " + whereClause + ";";
+        //db.execSQL(query);
+        ContentValues cv = new ContentValues();
+        cv.put("BIB",BIB);
+        cv.put("Time",newDate);
+        return db.update(TABLE_2_NAME,cv,whereClause,null);
+
     }
 }

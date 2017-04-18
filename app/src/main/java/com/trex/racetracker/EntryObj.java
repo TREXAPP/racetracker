@@ -28,6 +28,7 @@ public class EntryObj {
     private String Gender;
     private String Age;
     private String ReasonInvalid;
+    private String TimeStamp;
 
 
     public EntryObj() {
@@ -51,6 +52,7 @@ public class EntryObj {
         this.Gender = null;
         this.Age = null;
         this.ReasonInvalid = null;
+        this.TimeStamp = null;
     }
 
     public Integer getEntryID() {
@@ -227,5 +229,13 @@ public class EntryObj {
 
     public void setReasonInvalid(String reasonInvalid) {
         ReasonInvalid = reasonInvalid;
+    }
+
+    public String getTimeStamp() {
+        return this.TimeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.TimeStamp = timeStamp;
     }
 }

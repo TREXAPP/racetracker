@@ -444,23 +444,4 @@ public class Input extends Fragment {
         }
     }
 
-
-
-    public class InputEditDismissHandler extends Handler {
-
-        public InputEditDismissHandler () {
-            super();
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            //TODO populate input listview here
-          //  SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-          //  InitializeLoginFragment(getContext(),getView(), globals);
-
-        }
-    }
-
-
 }

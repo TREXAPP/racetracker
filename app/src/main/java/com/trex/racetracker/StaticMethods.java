@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -22,12 +24,19 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import org.w3c.dom.Text;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Handler;
+
+import layout.Input;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by Igor_2 on 03.11.2016.
@@ -120,7 +129,8 @@ public class StaticMethods {
         while (!cursorInputEntries.isAfterLast()) {
 
             String BIB = cursorInputEntries.getString(0);
-            String Time =  cursorInputEntries.getString(1).substring(11,19);
+            String Time =  cursorInputEntries.getString(1);
+            String TimeStamp =  cursorInputEntries.getString(2);
             String Name = null;
             String LastName = null;
             String Country = null;
@@ -146,6 +156,9 @@ public class StaticMethods {
             if (Time != null) EntryObjArray[i].setTime(Time);
             else EntryObjArray[i].setTime("");
 
+            if (TimeStamp != null) EntryObjArray[i].setTimeStamp(TimeStamp);
+            else EntryObjArray[i].setTimeStamp("");
+
             if (Name != null) EntryObjArray[i].setFirstName(Name);
             else EntryObjArray[i].setFirstName("");
 
@@ -166,7 +179,7 @@ public class StaticMethods {
         }
         cursorInputEntries.close();
 
-        ListAdapter entriesInputAdapter = new EntriesInputAdapter(context, EntryObjArray, activity);
+        ListAdapter entriesInputAdapter = new EntriesInputAdapter(context, EntryObjArray, activity, lvInputEntries);
         lvInputEntries.setAdapter(entriesInputAdapter);
 
     }
@@ -391,6 +404,65 @@ public class StaticMethods {
             if (child instanceof ViewGroup){
                 disableEnableControls(enable, (ViewGroup)child);
             }
+        }
+    }
+
+    public static String getCurrentTime() {
+        return DateFormat.getDateTimeInstance().format(new Date());
+    }
+
+    public static String formatEditedDate(String oldDate, int Hours, int Minutes, int Seconds) {
+
+        //String dt = "2008-01-01";  // Start date
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+       // Calendar c = Calendar.getInstance();
+       // c.setTime(sdf.parse(dt));
+       // c.add(Calendar.DATE, 1);  // number of days to add
+       // dt = sdf.format(c.getTime());  // dt is now the new date
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+
+        Calendar cal = Calendar.getInstance();
+
+        try {
+            cal.setTime(df.parse(oldDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if ((cal.get(Calendar.HOUR_OF_DAY) > 20) && (Hours < 4)) {
+            cal.add(Calendar.DATE, 1);
+        }
+        if ((cal.get(Calendar.HOUR_OF_DAY) < 4) && (Hours > 20)) {
+            cal.add(Calendar.DATE, -1);
+        }
+
+        cal.set(Calendar.HOUR_OF_DAY, Hours);
+        cal.set(Calendar.MINUTE, Minutes);
+        cal.set(Calendar.SECOND, Seconds);
+
+        return df.format(cal.getTime());
+
+    }
+
+
+    public static void TurnOffKeyboard(Activity activity, Context context) {
+        //turn off keyboard:
+        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow((null == activity.getCurrentFocus()) ? null : activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    public static void ToggleKeyboard(Boolean OnOff, Context context) {
+
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (OnOff) {
+            //True = On
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        } else {
+            //False = Off
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 

@@ -234,7 +234,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context, fragmentLogin, viewRacers);
                     synchronizeWorker.execute(TYPE_SYNC,URL_SYNC,Username,Operator,DeviceID,COMMENT_SYNC);
 
-                    Toast.makeText(context, "Login Successful!\nWelcome " + Operator + " at control point " + controlPoint + "!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show();
                 } else {
                    tvStatusTop.setText(FormatErrorString(jsonResult.getString("loginerror")));
                    tvStatusTop.setTextColor(Color.RED);
