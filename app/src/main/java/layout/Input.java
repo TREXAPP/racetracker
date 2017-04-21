@@ -4,28 +4,20 @@ package layout;
  * Created by Igor on 22.10.2016.
  */
 
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.ToneGenerator;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DigitalClock;
 import android.widget.ListView;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,10 +28,8 @@ import com.trex.racetracker.DatabaseHelper;
 import com.trex.racetracker.EntryObj;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
+import com.trex.racetracker.Provider;
 
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,6 +68,15 @@ public class Input extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_input, container, false);
+
+        //debug
+        //insert sample
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("Column", "value");
+        Uri contentUri = Uri.withAppendedPath(Provider.CONTENT_URI, DatabaseHelper.TABLE_1_NAME);
+        Uri resultUri = getContext().getContentResolver().insert(contentUri, initialValues);
+
+
         Button btn0 = (Button) rootView.findViewById(R.id.btn0);
         Button btn1 = (Button) rootView.findViewById(R.id.btn1);
         Button btn2 = (Button) rootView.findViewById(R.id.btn2);

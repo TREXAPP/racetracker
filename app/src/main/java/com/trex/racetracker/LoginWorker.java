@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import static com.trex.racetracker.DbMethods.*;
 import static com.trex.racetracker.StaticMethods.*;
 
 
@@ -58,57 +59,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... params) {
         String type = params[0];
         String result = "";
-        //params[0] tells us the type of of call we are doing
-        //params[1] tells us the url to the web server that we are calling
-        //depending on params[0], if it is 'query', then params[2] will be the actual query string
-        //in this case the LoginWorker should be called in this manner: backgroundWorker.excecute(type,url,query)
-        /*
-        if (type.equals("query")) {
-            try {
 
-                String query = params[1];
-                String queryUrl = params[2]; //String queryUrl = "http://app.trex.mk/query.php"
-
-                URL url = new URL(queryUrl);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-                String post_data = URLEncoder.encode("query","UTF-8")+"="+URLEncoder.encode(query,"UTF-8");
-                bufferedWriter.write(post_data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
-
-                //now get the response
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
-                String line="";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-                return result;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        */
-
-
-        //if params[0] is 'login', then
-        //params[2]=Username
-        //params[3]=Password
-        //params[4]=operator
-        //params[5]=DeviceID
-        //params[6]=loginComment
-        //in this case the LoginWorker should be called in this manner: backgroundWorker.excecute(type,url,username,password,operator,deviceid,logincomment)
         if (type.equals("login")) try {
 
             queryUrl = params[1];
@@ -203,8 +154,8 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     editor.putString("controlpoint",controlPoint);
 
 
-
-                    if (!dbHelper.insertIntoLoginInfo(jsonResult)) {
+                //Provider provider = new Provider();
+                    if (insertIntoLoginInfoDbM(jsonResult, context)) {
                         tvStatusTop.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
                     }
 /*
