@@ -88,8 +88,8 @@ public class Provider extends ContentProvider {
             database = DatabaseHelper.getInstance(getContext());
         }
         SQLiteDatabase db = database.getReadableDatabase();
-        Cursor cursor = db.query(table,  projection, selection, selectionArgs, null, null, sortOrder);
-        return cursor;
+        return db.query(table,  projection, selection, selectionArgs, null, null, sortOrder);
+       // return db.query(distinct, table, projection, selection, selectionArgs, groupBy, having, sortOrder, limit);
     }
 
 

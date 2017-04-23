@@ -2,6 +2,8 @@ package com.trex.racetracker;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import org.json.JSONException;
@@ -50,6 +52,41 @@ public class DbMethods {
         }
         if (!result.equals("-1")) return false;
         else return true;
+    }
+
+    public static int deleteAllFromLoginInfoDbM(Context context) {
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        return context.getContentResolver().delete(uri,"",null);
+    }
+
+    public static Cursor getDistinctRacesFromLoginInfoDbM(Context context) {
+       // String query = "SELECT DISTINCT RaceID, RaceDescription FROM " + TABLE_3_NAME + ";";
+        //SQLiteDatabase db = this.getWritableDatabase();
+       // return db.rawQuery(query,null);
+
+        String[] projection = new String[]{"DISTINCT RaceID", "RaceDescription"};
+        String selection = null;
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        return context.getContentResolver().query(uri,projection,selection,null,"");
+    }
+
+    public static Cursor getDistinctCPNoFromLoginInfoDbM(Context context, String selection) {
+        /*
+        String query = "SELECT DISTINCT CPNo FROM " + TABLE_3_NAME + " WHERE ";
+        if (whereClause.equals("")) {
+            query += "1";
+        }
+        else {
+            query += whereClause;
+        }
+        query += " ORDER BY CPNo ASC;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery(query,null);
+*/
+        String[] projection = new String[]{"DISTINCT CPNo"};
+        String sortOrder = "CPNo ASC";
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
 }

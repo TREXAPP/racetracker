@@ -36,6 +36,7 @@ import java.util.logging.Handler;
 
 import layout.Input;
 
+import static com.trex.racetracker.DbMethods.*;
 import static java.security.AccessController.getContext;
 
 /**
@@ -186,8 +187,8 @@ public class StaticMethods {
 
     public static void PopulateRacesListView(Context context, ListView lvRacesLogin) {
 
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        Cursor cursorRaces = dbHelper.getDistinctRacesFromLoginInfo();
+        //DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        Cursor cursorRaces = getDistinctRacesFromLoginInfoDbM(context);
         final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
 
         RaceObj[] RacesObjArray = new RaceObj[cursorRaces.getCount()];
@@ -198,7 +199,7 @@ public class StaticMethods {
             final String RaceID = cursorRaces.getString(0);
             String RaceDescription = cursorRaces.getString(1);
             String CPNo = "";
-            Cursor cursorCPNo = dbHelper.getDistinctCPNoFromLoginInfo("RaceID=" + RaceID);
+            Cursor cursorCPNo = getDistinctCPNoFromLoginInfoDbM(context,"RaceID=" + RaceID);
             if (cursorCPNo != null && cursorCPNo.getCount()>0) {
                 cursorCPNo.moveToFirst();
                 while (!cursorCPNo.isAfterLast()) {
@@ -249,7 +250,7 @@ public class StaticMethods {
     public static void InitializeRacersFragment(Context context, View viewRacers, final SharedPreferences globals) {
 
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        final Cursor cursorDistinctRaces = dbHelper.getDistinctRacesFromLoginInfo();
+        final Cursor cursorDistinctRaces = getDistinctRacesFromLoginInfoDbM(context);
 
         List<String> listDataHeader;
         HashMap<String, List<ActiveRacerObj>> listDataChild;

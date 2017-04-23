@@ -159,7 +159,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
                     editor.commit();
 
                 //    InitializeLoginFragment(context, fragmentLogin,globals);
-                    dbHelper.deleteAllFromLoginInfo();
+                    DbMethods.deleteAllFromLoginInfoDbM(context);
                     dbHelper.setEntriesNotMine();
 
                     Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();

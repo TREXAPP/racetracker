@@ -21,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import static com.trex.racetracker.DbMethods.*;
+
 /**
  * Created by Igor on 04.11.2016.
  */
@@ -57,8 +59,8 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
             SyncComment = params[5];
 
             //fetch all unique Races from SQLite, for which we will need the Racers from mysql
-            DatabaseHelper db = DatabaseHelper.getInstance(context);
-            Cursor rows = db.getDistinctRacesFromLoginInfo();
+            //DatabaseHelper db = DatabaseHelper.getInstance(context);
+            Cursor rows = getDistinctRacesFromLoginInfoDbM(context);
             String condition = "";
             rows.moveToFirst();
             while (!rows.isAfterLast()) {
