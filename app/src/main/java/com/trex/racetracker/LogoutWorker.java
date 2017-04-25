@@ -1,6 +1,5 @@
 package com.trex.racetracker;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -25,7 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import static com.trex.racetracker.StaticMethods.*;
+import static com.trex.racetracker.DbMethods.*;
 
 /**
  * Created by Igor on 03.11.2016.
@@ -159,8 +158,8 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
                     editor.commit();
 
                 //    InitializeLoginFragment(context, fragmentLogin,globals);
-                    DbMethods.deleteAllFromLoginInfoDbM(context);
-                    dbHelper.setEntriesNotMine();
+                    deleteAllFromLoginInfo(context);
+                    setEntriesNotMine(context);
 
                     Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -197,7 +196,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
             editor1.commit();
         }
 
-        dbHelper.deleteAllFromActiveRacers();
+        deleteAllFromActiveRacers(context);
         handler.sendEmptyMessage(0);
     }
 

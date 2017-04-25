@@ -5,6 +5,7 @@ package layout;
  */
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import static com.trex.racetracker.StaticMethods.*;
+import static com.trex.racetracker.DbMethods.*;
 
 
 import com.trex.racetracker.DatabaseHelper;
@@ -102,75 +104,75 @@ public class Input extends Fragment {
         btn0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("0",view);
+                DigitPressed(getContext(),"0",view);
             }
         });
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("1",view);
+                DigitPressed(getContext(),"1",view);
             }
         });
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("2",view);
+                DigitPressed(getContext(),"2",view);
             }
         });
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("3",view);
+                DigitPressed(getContext(),"3",view);
             }
         });
         btn4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("4",view);
+                DigitPressed(getContext(),"4",view);
             }
         });
         btn5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("5",view);
+                DigitPressed(getContext(),"5",view);
             }
         });
         btn6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("6",view);
+                DigitPressed(getContext(),"6",view);
             }
         });
         btn7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("7",view);
+                DigitPressed(getContext(),"7",view);
             }
         });
         btn8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("8",view);
+                DigitPressed(getContext(),"8",view);
             }
         });
         btn9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("9",view);
+                DigitPressed(getContext(),"9",view);
             }
         });
         btnE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DigitPressed("E",view);
+                DigitPressed(getContext(),"E",view);
             }
         });
 
         return rootView;
     }
 
-    public void DigitPressed(String digit, View view) {
-        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+    public void DigitPressed(Context context, String digit, View view) {
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
         boolean newEntry = false;
         if (!globals.contains("EntryNoState")) {
@@ -222,17 +224,17 @@ public class Input extends Fragment {
                 }
             }.start();
 
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
             //for direct entry EntryTypeID=1, Barcode = null
-            EntryObj entryObj = PrepareEntryObj(inputedBIB,1,null,dbHelper,tvBIBEntry);
+            EntryObj entryObj = PrepareEntryObj(context, inputedBIB,1,null,dbHelper,tvBIBEntry);
 
-            if (!(dbHelper.insertIntoCPEntries(entryObj))) {
-                Toast.makeText(getContext(), "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
+            if (!(insertIntoCPEntries(context,entryObj))) {
+                Toast.makeText(context, "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
             }
 
             //update listview
          //   ListView lvInputEntries = (ListView) view.findViewById(R.id.lvInputEntries);
-            PopulateInputEntriesListView(getContext(),lvInputEntries, getActivity());
+            PopulateInputEntriesListView(context,lvInputEntries, getActivity());
 
             // FF7BFDB1 lightgreen
             // FFFF0004 red
@@ -258,14 +260,14 @@ public class Input extends Fragment {
 
     }
 
-    private EntryObj PrepareEntryObj(String inputedBIB, Integer EntryTypeID, String Barcode, DatabaseHelper dbHelper, TextView tvBIBEntry) {
+    private EntryObj PrepareEntryObj(Context context, String inputedBIB, Integer EntryTypeID, String Barcode, DatabaseHelper dbHelper, TextView tvBIBEntry) {
 
-        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
 
         EntryObj entryObj = new EntryObj();
         entryObj.setEntryID(null);
         entryObj.setBIB(inputedBIB);
-        Cursor cursorRacers = dbHelper.getActiveRacerIDFromRacers(inputedBIB);
+        Cursor cursorRacers = getActiveRacerIDFromRacers(context, inputedBIB);
         boolean racerFound = false;
         boolean cpnoSet = false;
         String status = "success";
@@ -310,7 +312,7 @@ public class Input extends Fragment {
 
         //check if there is a previous entry close to this, whether to flag this entry valid true or false
         int timeBetweenEntries = globals.getInt("timebetweenentries",1);
-        Date lastEntryDate = dbHelper.getDateForLastEntry(inputedBIB);
+        Date lastEntryDate = getDateForLastEntry(context, inputedBIB);
         if (lastEntryDate != null) {
             if (addMinutesToDate(timeBetweenEntries,lastEntryDate).before(timeNow)) {
                 entryObj.setValid(true);
@@ -338,11 +340,10 @@ public class Input extends Fragment {
                 loginInfoWhere = "1";
                 loginInfoOrder = null;
             }
-            Cursor cursorCP = dbHelper.getEntryDataFromLoginInfo(loginInfoWhere,loginInfoOrder);
+            Cursor cursorCP = getEntryDataFromLoginInfo(context, loginInfoWhere,loginInfoOrder);
             //set CPNo:
             // 1. check from login info how many rows are there for this RaceID
             //2. If this CPNo exists check the next ... and so on... Raise alarm if all are used
-//TODO
 
 
 
@@ -354,14 +355,14 @@ public class Input extends Fragment {
                 while (!cursorCP.isAfterLast()) {
                     String CPNo = cursorCP.getString(2);
 
-                    if (!dbHelper.hasRacerPassedThroughCP(inputedBIB,CPNo)) {
+                    if (!hasRunnerPassedThroughCP(context, inputedBIB,CPNo)) {
                         entryObj.setCPNo(cursorCP.getString(2));
                         cpnoSet = true;
                     }
                     cursorCP.moveToNext();
                 }
                 if (!cpnoSet) {
-                    //TODO raise alarm! entering a racer which has passed enough times through this CP
+
                     Toast.makeText(getContext(), "The runner has already passed through this checkpoint " + cursorCP.getCount() + " times", Toast.LENGTH_SHORT).show();
                     entryObj.setValid(false);
                     entryObj.setReasonInvalid("Code 02: The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");

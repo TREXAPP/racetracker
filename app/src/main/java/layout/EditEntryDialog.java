@@ -1,44 +1,29 @@
 package layout;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.trex.racetracker.DatabaseHelper;
 import com.trex.racetracker.EntryObj;
-import com.trex.racetracker.LogoutWorker;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
 import com.trex.racetracker.StaticMethods;
 
-import java.util.Date;
-
-import static com.trex.racetracker.StaticMethods.PopulateInputEntriesListView;
+import static com.trex.racetracker.DbMethods.*;
 import static com.trex.racetracker.StaticMethods.*;
 
 /**
@@ -120,7 +105,6 @@ public class EditEntryDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 //TODO
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
                 String oldDate = entryObj.getTime();
                 String newBIB = etBIBAlert.getText().toString();
                 int newHours = Integer.parseInt(etHours.getText().toString());
@@ -129,7 +113,7 @@ public class EditEntryDialog extends DialogFragment {
 
                 String newDate = StaticMethods.formatEditedDate(oldDate,  newHours, newMins, newSecs);
                 String whereClause = "myEntry=1 AND TimeStamp='" + entryObj.getTimeStamp() + "'";
-               int rowsUpdated = dbHelper.updateEntry(newBIB,newDate,whereClause);
+               int rowsUpdated = updateEntry(context,newBIB,newDate,whereClause);
                 Toast.makeText(context, rowsUpdated + " entries updated.", Toast.LENGTH_SHORT).show();
         //        handler.sendEmptyMessage(0);
                 getDialog().dismiss();

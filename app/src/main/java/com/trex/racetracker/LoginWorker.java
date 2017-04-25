@@ -2,7 +2,6 @@ package com.trex.racetracker;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.content.Context;
@@ -155,7 +154,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
 
                 //Provider provider = new Provider();
-                    if (insertIntoLoginInfoDbM(jsonResult, context)) {
+                    if (insertIntoLoginInfo(jsonResult, context)) {
                         tvStatusTop.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
                     }
 /*

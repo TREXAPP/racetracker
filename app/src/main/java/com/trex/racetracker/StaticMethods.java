@@ -4,24 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,13 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Handler;
-
-import layout.Input;
 
 import static com.trex.racetracker.DbMethods.*;
-import static java.security.AccessController.getContext;
 
 /**
  * Created by Igor_2 on 03.11.2016.
@@ -120,8 +108,8 @@ public class StaticMethods {
     }
 
     public static void PopulateInputEntriesListView (Context context, ListView lvInputEntries, Activity activity) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        Cursor cursorInputEntries = dbHelper.getEntries(true,true,10,"","Time DESC");
+        //DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        Cursor cursorInputEntries = getEntries(context,true,true,10,"","Time DESC");
         final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
 
         EntryObj[] EntryObjArray = new EntryObj[cursorInputEntries.getCount()];
@@ -138,7 +126,7 @@ public class StaticMethods {
             String Age = null;
             String Gender = null;
 
-            Cursor cursorRacer = dbHelper.getActiveRacerIDFromRacers(BIB);
+            Cursor cursorRacer = getActiveRacerIDFromRacers(context, BIB);
             if (cursorRacer.getCount() > 0) {
                 cursorRacer.moveToFirst();
                 Name = cursorRacer.getString(1);
@@ -188,7 +176,7 @@ public class StaticMethods {
     public static void PopulateRacesListView(Context context, ListView lvRacesLogin) {
 
         //DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        Cursor cursorRaces = getDistinctRacesFromLoginInfoDbM(context);
+        Cursor cursorRaces = getDistinctRacesFromLoginInfo(context);
         final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
 
         RaceObj[] RacesObjArray = new RaceObj[cursorRaces.getCount()];
@@ -199,7 +187,7 @@ public class StaticMethods {
             final String RaceID = cursorRaces.getString(0);
             String RaceDescription = cursorRaces.getString(1);
             String CPNo = "";
-            Cursor cursorCPNo = getDistinctCPNoFromLoginInfoDbM(context,"RaceID=" + RaceID);
+            Cursor cursorCPNo = getDistinctCPNoFromLoginInfo(context,"RaceID=" + RaceID);
             if (cursorCPNo != null && cursorCPNo.getCount()>0) {
                 cursorCPNo.moveToFirst();
                 while (!cursorCPNo.isAfterLast()) {
@@ -250,7 +238,7 @@ public class StaticMethods {
     public static void InitializeRacersFragment(Context context, View viewRacers, final SharedPreferences globals) {
 
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        final Cursor cursorDistinctRaces = getDistinctRacesFromLoginInfoDbM(context);
+        final Cursor cursorDistinctRaces = getDistinctRacesFromLoginInfo(context);
 
         List<String> listDataHeader;
         HashMap<String, List<ActiveRacerObj>> listDataChild;
@@ -263,7 +251,7 @@ public class StaticMethods {
         while (!cursorDistinctRaces.isAfterLast()) {
 
             listDataHeader.add(cursorDistinctRaces.getString(1));
-            Cursor cursorRacers = dbHelper.getActiveRacersForListView("RaceID=" + cursorDistinctRaces.getString(0));
+            Cursor cursorRacers = getActiveRacersForListView(context,"RaceID=" + cursorDistinctRaces.getString(0));
 
             List<ActiveRacerObj> childList = new ArrayList<ActiveRacerObj>();
             int j=0;
@@ -291,7 +279,7 @@ public class StaticMethods {
                     child.setGender(cursorRacers.getString(5));
                 } else  child.setGender("");
 
-                Cursor lastEntryRow = dbHelper.getLastEntryRow(cursorRacers.getString(6));
+                Cursor lastEntryRow = getLastEntryRow(context, cursorRacers.getString(6));
                 lastEntryRow.moveToFirst();
                 if (lastEntryRow.getCount()>0) {
                     if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
@@ -465,6 +453,22 @@ public class StaticMethods {
             //False = Off
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public static Date formatDateTime(String timeToFormat) {
+
+        SimpleDateFormat iso8601Format = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss");
+
+        Date date = null;
+        if (timeToFormat != null) {
+            try {
+                date = iso8601Format.parse(timeToFormat);
+            } catch (ParseException e) {
+                date = null;
+            }
+        }
+        return date;
     }
 
 }

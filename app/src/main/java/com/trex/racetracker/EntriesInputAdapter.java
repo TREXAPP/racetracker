@@ -4,13 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
 import android.view.View;
@@ -22,17 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.util.List;
-
-import layout.ConfirmLogoutDialog;
 import layout.EditEntryDialog;
-import layout.Input;
-import layout.Login;
 
 import static android.app.PendingIntent.getActivity;
-import static com.trex.racetracker.R.id.lvInputEntries;
+import static com.trex.racetracker.DbMethods.setEntryDeleted;
 import static com.trex.racetracker.StaticMethods.*;
 
 /**
@@ -116,8 +103,8 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
                 TextView tvBIB = (TextView) layoutParent.findViewById(R.id.tvBIB);
                 //View parentView = (View) layoutParent.getParent();
                 //ListView lvInputEntries = (ListView) parentView.findViewById(R.id.lvInputEntries);
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
-                dbHelper.setEntryDeleted("BIB='" + tvBIB.getText() + "'");
+                //DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
+                setEntryDeleted(getContext(),"BIB='" + tvBIB.getText() + "'");
                 PopulateInputEntriesListView(getContext(),lvInputEntries, activity);
                 Toast.makeText(getContext(), "Entry deleted!", Toast.LENGTH_SHORT).show();
 

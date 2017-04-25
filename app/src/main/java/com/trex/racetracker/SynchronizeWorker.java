@@ -60,7 +60,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
 
             //fetch all unique Races from SQLite, for which we will need the Racers from mysql
             //DatabaseHelper db = DatabaseHelper.getInstance(context);
-            Cursor rows = getDistinctRacesFromLoginInfoDbM(context);
+            Cursor rows = getDistinctRacesFromLoginInfo(context);
             String condition = "";
             rows.moveToFirst();
             while (!rows.isAfterLast()) {
@@ -161,8 +161,8 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
             if (jsonResult.has("issync")) {
                 if (jsonResult.getString("issync").equals("1")) {
                     //TODO - a logic not to write only in sqlite, but also to check for update if the record already exists
-                    dbHelper.deleteAllFromActiveRacers();
-                    if (!dbHelper.insertIntoActiveRacers(jsonResult)) {
+                    deleteAllFromActiveRacers(context);
+                    if (!insertIntoActiveRacers(context,jsonResult)) {
                         error += "Error while writing in SQLite, ActiveRaces table. Contact the administrator;";
                     };
 
