@@ -19,7 +19,7 @@ import android.widget.Toast;
 import layout.EditEntryDialog;
 
 import static android.app.PendingIntent.getActivity;
-import static com.trex.racetracker.DbMethods.setEntryDeleted;
+import static com.trex.racetracker.DbMethods.*;
 import static com.trex.racetracker.StaticMethods.*;
 
 /**
@@ -104,7 +104,7 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
                 //View parentView = (View) layoutParent.getParent();
                 //ListView lvInputEntries = (ListView) parentView.findViewById(R.id.lvInputEntries);
                 //DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
-                setEntryDeleted(getContext(),"BIB='" + tvBIB.getText() + "'");
+                setEntryDeleted(getContext(),"BIB='" + tvBIB.getText() + "'", true);
                 PopulateInputEntriesListView(getContext(),lvInputEntries, activity);
                 Toast.makeText(getContext(), "Entry deleted!", Toast.LENGTH_SHORT).show();
 

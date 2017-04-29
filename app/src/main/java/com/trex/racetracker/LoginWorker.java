@@ -181,8 +181,8 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     final String URL_SYNC = "http://app.trex.mk/sync.php";
                     final String COMMENT_SYNC = "";
 
-                    SynchronizeWorker synchronizeWorker = new SynchronizeWorker(context, fragmentLogin, viewRacers);
-                    synchronizeWorker.execute(TYPE_SYNC,URL_SYNC,Username,Operator,DeviceID,COMMENT_SYNC);
+                    SyncLoginInfoWorker syncLoginInfoWorker = new SyncLoginInfoWorker(context, fragmentLogin, viewRacers);
+                    syncLoginInfoWorker.execute(TYPE_SYNC,URL_SYNC,Username,Operator,DeviceID,COMMENT_SYNC);
 
                     Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show();
                 } else {

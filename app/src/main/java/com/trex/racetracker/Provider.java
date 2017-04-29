@@ -3,7 +3,9 @@ package com.trex.racetracker;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -31,9 +33,9 @@ import static java.util.Objects.isNull;
 public class Provider extends ContentProvider {
 
     DatabaseHelper database;
-
+    public static final String SCHEME = "content://";
     public static final String AUTHORITY = "com.trex.racetracker.provider";//specific for our our app, will be specified in maninfed
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);
 /*
     // used for the UriMacher
     private static final int ENTRIES = 10;
@@ -115,8 +117,8 @@ public class Provider extends ContentProvider {
         }
         SQLiteDatabase db = database.getWritableDatabase();
         long value = db.insert(table, null, initialValues);
+        //getContext().getContentResolver().notifyChange(uri, null);
         return Uri.withAppendedPath(CONTENT_URI, String.valueOf(value));
-
     }
 
 
@@ -130,6 +132,7 @@ public class Provider extends ContentProvider {
             database = DatabaseHelper.getInstance(getContext());
         }
         SQLiteDatabase db = database.getWritableDatabase();
+        //getContext().getContentResolver().notifyChange(uri, null);
         return db.delete(table, where, args);
     }
 
@@ -144,6 +147,7 @@ public class Provider extends ContentProvider {
             database = DatabaseHelper.getInstance(getContext());
         }
         SQLiteDatabase db = database.getWritableDatabase();
+        //getContext().getContentResolver().notifyChange(uri, null);
         return db.update(table, values, whereClause, whereArgs);
     }
 

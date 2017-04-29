@@ -73,11 +73,12 @@ public class Input extends Fragment {
 
         //debug
         //insert sample
+        /*
         ContentValues initialValues = new ContentValues();
         initialValues.put("Column", "value");
         Uri contentUri = Uri.withAppendedPath(Provider.CONTENT_URI, DatabaseHelper.TABLE_1_NAME);
         Uri resultUri = getContext().getContentResolver().insert(contentUri, initialValues);
-
+        */
 
         Button btn0 = (Button) rootView.findViewById(R.id.btn0);
         Button btn1 = (Button) rootView.findViewById(R.id.btn1);
@@ -228,7 +229,7 @@ public class Input extends Fragment {
             //for direct entry EntryTypeID=1, Barcode = null
             EntryObj entryObj = PrepareEntryObj(context, inputedBIB,1,null,dbHelper,tvBIBEntry);
 
-            if (!(insertIntoCPEntries(context,entryObj))) {
+            if (!(insertIntoCPEntries(context,entryObj,true))) {
                 Toast.makeText(context, "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
             }
 

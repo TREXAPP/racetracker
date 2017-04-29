@@ -56,6 +56,7 @@ public class DbMethods {
             }
             i++;
         }
+        context.getContentResolver().notifyChange(uri, null, false);
         if (!result.equals("-1")) return false;
         else return true;
     }
@@ -238,7 +239,7 @@ public class DbMethods {
 
     }
 
-    public static boolean insertIntoCPEntries(Context context, EntryObj entryObj) {
+    public static boolean insertIntoCPEntries(Context context, EntryObj entryObj, Boolean notifyChange) {
         String result;
         Uri resultUri;
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
@@ -265,7 +266,9 @@ public class DbMethods {
 
         resultUri = context.getContentResolver().insert(uri, contentValues);
         result = resultUri != null ? resultUri.getLastPathSegment() : "1";
-
+        if (notifyChange) {
+            context.getContentResolver().notifyChange(uri, null, false);
+        }
         if(result.equals("-1"))
             return false;
         else
@@ -387,7 +390,7 @@ public class DbMethods {
         return context.getContentResolver().delete(uri,whereClause,null);
     }
 
-    public static void setEntryDeleted(Context context, String whereClause) {
+    public static void setEntryDeleted(Context context, String whereClause, Boolean notifyChange) {
         //SQLiteDatabase db = this.getWritableDatabase();
         //String query = "UPDATE " + TABLE_2_NAME + " SET Valid=0, ReasonInvalid='Code 03: Manually deleted' WHERE " + whereClause + ";";
         //db.execSQL(query);
@@ -397,9 +400,12 @@ public class DbMethods {
         contentValues.put("Valid","0");
         contentValues.put("ReasonInvalid","Code 03: Manually deleted");
         int result = context.getContentResolver().update(uri, contentValues,whereClause,null);
+        if (notifyChange) {
+            context.getContentResolver().notifyChange(uri, null, false);
+        }
     }
 
-    public static int updateEntry(Context context, String BIB, String newDate, String whereClause) {
+    public static int updateEntry(Context context, String BIB, String newDate, String whereClause, Boolean notifyChange) {
         //SQLiteDatabase db = this.getWritableDatabase();
         //String query = "UPDATE " + TABLE_2_NAME + " SET BIB='" + BIB + "', Time='" + newDate  + "' WHERE " + whereClause + ";";
         //db.execSQL(query);
@@ -408,6 +414,9 @@ public class DbMethods {
         ContentValues cv = new ContentValues();
         cv.put("BIB",BIB);
         cv.put("Time",newDate);
+        if (notifyChange) {
+            context.getContentResolver().notifyChange(uri, null, false);
+        }
         return context.getContentResolver().update(uri, cv, whereClause, null);
 
     }

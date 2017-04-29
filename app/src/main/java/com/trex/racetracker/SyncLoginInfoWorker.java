@@ -27,7 +27,7 @@ import static com.trex.racetracker.DbMethods.*;
  * Created by Igor on 04.11.2016.
  */
 
-public class SynchronizeWorker extends AsyncTask<String,Void,String> {
+public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
     private Context context;
     private View fragmentLogin;
     private View viewRacers;
@@ -39,7 +39,7 @@ public class SynchronizeWorker extends AsyncTask<String,Void,String> {
     private String mysqlQuery;
 
     //constructor
-    public SynchronizeWorker(Context ctx, View view, View viewRacers) {
+    public SyncLoginInfoWorker(Context ctx, View view, View viewRacers) {
         this.context = ctx;
         this.fragmentLogin = view;
         this.viewRacers = viewRacers;

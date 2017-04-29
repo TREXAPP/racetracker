@@ -13,6 +13,8 @@
     <!-- Required because we're manually creating a new account. -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+
 
     <application
         tools:node="replace"

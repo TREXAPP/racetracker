@@ -2,7 +2,13 @@ package com.trex.racetracker;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.FragmentManager;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.provider.ContactsContract;
 import android.provider.Settings.Secure;
 import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
@@ -17,8 +23,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import layout.Input;
+
+import static android.service.notification.Condition.SCHEME;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private Observer mObserver = null;
+    private Uri mUri = null;
 
     DatabaseHelper myDb;
 
@@ -50,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACCOUNT = "dummyaccount";
     // Instance fields
     Account mAccount;
+    // A content resolver for accessing the provider
+    ContentResolver mResolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +82,36 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+
          myDb = DatabaseHelper.getInstance(this);
         InitializeGlobals(myDb);
 
         // Create the dummy account
         mAccount = CreateSyncAccount(this);
+        // Construct a URI that points to the content provider data table
+        //mUri = Uri.withAppendedPath(Provider.CONTENT_URI,"CPEntries");
+        mUri = Provider.CONTENT_URI;
+
+        //mUri.parse(mProvider.SCHEME + mProvider.AUTHORITY);
+
+        // creates and starts a new thread set up as a looper
+       // HandlerThread thread = new HandlerThread("MyHandlerThread");
+        //thread.start();
+
+// creates the handler using the passed looper
+       // Handler handler = new Handler(thread.getLooper());
+
+        /*
+         * Create a content observer object.
+         * Its code does not mutate the provider, so set
+         * selfChange to "false"
+         */
+        mObserver = new Observer(new Handler(),this,mAccount);
+        /*
+         * Register the observer for the data table. The table's path
+         * and any of its subpaths trigger the observer.
+         */
+        getContentResolver().registerContentObserver(mUri, true, mObserver);
     }
 
     /**
@@ -86,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
         // Get an instance of the Android account manager
         AccountManager accountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
+
         /*
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.
@@ -103,6 +142,14 @@ public class MainActivity extends AppCompatActivity {
              * The account exists or some other error occurred. Log this, report it,
              * or handle it internally.
              */
+
+            //check if account exists
+            Account[] accounts = accountManager.getAccounts();
+            for (Account account : accounts) {
+                if (account.name.equals(newAccount.name)) {
+                    return account;
+                }
+            }
             Log.e("error","Error creating account");
             return null;
         }
@@ -152,6 +199,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getContentResolver().unregisterContentObserver(mObserver);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getContentResolver().registerContentObserver(mUri, true, mObserver);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

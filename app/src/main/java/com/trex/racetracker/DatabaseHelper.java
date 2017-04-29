@@ -69,6 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_15 = "CPNo";
     public static final String COL_2_16 = "ReasonInvalid";
     public static final String COL_2_17 = "TimeStamp";
+    public static final String COL_2_18 = "LocalEntryID";
 
     public static final String TABLE_3_NAME = "LoginInfo";
     public static final String COL_3_1 = "CPID";
@@ -142,6 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String createTable2Query = "";
         createTable2Query += "CREATE TABLE IF NOT EXISTS " + TABLE_2_NAME + "(";
+        createTable2Query += COL_2_18 + " INTEGER PRIMARY KEY ASC,";   //EntryID
         createTable2Query += COL_2_1 + " INTEGER,";   //EntryID
         createTable2Query += COL_2_2 + " INTEGER,";     //CPID
         createTable2Query += COL_2_3 + " VARCHAR,";        //CPName
