@@ -28,7 +28,7 @@ public class EntryObj {
     private String Gender;
     private String Age;
     private String ReasonInvalid;
-    private String TimeStamp;
+    private Long TimeStamp;
 
 
     public EntryObj() {
@@ -231,11 +231,11 @@ public class EntryObj {
         ReasonInvalid = reasonInvalid;
     }
 
-    public String getTimeStamp() {
+    public Long getTimeStamp() {
         return this.TimeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(Long timeStamp) {
         this.TimeStamp = timeStamp;
     }
 }

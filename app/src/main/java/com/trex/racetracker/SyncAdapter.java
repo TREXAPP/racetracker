@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.trex.racetracker.DbMethods.*;
 
 /**
  * Created by Igor on 18.4.2017.
@@ -28,10 +31,11 @@ import org.json.JSONObject;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
-    protected static final String TYPE_SYNC_PUSH = "sync_push";
+    protected static final String TYPE_SYNC_PUSH_INSERT = "sync_push_insert";
+    protected static final String TYPE_SYNC_PUSH_UPDATE = "sync_push_update";
     protected static final String TYPE_SYNC_PULL = "sync_pull";
-    protected static final String URL_SYNC_PUSH = "http://app.trex.mk/login.php";
-    protected static final String URL_SYNC_PULL = "http://app.trex.mk/login.php";
+    protected static final String URL_SYNC_PUSH = "http://app.trex.mk/syncEntries_push.php";
+    protected static final String URL_SYNC_PULL = "http://app.trex.mk/syncEntries_pull.php";
 
 
     // Global variables
@@ -78,19 +82,40 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
             if (globals.getBoolean("islogin",false)) {
-                long lastPullInMiliSecs = globals.getLong("lastPullInMiliSecs",0);
-                long lastPushInMiliSecs = globals.getLong("lastPushInMiliSecs",0);
+                long lastPullInMillis = globals.getLong("lastPullInMillis",0);
+                long lastPushInMillis = globals.getLong("lastPushInMillis",0);
                 SyncEntriesWorker syncEntriesWorker = new SyncEntriesWorker(getContext());
+
+                //1.INSERT
+                Cursor insertCursor = getEntriesForSync(getContext(),"myEntry = 1 AND EntryID IS NULL AND TimeStamp > " + lastPushInMillis,"");
+                int rowsNo = insertCursor.getCount();
+                long newLastPush_temp = System.currentTimeMillis();
                 String insertJSON = null;
+                Boolean syncSuccess = true;
                 try {
-                    insertJSON = CreateInsertJSONstring();
+                    insertJSON = CreateInsertJSONstring(insertCursor);
                 } catch (JSONException e) {
                     Log.d("error","Error creating JSON string for inserting, PUSH");
                     e.printStackTrace();
+                    syncSuccess = false;
                 }
-                syncEntriesWorker.execute(TYPE_SYNC_PUSH, URL_SYNC_PUSH, insertJSON);
+                syncEntriesWorker.execute(TYPE_SYNC_PUSH_INSERT, URL_SYNC_PUSH, String.valueOf(rowsNo), insertJSON);
+
+                //2. UPDATE
                 String updateJSON = CreateUpdateJSONstring();
-                syncEntriesWorker.execute(TYPE_SYNC_PULL, URL_SYNC_PULL, updateJSON);
+               // syncEntriesWorker.execute(TYPE_SYNC_PULL, URL_SYNC_PULL, String.valueOf(rowsNo), updateJSON);
+
+                //TODO uncomment this:
+                /*
+                if (syncSuccess) {
+                    SharedPreferences.Editor editor = globals.edit();
+                    editor.putLong("lastPushInMillis",newLastPush_temp);
+                    //editor.putLong("lastPullInMillis",newLastPull_temp);
+                    editor.apply();
+
+                }
+*/
+
 
             /*
             syncEntriesWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
@@ -126,11 +151,44 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private String CreateInsertJSONstring() throws JSONException {
+    private String CreateInsertJSONstring(Cursor insertCursor) throws JSONException {
         String result = "";
         JSONObject jsonObj = new JSONObject();
-        jsonObj.put("type","sync_push_insert");
-       // Cursor insertCursor =
+        //jsonObj.put("type","sync_push_insert");
+        //jsonObj.put("rows_no",insertCursor.getCount());
+        int count=0;
+//"LocalEntryID","EntryID","CPID","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","TimeStamp"
+        if (insertCursor.getCount() > 0) {
+            insertCursor.moveToFirst();
+            while (!insertCursor.isAfterLast()) {
+                JSONObject rowJSON = new JSONObject();
+                //JSONObject rowJSON = new JSONObject();
+                rowJSON.put("LocalEntryID",insertCursor.getString(0));
+                //rowJSON.put("EntryID",insertCursor.getString(1));
+                rowJSON.put("CPID",insertCursor.getString(2));
+                rowJSON.put("UserID",insertCursor.getString(3));
+                rowJSON.put("ActiveRacerID",insertCursor.getString(4));
+                rowJSON.put("Barcode",insertCursor.getString(5));
+                rowJSON.put("Time",insertCursor.getString(6));
+                rowJSON.put("EntryTypeID",insertCursor.getString(7));
+                rowJSON.put("Comment",insertCursor.getString(8));
+                rowJSON.put("BIB",insertCursor.getString(9));
+                rowJSON.put("Valid",insertCursor.getString(10));
+                rowJSON.put("Operator",insertCursor.getString(11));
+                rowJSON.put("ReasonInvalid",insertCursor.getString(12));
+                rowJSON.put("TimeStamp",insertCursor.getString(13));
+
+                jsonObj.put(String.valueOf(count),rowJSON);
+                insertCursor.moveToNext();
+                count++;
+            }
+        }
+
+
+
+        insertCursor.close();
+        result = jsonObj.toString();
+        //result = result.replace("\"", "");
         return result;
     }
 

@@ -262,7 +262,7 @@ public class DbMethods {
         contentValues.put(COL_2_14,entryObj.getOperator());
         contentValues.put(COL_2_15,entryObj.getCPNo());
         contentValues.put(COL_2_16,entryObj.getReasonInvalid());
-        // contentValues.put(COL_2_17,entryObj.getTimeStamp());
+        contentValues.put(COL_2_17,entryObj.getTimeStamp());
 
         resultUri = context.getContentResolver().insert(uri, contentValues);
         result = resultUri != null ? resultUri.getLastPathSegment() : "1";
@@ -369,6 +369,20 @@ public class DbMethods {
 
     }
 
+    public static Cursor getEntriesForSync(Context context, String whereClause, String orderbyClause) {
+
+        if (whereClause.equals("")) {
+            whereClause = " 1 ";
+        }
+
+        String[] projection = new String[]{"LocalEntryID","EntryID","CPID","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","TimeStamp"};
+        String selection = whereClause;
+        String sortOrder = orderbyClause;
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
+
+    }
+
     public static void setEntriesNotMine(Context context) {
         //SQLiteDatabase db = this.getWritableDatabase();
         //String query = "UPDATE " + TABLE_2_NAME + " SET myEntry=0 WHERE myEntry=1;";
@@ -421,4 +435,30 @@ public class DbMethods {
 
     }
 
+    public static boolean updateCPEntriesIDs(Context context, JSONObject jsonString) {
+
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+
+        JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
+        int result=0;
+        int i=0;
+        while (i < jsonString.length()-2) {
+            if (result != -1) {
+
+                String whereClause = "myEntry = 1 AND LocalEntryID = " + jsontosqlite.LocalEntryID(i);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(COL_2_1,jsontosqlite.EntryID(i));
+
+                result = context.getContentResolver().update(uri, contentValues, whereClause, null);
+                //resultUri = context.getContentResolver().insert(uri, contentValues);
+                //resultUri = mProvider.insert(uri, contentValues);
+                //result = resultUri != null ? resultUri.getLastPathSegment() : "1";
+
+                //result = db.insert(TABLE_1_NAME,null,contentValues);
+            }
+            i++;
+        }
+        if (result == -1) return false;
+        else return true;
+    }
 }

@@ -119,7 +119,7 @@ public class StaticMethods {
 
             String BIB = cursorInputEntries.getString(0);
             String Time =  cursorInputEntries.getString(1);
-            String TimeStamp =  cursorInputEntries.getString(2);
+            Long TimeStamp =  cursorInputEntries.getLong(2);
             String Name = null;
             String LastName = null;
             String Country = null;
@@ -146,7 +146,7 @@ public class StaticMethods {
             else EntryObjArray[i].setTime("");
 
             if (TimeStamp != null) EntryObjArray[i].setTimeStamp(TimeStamp);
-            else EntryObjArray[i].setTimeStamp("");
+            else EntryObjArray[i].setTimeStamp((long) 0);
 
             if (Name != null) EntryObjArray[i].setFirstName(Name);
             else EntryObjArray[i].setFirstName("");

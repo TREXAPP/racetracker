@@ -48,10 +48,12 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+        <!-- android:process=":sync" vnesi go dolu za production, otstrani go za debug -->
         <service
             android:name="com.trex.racetracker.SyncService"
             android:exported="true"
-            android:process=":sync">
+
+            >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>

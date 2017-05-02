@@ -310,6 +310,7 @@ public class Input extends Fragment {
         Date timeNow = calendar.getTime();
         String formattedDate = df.format(timeNow);
         entryObj.setTime(formattedDate); //example format: 2016-11-14 07:13:28
+        entryObj.setTimeStamp(System.currentTimeMillis());
 
         //check if there is a previous entry close to this, whether to flag this entry valid true or false
         int timeBetweenEntries = globals.getInt("timebetweenentries",1);

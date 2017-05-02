@@ -368,4 +368,24 @@ public class JSONtoSQLiteString {
         return result;
     }
 
+    public String EntryID(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("EntryID");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+
+    public String LocalEntryID(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("LocalEntryID");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+
 }
