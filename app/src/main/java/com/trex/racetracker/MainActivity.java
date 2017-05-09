@@ -28,6 +28,8 @@ import android.widget.Toast;
 import layout.Input;
 
 import static android.service.notification.Condition.SCHEME;
+import static com.trex.racetracker.StaticMethods.*;
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -111,7 +113,13 @@ public class MainActivity extends AppCompatActivity {
          * Register the observer for the data table. The table's path
          * and any of its subpaths trigger the observer.
          */
-        getContentResolver().registerContentObserver(mUri, true, mObserver);
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.registerContentObserver(mUri, true, mObserver);
+        final SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+        ContentResolver.setIsSyncable(mAccount, AUTHORITY, 1);
+        ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
+        TogglePeriodicSync(mAccount, this);
+
     }
 
     /**
@@ -195,6 +203,14 @@ public class MainActivity extends AppCompatActivity {
         //time (in minutes) after which all entries from one control points are ignored. They are stored for reference with flag valid=false
         if (!globals.contains("timebetweenentries")) editor.putInt("timebetweenentries",1);
 
+        //whether or not periodic sync for the entries is enabled. Will be a parameter in the settings to toggle
+        //when ON it ensures successful sync, but may drain battery more
+        if (!globals.contains("periodic_sync")) editor.putBoolean("periodic_sync",true);
+
+        //TIme interval (in seconds) between two attempts at periodic sync (only if globals("periodic_sync")=true)
+        //larger value - saves battery more, but increases delay for syncing
+        if (!globals.contains("sync_interval")) editor.putLong("sync_interval",60L);
+
         editor.commit();
 
     }
@@ -202,14 +218,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getContentResolver().unregisterContentObserver(mObserver);
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.unregisterContentObserver(mObserver);
+        TogglePeriodicSync(mAccount,this);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getContentResolver().registerContentObserver(mUri, true, mObserver);
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.registerContentObserver(mUri, true, mObserver);
+        TogglePeriodicSync(mAccount,this);
     }
 
     @Override

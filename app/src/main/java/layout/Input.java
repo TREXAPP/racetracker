@@ -169,7 +169,26 @@ public class Input extends Fragment {
             }
         });
 
+        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        if (globals.getBoolean("islogin",false)) {
+            disableEnableControls(true,layoutInput);
+        } else {
+            disableEnableControls(false,layoutInput);
+
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        if (globals.getBoolean("islogin",false)) {
+            disableEnableControls(true,layoutInput);
+        } else {
+            disableEnableControls(false,layoutInput);
+        }
     }
 
     public void DigitPressed(Context context, String digit, View view) {
@@ -443,6 +462,13 @@ public class Input extends Fragment {
         if (isVisibleToUser && viewInflated) {
            // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
             InitializeInputFragment(getContext(),getView(), getActivity());
+            SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+            if (globals.getBoolean("islogin",false)) {
+                disableEnableControls(true,layoutInput);
+            } else {
+                disableEnableControls(false,layoutInput);
+
+            }
         }
     }
 

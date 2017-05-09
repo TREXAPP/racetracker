@@ -47,7 +47,7 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
         type = params[0];
         String result = "";
         //TODO get params here
-        if (type.equals("sync_push_insert")) try {
+        if (type.equals("sync_push_insert") || type.equals("sync_push_update")) try {
             String queryUrl = params[1];
             URL url = new URL(queryUrl);
             String rowsNo = params[2];
@@ -127,15 +127,14 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
         super.onPostExecute(result);
 
         String error = "";
-        if (type.equals("sync_push_insert")) {
+        if (type.equals("sync_push_insert") || type.equals("sync_push_update")) {
 
             try {
                 JSONObject jsonResult = new JSONObject(result);
                 if (jsonResult.has("success")) {
                     if (jsonResult.getString("success").equals("1")) {
 
-                        //TODO - a logic not to write only in sqlite, but also to check for update if the record already exists
-                        if (!updateCPEntriesIDs(context, jsonResult)) {
+                        if (!updateCPEntriesSynced(context, jsonResult)) {
                             error += "Error while writing in SQLite, CPEntries table. Contact the administrator;";
                         };
 
@@ -154,9 +153,7 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
                 e.printStackTrace();
             }
         }
-        if (type.equals("sync_push_update")) {
 
-        }
 
 
         if (!error.equals("")) {

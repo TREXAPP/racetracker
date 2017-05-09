@@ -1,9 +1,12 @@
 package com.trex.racetracker;
 
+import android.accounts.Account;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.trex.racetracker.DbMethods.*;
+import static com.trex.racetracker.MainActivity.AUTHORITY;
 
 /**
  * Created by Igor_2 on 03.11.2016.
@@ -469,6 +473,28 @@ public class StaticMethods {
             }
         }
         return date;
+    }
+
+    public static void TogglePeriodicSync(Account account, Context context) {
+
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+
+        Long syncInterval;
+
+        if (globals.getBoolean("periodic_sync",true)) {
+            syncInterval = globals.getLong("sync_interval",60L);
+
+            ContentResolver.addPeriodicSync(
+                    account,
+                    AUTHORITY,
+                    Bundle.EMPTY,
+                    syncInterval);
+        } else {
+            ContentResolver.removePeriodicSync(
+                    account,
+                    AUTHORITY,
+                    Bundle.EMPTY);
+        }
     }
 
 }

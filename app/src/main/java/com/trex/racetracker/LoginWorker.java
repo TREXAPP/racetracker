@@ -1,7 +1,9 @@
 package com.trex.racetracker;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.content.Context;
@@ -183,6 +185,41 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
                     SyncLoginInfoWorker syncLoginInfoWorker = new SyncLoginInfoWorker(context, fragmentLogin, viewRacers);
                     syncLoginInfoWorker.execute(TYPE_SYNC,URL_SYNC,Username,Operator,DeviceID,COMMENT_SYNC);
+/*
+                    Cursor cursorEntriesForUpdating = getEntries(context,true,false,null,"CPID IS NULL AND UserID IS NULL AND CPNo IS NULL","");
+                    cursorEntriesForUpdating.moveToFirst();
+                    if (cursorEntriesForUpdating.getCount() > 0) {
+                        cursorEntriesForUpdating.moveToFirst();
+                        while (!cursorEntriesForUpdating.isAfterLast()) {
+
+
+
+                            ContentValues contentValues = new ContentValues();
+
+                            contentValues.put("CPID",globals.getString("CPID",null));
+                            contentValues.put("CPName",globals.getString("CPName",null));
+                            contentValues.put("UserID",globals.getString("UserID",null));
+                            contentValues.put("ActiveRacerID",0);
+                            contentValues.put("Operator",globals.getString("Operator",null));
+                            contentValues.put("CPNo",globals.getString("CPNo",null));
+
+                            String whereClause = "";
+
+                            updateOldEntriesWhenLogin(context,contentValues,whereClause, false);
+
+
+
+
+
+                            cursorEntriesForUpdating.moveToNext();
+                        }
+
+                    }
+                    cursorEntriesForUpdating.close();
+*/
+
+
+
 
                     Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show();
                 } else {

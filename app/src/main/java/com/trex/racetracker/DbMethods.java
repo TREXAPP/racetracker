@@ -411,6 +411,7 @@ public class DbMethods {
 
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
         ContentValues contentValues = new ContentValues();
+        contentValues.put("Synced","0");
         contentValues.put("Valid","0");
         contentValues.put("ReasonInvalid","Code 03: Manually deleted");
         int result = context.getContentResolver().update(uri, contentValues,whereClause,null);
@@ -419,15 +420,28 @@ public class DbMethods {
         }
     }
 
-    public static int updateEntry(Context context, String BIB, String newDate, String whereClause, Boolean notifyChange) {
+    public static int updateEditedEntry(Context context, String BIB, String newDate, String whereClause, Boolean notifyChange) {
         //SQLiteDatabase db = this.getWritableDatabase();
         //String query = "UPDATE " + TABLE_2_NAME + " SET BIB='" + BIB + "', Time='" + newDate  + "' WHERE " + whereClause + ";";
         //db.execSQL(query);
+
+        //check active racer
+        String activeRacerID = "0";
+        Cursor activeRacerCursor = getActiveRacerIDFromRacers(context,BIB);
+        if (activeRacerCursor.getCount() == 1) {
+            activeRacerCursor.moveToFirst();
+            // ActiveRacerID, FirstName, LastName, Country, Gender, Age
+            activeRacerID = activeRacerCursor.getString(0);
+        }
+        activeRacerCursor.close();
 
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
         ContentValues cv = new ContentValues();
         cv.put("BIB",BIB);
         cv.put("Time",newDate);
+        cv.put("Synced","0");
+        cv.put("ActiveRacerID",activeRacerID);
+
         if (notifyChange) {
             context.getContentResolver().notifyChange(uri, null, false);
         }
@@ -435,7 +449,26 @@ public class DbMethods {
 
     }
 
-    public static boolean updateCPEntriesIDs(Context context, JSONObject jsonString) {
+    public static int updateOldEntriesWhenLogin(Context context, ContentValues contentValues, String whereClause, Boolean notifyChange) {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        //String query = "UPDATE " + TABLE_2_NAME + " SET BIB='" + BIB + "', Time='" + newDate  + "' WHERE " + whereClause + ";";
+        //db.execSQL(query);
+
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        /*
+        ContentValues cv = new ContentValues();
+        cv.put("BIB",BIB);
+        cv.put("Time",newDate);
+        cv.put("Synced","0");
+        */
+        if (notifyChange) {
+            context.getContentResolver().notifyChange(uri, null, false);
+        }
+        return context.getContentResolver().update(uri, contentValues, whereClause, null);
+
+    }
+
+    public static boolean updateCPEntriesSynced(Context context, JSONObject jsonString) {
 
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
 
@@ -448,7 +481,7 @@ public class DbMethods {
                 String whereClause = "myEntry = 1 AND LocalEntryID = " + jsontosqlite.LocalEntryID(i);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(COL_2_1,jsontosqlite.EntryID(i));
-
+                contentValues.put(COL_2_10,"1");
                 result = context.getContentResolver().update(uri, contentValues, whereClause, null);
                 //resultUri = context.getContentResolver().insert(uri, contentValues);
                 //resultUri = mProvider.insert(uri, contentValues);

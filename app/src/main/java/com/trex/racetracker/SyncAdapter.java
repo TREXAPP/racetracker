@@ -84,37 +84,51 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             if (globals.getBoolean("islogin",false)) {
                 long lastPullInMillis = globals.getLong("lastPullInMillis",0);
                 long lastPushInMillis = globals.getLong("lastPushInMillis",0);
-                SyncEntriesWorker syncEntriesWorker = new SyncEntriesWorker(getContext());
+                SyncEntriesWorker syncEntriesWorker_insert = new SyncEntriesWorker(getContext());
+                SyncEntriesWorker syncEntriesWorker_update = new SyncEntriesWorker(getContext());
+                Boolean syncSuccess = true;
+
 
                 //1.INSERT
-                Cursor insertCursor = getEntriesForSync(getContext(),"myEntry = 1 AND EntryID IS NULL AND TimeStamp > " + lastPushInMillis,"");
-                int rowsNo = insertCursor.getCount();
-                long newLastPush_temp = System.currentTimeMillis();
-                String insertJSON = null;
-                Boolean syncSuccess = true;
+                Cursor insertCursor = getEntriesForSync(getContext(),"myEntry = 1 AND EntryID IS NULL AND Synced = 0","");
+                int insertRowsNo = insertCursor.getCount();
+                if (insertRowsNo > 0) {
+                    String insertJSON = null;
+
+                    try {
+                        insertJSON = CreateInsertJSONstring(insertCursor);
+                    } catch (JSONException e) {
+                        Log.d("error","Error creating JSON string for inserting, PUSH");
+                        e.printStackTrace();
+                        syncSuccess = false;
+                    }
+                    syncEntriesWorker_insert.execute(TYPE_SYNC_PUSH_INSERT, URL_SYNC_PUSH, String.valueOf(insertRowsNo), insertJSON);
+                }
+                //2. UPDATE
+                Cursor updateCursor = getEntriesForSync(getContext(),"myEntry = 1 AND EntryID IS NOT NULL AND Synced = 0","");
+                int updateRowsNo = updateCursor.getCount();
+                if (updateRowsNo > 0) {
+                String updateJSON = null;
                 try {
-                    insertJSON = CreateInsertJSONstring(insertCursor);
+                    updateJSON = CreateUpdateJSONstring(updateCursor);
                 } catch (JSONException e) {
-                    Log.d("error","Error creating JSON string for inserting, PUSH");
+                    Log.d("error","Error creating JSON string for updating, PUSH");
                     e.printStackTrace();
                     syncSuccess = false;
                 }
-                syncEntriesWorker.execute(TYPE_SYNC_PUSH_INSERT, URL_SYNC_PUSH, String.valueOf(rowsNo), insertJSON);
 
-                //2. UPDATE
-                String updateJSON = CreateUpdateJSONstring();
-               // syncEntriesWorker.execute(TYPE_SYNC_PULL, URL_SYNC_PULL, String.valueOf(rowsNo), updateJSON);
+                    syncEntriesWorker_update.execute(TYPE_SYNC_PUSH_UPDATE, URL_SYNC_PUSH, String.valueOf(updateRowsNo), updateJSON);
+                //syncEntriesWorker.execute(TYPE_SYNC_PULL, URL_SYNC_PULL, String.valueOf(rowsNo), updateJSON);
+                }
 
-                //TODO uncomment this:
-                /*
                 if (syncSuccess) {
                     SharedPreferences.Editor editor = globals.edit();
-                    editor.putLong("lastPushInMillis",newLastPush_temp);
+                    editor.putLong("lastPushInMillis", System.currentTimeMillis());
                     //editor.putLong("lastPullInMillis",newLastPull_temp);
                     editor.apply();
 
                 }
-*/
+
 
 
             /*
@@ -192,11 +206,45 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return result;
     }
 
-    private String CreateUpdateJSONstring() {
+    private String CreateUpdateJSONstring(Cursor updateCursor) throws JSONException {
         String result = "";
+        JSONObject jsonObj = new JSONObject();
+        //jsonObj.put("type","sync_push_insert");
+        //jsonObj.put("rows_no",insertCursor.getCount());
+        int count=0;
+//"LocalEntryID","EntryID","CPID","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","TimeStamp"
+        if (updateCursor.getCount() > 0) {
+            updateCursor.moveToFirst();
+            while (!updateCursor.isAfterLast()) {
+                JSONObject rowJSON = new JSONObject();
+                //JSONObject rowJSON = new JSONObject();
+                rowJSON.put("LocalEntryID",updateCursor.getString(0));
+                rowJSON.put("EntryID",updateCursor.getString(1));
+                rowJSON.put("CPID",updateCursor.getString(2));
+                rowJSON.put("UserID",updateCursor.getString(3));
+                rowJSON.put("ActiveRacerID",updateCursor.getString(4));
+                rowJSON.put("Barcode",updateCursor.getString(5));
+                rowJSON.put("Time",updateCursor.getString(6));
+                rowJSON.put("EntryTypeID",updateCursor.getString(7));
+                rowJSON.put("Comment",updateCursor.getString(8));
+                rowJSON.put("BIB",updateCursor.getString(9));
+                rowJSON.put("Valid",updateCursor.getString(10));
+                rowJSON.put("Operator",updateCursor.getString(11));
+                rowJSON.put("ReasonInvalid",updateCursor.getString(12));
+                rowJSON.put("TimeStamp",updateCursor.getString(13));
+
+                jsonObj.put(String.valueOf(count),rowJSON);
+                updateCursor.moveToNext();
+                count++;
+            }
+        }
 
 
-        return  result;
+
+        updateCursor.close();
+        result = jsonObj.toString();
+        //result = result.replace("\"", "");
+        return result;
     }
 
     private void SendEntriesToServer(long lastSyncInMiliSecs) {
