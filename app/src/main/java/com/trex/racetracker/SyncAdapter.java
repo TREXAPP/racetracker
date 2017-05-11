@@ -5,10 +5,16 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,7 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import layout.Input;
+
 import static com.trex.racetracker.DbMethods.*;
+import static com.trex.racetracker.StaticMethods.PopulateInputEntriesListView;
+import static com.trex.racetracker.StaticMethods.disableEnableControls;
 
 /**
  * Created by Igor on 18.4.2017.
@@ -36,7 +46,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     protected static final String TYPE_SYNC_PULL = "sync_pull";
     protected static final String URL_SYNC_PUSH = "http://app.trex.mk/syncEntries_push.php";
     protected static final String URL_SYNC_PULL = "http://app.trex.mk/syncEntries_pull.php";
-
+    private Context serviceContext;
+    private LocalBroadcastManager mBroadcaster;
 
     // Global variables
     // Define a variable to contain a content resolver instance
@@ -48,7 +59,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
          * If your app uses a content resolver, get an instance of it
          * from the incoming Context
          */
+        serviceContext = context;
         mContentResolver = context.getContentResolver();
+        mBroadcaster = LocalBroadcastManager.getInstance(SyncService.getInstance());
     }
 
     /**
@@ -62,6 +75,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
          * If your app uses a content resolver, get an instance of it
          * from the incoming Context
          */
+        serviceContext = context;
         mContentResolver = context.getContentResolver();
     }
 
@@ -139,6 +153,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             */
             }
+
+
+
+            //wait 2 seconds before sending the intent
+            try {
+                wait(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            Intent intent = new Intent();
+            intent.setAction("com.trex.racetracker.REFRESH_LIST");
+            mBroadcaster.sendBroadcast(intent);
+
+
+
 
         }
 
@@ -253,4 +283,5 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void GetNewEntriesFromServer(long lastSyncInMiliSecs) {
     }
+
 }

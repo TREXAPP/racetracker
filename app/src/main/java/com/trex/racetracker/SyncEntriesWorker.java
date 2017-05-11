@@ -1,7 +1,10 @@
 package com.trex.racetracker;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -33,8 +36,10 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
     private String type;
     private String payload;
 
+
     public SyncEntriesWorker(Context context) {
         this.context = context;
+
     }
 
     @Override
@@ -125,39 +130,48 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+        if (result != null) {
 
-        String error = "";
-        if (type.equals("sync_push_insert") || type.equals("sync_push_update")) {
 
-            try {
-                JSONObject jsonResult = new JSONObject(result);
-                if (jsonResult.has("success")) {
-                    if (jsonResult.getString("success").equals("1")) {
+            String error = "";
+            if (type.equals("sync_push_insert") || type.equals("sync_push_update")) {
 
-                        if (!updateCPEntriesSynced(context, jsonResult)) {
-                            error += "Error while writing in SQLite, CPEntries table. Contact the administrator;";
-                        };
+                try {
+                    JSONObject jsonResult = new JSONObject(result);
+                    if (jsonResult.has("success")) {
+                        if (jsonResult.getString("success").equals("1")) {
 
-                    } else {
-                        if (jsonResult.has("error")) {
-                            error += jsonResult.getString("error");
+                            if (!updateCPEntriesSynced(context, jsonResult)) {
+                                error += "Error while writing in SQLite, CPEntries table. Contact the administrator;";
+                            }
+                            ;
+
                         } else {
-                            error += "Error with webserver! Contact the administrator.";
+                            if (jsonResult.has("error")) {
+                                error += jsonResult.getString("error");
+                            } else {
+                                error += "Error with webserver! Contact the administrator.";
+                            }
                         }
+                    } else {
+                        error += "Error with database! Contact the administrator.";
+
                     }
-                } else {
-                    error += "Error with database! Contact the administrator.";
-
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-        }
 
 
-
-        if (!error.equals("")) {
-            Log.e("Sync error", error);
+            if (!error.equals("")) {
+                Log.e("Sync error", error);
+            } else {
+                SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+                SharedPreferences.Editor editor = globals.edit();
+                Long timeNow = System.currentTimeMillis();
+                editor.putLong("lastPushInMillis",timeNow);
+                editor.commit();
+            }
         }
     }
 }

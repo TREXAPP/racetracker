@@ -4,8 +4,12 @@ package layout;
  * Created by Igor on 22.10.2016.
  */
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -13,7 +17,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +56,25 @@ public class Input extends Fragment {
     public ViewGroup layoutInput;
     public ListView lvInputEntries;
     private boolean viewInflated;
+    private BroadcastReceiver mReceiver;
 
+
+
+/*
+    private BroadcastReceiver myReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+
+            String sAction = intent.getAction();
+            if ("com.trex.racetracker.REFRESH_LIST".equals(sAction) )
+            {
+                PopulateInputEntriesListView(context,lvInputEntries,getActivity());
+            }
+        }
+    };
+*/
     public Input() {
     }
 
@@ -177,8 +201,46 @@ public class Input extends Fragment {
 
         }
 
+        if (mReceiver == null) mReceiver = InitializeBroadcastReceiver(getContext(),rootView,getActivity());
+
         return rootView;
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        IntentFilter myFilter = new IntentFilter();
+        myFilter.addAction("com.trex.racetracker.REFRESH_LIST");
+        if (mReceiver == null) mReceiver = InitializeBroadcastReceiver(getContext(),view,getActivity());
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mReceiver,myFilter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mReceiver);
+        //  LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(myReceiver);
+    }
+
+    private BroadcastReceiver InitializeBroadcastReceiver(final Context ctx, final View view, final Activity activity) {
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String sAction = intent.getAction();
+                if ("com.trex.racetracker.REFRESH_LIST".equals(sAction) )
+                {
+                    InitializeInputFragment(ctx,view, activity);
+
+                    //InitializeInputFragment(context,getView(), getActivity());
+                    //PopulateInputEntriesListView(getContext(),lvInputEntries,getActivity());
+                }
+            }
+        };
+        return receiver;
+    }
+
+
 
     @Override
     public void onResume() {
@@ -471,5 +533,7 @@ public class Input extends Fragment {
             }
         }
     }
+
+
 
 }

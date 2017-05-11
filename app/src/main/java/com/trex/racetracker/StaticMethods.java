@@ -114,7 +114,6 @@ public class StaticMethods {
     public static void PopulateInputEntriesListView (Context context, ListView lvInputEntries, Activity activity) {
         //DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         Cursor cursorInputEntries = getEntries(context,true,true,10,"","Time DESC");
-        final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
 
         EntryObj[] EntryObjArray = new EntryObj[cursorInputEntries.getCount()];
         int i=0;
@@ -124,11 +123,13 @@ public class StaticMethods {
             String BIB = cursorInputEntries.getString(0);
             String Time =  cursorInputEntries.getString(1);
             Long TimeStamp =  cursorInputEntries.getLong(2);
+            String Synced = cursorInputEntries.getString(3);
             String Name = null;
             String LastName = null;
             String Country = null;
             String Age = null;
             String Gender = null;
+
 
             Cursor cursorRacer = getActiveRacerIDFromRacers(context, BIB);
             if (cursorRacer.getCount() > 0) {
@@ -166,6 +167,13 @@ public class StaticMethods {
 
             if (Gender != null) EntryObjArray[i].setGender(Gender);
             else EntryObjArray[i].setGender("");
+
+
+            if (Synced != null) {
+                if (Synced.equals("1")) EntryObjArray[i].setSynced(true);
+                else EntryObjArray[i].setSynced(false);
+            }
+            else EntryObjArray[i].setSynced(false);
 
             i++;
             cursorInputEntries.moveToNext();

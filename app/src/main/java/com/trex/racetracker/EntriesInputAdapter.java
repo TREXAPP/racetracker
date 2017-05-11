@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -53,6 +55,7 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
         TextView tvCountry = (TextView) customView.findViewById(R.id.tvCountry);
         TextView tvAge = (TextView) customView.findViewById(R.id.tvAge);
         TextView tvGender = (TextView) customView.findViewById(R.id.tvGender);
+        ImageView ivSync = (ImageView) customView.findViewById(R.id.ivSync);
         LinearLayout layoutWrapper = (LinearLayout) customView.findViewById(R.id.layoutWrapper);
         LinearLayout layoutRacerInfo = (LinearLayout) customView.findViewById(R.id.layoutRacerInfo);
         LinearLayout layoutName = (LinearLayout) customView.findViewById(R.id.layoutName);
@@ -71,6 +74,14 @@ class EntriesInputAdapter extends ArrayAdapter<EntryObj> {
             tvAge.setText(entryObj.getAge());
             tvGender.setText(entryObj.getGender());
             tvBIB.setText(entryObj.getBIB());
+
+            if (!entryObj.isSynced()) {
+                ivSync.setImageResource(R.drawable.error);
+                //ivSync.setVisibility(View.VISIBLE);
+            } else {
+                ivSync.setImageResource(R.drawable.success);
+                //ivSync.setVisibility(View.INVISIBLE);
+            }
 
             if (globals.getBoolean("islogin",false)) {
                 if (entryObj.getCountry().equals("") && entryObj.getAge().equals("") && entryObj.getGender().equals("")) {

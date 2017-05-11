@@ -1,9 +1,13 @@
 package com.trex.racetracker;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
@@ -12,6 +16,7 @@ import android.provider.ContactsContract;
 import android.provider.Settings.Secure;
 import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -23,7 +28,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import layout.Input;
 
@@ -66,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
     // A content resolver for accessing the provider
     ContentResolver mResolver;
 
+    private BroadcastReceiver mReceiver;
+    private TextView tvSyncInfo;
+    private ImageView ivSyncToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        ivSyncToolbar = (ImageView) findViewById(R.id.ivSyncToolbar);
+        tvSyncInfo = (TextView) findViewById(R.id.tvSyncInfo);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -93,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
         // Construct a URI that points to the content provider data table
         //mUri = Uri.withAppendedPath(Provider.CONTENT_URI,"CPEntries");
         mUri = Provider.CONTENT_URI;
+
+
+
 
         //mUri.parse(mProvider.SCHEME + mProvider.AUTHORITY);
 
@@ -120,7 +140,42 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
         TogglePeriodicSync(mAccount, this);
 
+        IntentFilter myFilter = new IntentFilter();
+        myFilter.addAction("com.trex.racetracker.REFRESH_LIST");
+        if (mReceiver == null) mReceiver = InitializeBroadcastReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,myFilter);
+
+        //initialize info for sync
+        ivSyncToolbar.setVisibility(View.INVISIBLE);
+        tvSyncInfo.setText("Last sync: Never");
+
+
     }
+
+    private BroadcastReceiver InitializeBroadcastReceiver() {
+
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String sAction = intent.getAction();
+                if ("com.trex.racetracker.REFRESH_LIST".equals(sAction) )
+                {
+                    SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+                    Long lastPull = globals.getLong("lastPushInMillis",0);
+
+                    if (lastPull == 0) {
+                        tvSyncInfo.setText("Last sync: Never");
+                    } else {
+                        String dateString = new SimpleDateFormat("HH:mm:ss").format(new Date(lastPull));
+                        tvSyncInfo.setText("Last sync: " + dateString);
+                    }
+                    ivSyncToolbar.setVisibility(View.INVISIBLE);
+
+                }
+            }
+        };
+    }
+
 
     /**
      * Create a new dummy account for the sync adapter
@@ -211,6 +266,12 @@ public class MainActivity extends AppCompatActivity {
         //larger value - saves battery more, but increases delay for syncing
         if (!globals.contains("sync_interval")) editor.putLong("sync_interval",60L);
 
+        //when was the last push of entries made. 0 = never
+        if (!globals.contains("lastPushInMillis")) editor.putLong("lastPushInMillis",0);
+
+        //when was the last pull of entries made. 0 = never
+        if (!globals.contains("lastPullInMillis")) editor.putLong("lastPullInMillis",0);
+
         editor.commit();
 
     }
@@ -255,3 +316,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+

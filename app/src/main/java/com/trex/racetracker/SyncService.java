@@ -1,9 +1,11 @@
 package com.trex.racetracker;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 
 /**
  * Created by Igor on 18.4.2017.
@@ -16,6 +18,7 @@ import android.support.annotation.Nullable;
 public class SyncService extends Service {
     // Storage for an instance of the sync adapter
     private static SyncAdapter sSyncAdapter = null;
+    private static Context mContext;
 
     // Object to use as a thread-safe lock
     private static final Object sSyncAdapterLock = new Object();
@@ -30,12 +33,14 @@ public class SyncService extends Service {
          * Set the sync adapter as syncable
          * Disallow parallel syncs
          */
+         mContext = this;
         synchronized (sSyncAdapterLock) {
             if (sSyncAdapter == null) {
                 sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
             }
         }
     }
+
 
     /**
      * Return an object that allows the system to invoke
@@ -52,5 +57,9 @@ public class SyncService extends Service {
          * constructors call super()
          */
         return sSyncAdapter.getSyncAdapterBinder();
+    }
+
+    public static Context getInstance() {
+        return mContext;
     }
 }

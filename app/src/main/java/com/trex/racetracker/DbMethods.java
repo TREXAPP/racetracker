@@ -361,7 +361,7 @@ public class DbMethods {
 
         return cursor;
         */
-        String[] projection = new String[]{"BIB","Time","TimeStamp"};
+        String[] projection = new String[]{"BIB","Time","TimeStamp","Synced"};
         String selection = whereClause + myEntriesClause + validClause;
         String sortOrder = orderbyClause + limitClause;
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
