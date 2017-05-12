@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         TogglePeriodicSync(mAccount, this);
 
         IntentFilter myFilter = new IntentFilter();
+        myFilter.addAction("com.trex.racetracker.UPDATE_LAST_SYNC");
         myFilter.addAction("com.trex.racetracker.REFRESH_LIST");
         if (mReceiver == null) mReceiver = InitializeBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,myFilter);
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String sAction = intent.getAction();
-                if ("com.trex.racetracker.REFRESH_LIST".equals(sAction) )
+                if ("com.trex.racetracker.UPDATE_LAST_SYNC".equals(sAction) )
                 {
                     SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
                     Long lastPull = globals.getLong("lastPushInMillis",0);

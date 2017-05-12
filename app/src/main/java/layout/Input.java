@@ -230,7 +230,7 @@ public class Input extends Fragment {
                 String sAction = intent.getAction();
                 if ("com.trex.racetracker.REFRESH_LIST".equals(sAction) )
                 {
-                    InitializeInputFragment(ctx,view, activity);
+                    InitializeInputFragment(ctx, view, activity);
 
                     //InitializeInputFragment(context,getView(), getActivity());
                     //PopulateInputEntriesListView(getContext(),lvInputEntries,getActivity());

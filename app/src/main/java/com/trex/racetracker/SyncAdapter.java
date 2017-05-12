@@ -163,12 +163,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 e.printStackTrace();
             }
 
-            Intent intent = new Intent();
-            intent.setAction("com.trex.racetracker.REFRESH_LIST");
+            Intent intent = new Intent("com.trex.racetracker.REFRESH_LIST");
             mBroadcaster.sendBroadcast(intent);
 
-
-
+            //wait 2 seconds before sending the intent
+            try {
+                wait(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            intent.setAction("com.trex.racetracker.UPDATE_LAST_SYNC");
+            mBroadcaster.sendBroadcast(intent);
 
         }
 
