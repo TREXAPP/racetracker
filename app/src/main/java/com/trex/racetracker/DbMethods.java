@@ -71,7 +71,7 @@ public class DbMethods {
         //SQLiteDatabase db = this.getWritableDatabase();
        // return db.rawQuery(query,null);
 
-        String[] projection = new String[]{"DISTINCT RaceID", "RaceDescription"};
+        String[] projection = new String[]{"DISTINCT RaceID", "RaceDescription", "RaceName"};
         String selection = null;
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
         return context.getContentResolver().query(uri,projection,selection,null,"");
@@ -93,6 +93,25 @@ public class DbMethods {
         String[] projection = new String[]{"DISTINCT CPNo"};
         String sortOrder = "CPNo ASC";
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
+    }
+
+    public static Cursor getDistinctCPFromEntries(Context context, String selection) {
+        /*
+        String query = "SELECT DISTINCT CPNo FROM " + TABLE_3_NAME + " WHERE ";
+        if (whereClause.equals("")) {
+            query += "1";
+        }
+        else {
+            query += whereClause;
+        }
+        query += " ORDER BY CPNo ASC;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery(query,null);
+*/
+        String[] projection = new String[]{"DISTINCT CPNo, CPName"};
+        String sortOrder = "CPNo ASC";
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
@@ -328,7 +347,7 @@ public class DbMethods {
         return result;
     }
 
-    public static Cursor getEntries(Context context, boolean myEntriesOnly, boolean validOnly, Integer limit, String whereClause, String orderbyClause) {
+    public static Cursor getEntriesInput(Context context, boolean myEntriesOnly, boolean validOnly, Integer limit, String whereClause, String orderbyClause) {
 
         if (whereClause.equals("")) {
             whereClause = " 1 ";
@@ -361,10 +380,29 @@ public class DbMethods {
 
         return cursor;
         */
-        String[] projection = new String[]{"BIB","Time","TimeStamp","Synced"};
+        String[] projection = new String[]{"CPEntries.BIB","Time","TimeStamp","Synced"};
         String selection = whereClause + myEntriesClause + validClause;
         String sortOrder = orderbyClause + limitClause;
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
+
+    }
+
+    public static Cursor getEntries(Context context, String table, String[] projection, String selection, Integer limit, String orderBy) {
+        String limitClause = "";
+
+        if (limit != null) {
+            if (orderBy.equals("")) {
+                limitClause = " ASC LIMIT " + limit;
+            } else {
+                limitClause = " LIMIT " + limit;
+            }
+        }
+
+       // String[] projection = new String[]{"BIB","Time","TimeStamp","Synced"};
+       // String selection = whereClause + myEntriesClause + validClause;
+        String sortOrder = orderBy + limitClause;
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,table);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
 
     }

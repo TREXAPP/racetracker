@@ -186,7 +186,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                     SyncLoginInfoWorker syncLoginInfoWorker = new SyncLoginInfoWorker(context, fragmentLogin, viewRacers);
                     syncLoginInfoWorker.execute(TYPE_SYNC,URL_SYNC,Username,Operator,DeviceID,COMMENT_SYNC);
 /*
-                    Cursor cursorEntriesForUpdating = getEntries(context,true,false,null,"CPID IS NULL AND UserID IS NULL AND CPNo IS NULL","");
+                    Cursor cursorEntriesForUpdating = getEntriesInput(context,true,false,null,"CPID IS NULL AND UserID IS NULL AND CPNo IS NULL","");
                     cursorEntriesForUpdating.moveToFirst();
                     if (cursorEntriesForUpdating.getCount() > 0) {
                         cursorEntriesForUpdating.moveToFirst();

@@ -11,12 +11,15 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -113,7 +116,7 @@ public class StaticMethods {
 
     public static void PopulateInputEntriesListView (Context context, ListView lvInputEntries, Activity activity) {
         //DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        Cursor cursorInputEntries = getEntries(context,true,true,10,"","Time DESC");
+        Cursor cursorInputEntries = getEntriesInput(context,true,true,10,"","Time DESC");
 
         EntryObj[] EntryObjArray = new EntryObj[cursorInputEntries.getCount()];
         int i=0;
@@ -505,4 +508,151 @@ public class StaticMethods {
         }
     }
 
+    public static void InitializeEntriesFragment(Context context, Activity activity, View rootView, String selection, Boolean leftJoin) {
+
+        SearchView svEntries = (SearchView) rootView.findViewById(R.id.svEntries);
+        Spinner spEntries = (Spinner) rootView.findViewById(R.id.spEntries);
+        ListView lvEntries = (ListView) rootView.findViewById(R.id.lvEntries);
+
+        InitializeEntriesSearchView(context, svEntries);
+        InitializeEntriesSpinner(context, activity, spEntries);
+        InitializeEntriesListView(context, lvEntries, selection, leftJoin, activity);
+    }
+
+    public static void InitializeEntriesListView(Context context, ListView lvEntries, String selection, Boolean leftJoin, Activity activity) {
+        //Cursor cursorEntries = getEntriesInput(context,true,true,10,selection,"Time DESC");
+        String[] projection = new String[]{"CPEntries.BIB","Time","TimeStamp","Synced"};
+        String table;
+        if (leftJoin) {
+            table = "ENTRIES_LEFTJOIN_ACTIVERACERS_LEFTJOIN_LOGININFO";
+        } else {
+            table = "ENTRIES_JOIN_ACTIVERACERS_JOIN_LOGININFO";
+        }
+        Cursor cursorEntries = getEntries(context,table,projection,selection,null,"Time DESC");
+//Context context, String table, String[] projection, String selection, Integer limit,  String orderBy
+        EntryObj[] EntryObjArray = new EntryObj[cursorEntries.getCount()];
+        int i=0;
+        cursorEntries.moveToFirst();
+        while (!cursorEntries.isAfterLast()) {
+
+            String BIB = cursorEntries.getString(0);
+            String Time =  cursorEntries.getString(1);
+            Long TimeStamp =  cursorEntries.getLong(2);
+            String Synced = cursorEntries.getString(3);
+            String Name = null;
+            String LastName = null;
+            String Country = null;
+            String Age = null;
+            String Gender = null;
+
+
+            Cursor cursorRacer = getActiveRacerIDFromRacers(context, BIB);
+            if (cursorRacer.getCount() > 0) {
+                cursorRacer.moveToFirst();
+                Name = cursorRacer.getString(1);
+                LastName = cursorRacer.getString(2);
+                Country = cursorRacer.getString(3);
+                Age = cursorRacer.getString(5);
+                Gender = cursorRacer.getString(4);
+            }
+            cursorRacer.close();
+
+            EntryObjArray[i] = new EntryObj();
+
+            if (BIB != null) EntryObjArray[i].setBIB(BIB);
+            else EntryObjArray[i].setBIB("");
+
+            if (Time != null) EntryObjArray[i].setTime(Time);
+            else EntryObjArray[i].setTime("");
+
+            if (TimeStamp != null) EntryObjArray[i].setTimeStamp(TimeStamp);
+            else EntryObjArray[i].setTimeStamp((long) 0);
+
+            if (Name != null) EntryObjArray[i].setFirstName(Name);
+            else EntryObjArray[i].setFirstName("");
+
+            if (LastName != null) EntryObjArray[i].setLastName(LastName);
+            else EntryObjArray[i].setLastName("");
+
+            if (Country != null) EntryObjArray[i].setCountry(Country);
+            else EntryObjArray[i].setCountry("");
+
+            if (Age != null) EntryObjArray[i].setAge(Age);
+            else EntryObjArray[i].setAge("");
+
+            if (Gender != null) EntryObjArray[i].setGender(Gender);
+            else EntryObjArray[i].setGender("");
+
+
+            if (Synced != null) {
+                if (Synced.equals("1")) EntryObjArray[i].setSynced(true);
+                else EntryObjArray[i].setSynced(false);
+            }
+            else EntryObjArray[i].setSynced(false);
+
+            i++;
+            cursorEntries.moveToNext();
+        }
+        cursorEntries.close();
+
+        ListAdapter entriesAdapter = new EntriesInputAdapter(context, EntryObjArray, activity, lvEntries);
+        lvEntries.setAdapter(entriesAdapter);
+    }
+
+
+
+    private static void InitializeEntriesSpinner(Context context, Activity activity, Spinner spEntries) {
+
+            /*
+
+        Fill the spinner with:
+
+        Default: Filter: All
+        My Entries
+        Synchronized
+        Not Synchronized
+        Race: <race1>
+        Race: <race2>
+        ...
+        CP: <Treskavec>
+        CP: <Prisad>
+        ...
+
+        */
+
+        spEntries.setPrompt("Select Filter");
+
+        //create source for the spinner
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("All Entries");
+        list.add("Deleted");
+        list.add("Synchronized");
+        list.add("Not Synchronized");
+
+        //fill list with races
+        Cursor racesCursor = getDistinctRacesFromLoginInfo(context);
+        racesCursor.moveToFirst();
+        while (!racesCursor.isAfterLast()) {
+            list.add("Race | " + racesCursor.getString(2));
+            racesCursor.moveToNext();
+
+        }
+        racesCursor.close();
+
+        //fill list with Control points
+        Cursor CPCursor = getDistinctCPFromEntries(context,"Valid = 1");
+        CPCursor.moveToFirst();
+        while (!CPCursor.isAfterLast()) {
+            list.add("CP | " + CPCursor.getString(0) + " | " + CPCursor.getString(1));
+            CPCursor.moveToNext();
+        }
+        CPCursor.close();
+
+        ArrayAdapter adapter = new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,list);
+        spEntries.setAdapter(adapter);
+    }
+
+    private static void InitializeEntriesSearchView(Context context, SearchView svEntries) {
+
+    }
 }

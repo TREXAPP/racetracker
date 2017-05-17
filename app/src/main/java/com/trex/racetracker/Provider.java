@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Switch;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +37,11 @@ public class Provider extends ContentProvider {
     public static final String SCHEME = "content://";
     public static final String AUTHORITY = "com.trex.racetracker.provider";//specific for our our app, will be specified in maninfed
     public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);
-/*
+    public static final String ENTRIES_JOIN_ACTIVERACERS = "CPEntries JOIN ActiveRacers ON Entries.ActiveRacerID = ActiveRacers.ActiveRacerID";
+    public static final String ENTRIES_LEFTJOIN_ACTIVERACERS_LEFTJOIN_LOGININFO = "CPEntries LEFT JOIN ActiveRacers ON CPEntries.ActiveRacerID = ActiveRacers.ActiveRacerID LEFT JOIN LoginInfo ON ActiveRacers.RaceID = LoginInfo.RaceID";
+    public static final String ENTRIES_JOIN_ACTIVERACERS_JOIN_LOGININFO = "CPEntries JOIN ActiveRacers ON CPEntries.ActiveRacerID = ActiveRacers.ActiveRacerID JOIN LoginInfo ON ActiveRacers.RaceID = LoginInfo.RaceID";
+
+    /*
     // used for the UriMacher
     private static final int ENTRIES = 10;
     private static final int ENTRY_ID = 20;
@@ -86,6 +91,20 @@ public class Provider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         String table = getTableName(uri);
+        switch (table) {
+            case "ENTRIES_JOIN_ACTIVERACERS":
+                table = ENTRIES_JOIN_ACTIVERACERS;
+            break;
+            case "ENTRIES_JOIN_ACTIVERACERS_JOIN_LOGININFO":
+                table = ENTRIES_JOIN_ACTIVERACERS_JOIN_LOGININFO;
+                break;
+            case "ENTRIES_LEFTJOIN_ACTIVERACERS_LEFTJOIN_LOGININFO":
+                table = ENTRIES_LEFTJOIN_ACTIVERACERS_LEFTJOIN_LOGININFO;
+                break;
+
+        }
+
+
         if (database.equals(NULL)) {
             database = DatabaseHelper.getInstance(getContext());
         }
