@@ -3,20 +3,15 @@ package com.trex.racetracker;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.trex.racetracker.Provider;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.trex.racetracker.DatabaseHelper.*;
 import static com.trex.racetracker.StaticMethods.*;
-import static java.security.AccessController.getContext;
 
 /**
  * Created by Igor on 21.4.2017.
@@ -442,7 +437,7 @@ public class DbMethods {
         return context.getContentResolver().delete(uri,whereClause,null);
     }
 
-    public static void setEntryDeleted(Context context, String whereClause, Boolean notifyChange) {
+    public static void setEntryDeleted(Context context, String whereClause, Boolean notifyChange, int deleteBtnMode) {
         //SQLiteDatabase db = this.getWritableDatabase();
         //String query = "UPDATE " + TABLE_2_NAME + " SET Valid=0, ReasonInvalid='Code 03: Manually deleted' WHERE " + whereClause + ";";
         //db.execSQL(query);
@@ -450,7 +445,12 @@ public class DbMethods {
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
         ContentValues contentValues = new ContentValues();
         contentValues.put("Synced","0");
-        contentValues.put("Valid","0");
+        if (deleteBtnMode == EntriesInputListAdapter.RESTORE) {
+            contentValues.put("Valid","1");
+        } else {
+            contentValues.put("Valid","0");
+        }
+
         contentValues.put("ReasonInvalid","Code 03: Manually deleted");
         int result = context.getContentResolver().update(uri, contentValues,whereClause,null);
         if (notifyChange) {

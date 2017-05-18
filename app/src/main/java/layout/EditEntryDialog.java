@@ -32,20 +32,24 @@ import static com.trex.racetracker.StaticMethods.*;
 
 public class EditEntryDialog extends DialogFragment {
 
+    public static final int INPUT = 11;
+    public static final int ENTRIES = 12;
+
     Context context;
     private String BIB = null;
     private String hours = null;
     private String minutes = null;
     private String seconds = null;
     private EntryObj entryObj;
-    private ListView lvInputEntries;
+    private ListView listView;
+    private int fragment;
 
 
     public EditEntryDialog() {
         super();
     }
 
-    public EditEntryDialog(Context ctx, String bib, String hr, String min, String sec, EntryObj entryObj, ListView lvInputEntries) {
+    public EditEntryDialog(Context ctx, String bib, String hr, String min, String sec, EntryObj entryObj, ListView listView, int fragment) {
    // public EditEntryDialog(Handler handler, Context ctx) {
       //  this.handler = handler;
         this.context = ctx;
@@ -54,7 +58,8 @@ public class EditEntryDialog extends DialogFragment {
         this.minutes = min;
         this.seconds = sec;
         this.entryObj = entryObj;
-        this.lvInputEntries = lvInputEntries;
+        this.listView = listView;
+        this.fragment = fragment;
 
 
     }
@@ -118,7 +123,14 @@ public class EditEntryDialog extends DialogFragment {
         //        handler.sendEmptyMessage(0);
                 getDialog().dismiss();
                // ToggleKeyboard(Boolean.FALSE,context);
-                PopulateInputEntriesListView(context,lvInputEntries, getActivity());
+                if (fragment == INPUT) {
+                    PopulateInputEntriesListView(context,listView, getActivity());
+                }
+                if (fragment == ENTRIES) {
+                    String selection = Entries.getSelectionString(globals);
+                    Boolean leftJoin = globals.getBoolean("EntriesSelectionLeftJoin",true);
+                    InitializeEntriesListView(context,listView, selection, leftJoin, getActivity());
+                }
 
             }
         });

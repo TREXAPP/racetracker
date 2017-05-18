@@ -183,7 +183,7 @@ public class StaticMethods {
         }
         cursorInputEntries.close();
 
-        ListAdapter entriesInputAdapter = new EntriesInputAdapter(context, EntryObjArray, activity, lvInputEntries);
+        ListAdapter entriesInputAdapter = new EntriesInputListAdapter(context, EntryObjArray, activity, lvInputEntries);
         lvInputEntries.setAdapter(entriesInputAdapter);
 
     }
@@ -521,7 +521,7 @@ public class StaticMethods {
 
     public static void InitializeEntriesListView(Context context, ListView lvEntries, String selection, Boolean leftJoin, Activity activity) {
         //Cursor cursorEntries = getEntriesInput(context,true,true,10,selection,"Time DESC");
-        String[] projection = new String[]{"CPEntries.BIB","Time","TimeStamp","Synced"};
+        String[] projection = new String[]{"CPEntries.BIB","Time","TimeStamp","Synced","myEntry"};
         String table;
         if (leftJoin) {
             table = "ENTRIES_LEFTJOIN_ACTIVERACERS_LEFTJOIN_LOGININFO";
@@ -539,6 +539,7 @@ public class StaticMethods {
             String Time =  cursorEntries.getString(1);
             Long TimeStamp =  cursorEntries.getLong(2);
             String Synced = cursorEntries.getString(3);
+            String myEntry = cursorEntries.getString(4);
             String Name = null;
             String LastName = null;
             String Country = null;
@@ -590,12 +591,18 @@ public class StaticMethods {
             }
             else EntryObjArray[i].setSynced(false);
 
+            if (myEntry != null) {
+                if (myEntry.equals("1")) EntryObjArray[i].setMyEntry(true);
+                else EntryObjArray[i].setMyEntry(false);
+            }
+            else EntryObjArray[i].setMyEntry(false);
+
             i++;
             cursorEntries.moveToNext();
         }
         cursorEntries.close();
 
-        ListAdapter entriesAdapter = new EntriesInputAdapter(context, EntryObjArray, activity, lvEntries);
+        ListAdapter entriesAdapter = new EntriesListAdapter(context, EntryObjArray, activity, lvEntries);
         lvEntries.setAdapter(entriesAdapter);
     }
 

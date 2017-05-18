@@ -7,6 +7,7 @@ package layout;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Selection;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.trex.racetracker.EntriesInputListAdapter;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
-import com.trex.racetracker.StaticMethods;
 
 import static com.trex.racetracker.StaticMethods.*;
 
@@ -35,6 +35,7 @@ public class Entries extends Fragment {
     private ListView lvEntries;
     private SearchView svEntries;
     private Spinner spEntries;
+    private boolean viewInflated;
 
     public Entries() {
     }
@@ -52,6 +53,23 @@ public class Entries extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getView() == null) viewInflated = false;
+        if (isVisibleToUser && viewInflated) {
+            SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+            Boolean leftJoin = globals.getBoolean("EntriesSelectionLeftJoin",true);
+            String selection = getSelectionString(globals);
+            InitializeEntriesFragment(getContext(),getActivity(),getView(), selection, leftJoin);
+
+
+            }
+        }
+
+
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_entries, container, false);
@@ -62,6 +80,7 @@ public class Entries extends Fragment {
         svEntries = (SearchView) rootView.findViewById(R.id.svEntries);
         spEntries = (Spinner) rootView.findViewById(R.id.spEntries);
         lvEntries = (ListView) rootView.findViewById(R.id.lvEntries);
+
 
 
 
@@ -81,23 +100,23 @@ public class Entries extends Fragment {
         ...
 
         */
-        SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+        final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
 
-        String selectionFilter = globals.getString("EntriesSelectionFilter","1");
-        String selectionSearch = globals.getString("EntriesSelectionSearch","1");
-        Boolean leftJoin = globals.getBoolean("EntriesSelectionLeftJoin", true);
-        String selection = selectionFilter + " AND " + selectionSearch;
 
-        //TODO - remove debug
-        selection = "1";
+        final Boolean leftJoin = globals.getBoolean("EntriesSelectionLeftJoin", true);
+        String selection = getSelectionString(globals);
 
-        InitializeEntriesFragment(getContext(), getActivity(), rootView, selection, leftJoin);
+        if (!viewInflated) {
+            InitializeEntriesFragment(getContext(), getActivity(), rootView, selection, leftJoin);
+        }
+        viewInflated = true;
+
 
         spEntries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-
+                int deleteBtnMode = EntriesInputListAdapter.DELETE;
                 String selectionFilter = "Valid=1";
                 String selectionSearch = globals.getString("EntriesSelectionSearch","1");
                 SharedPreferences.Editor editor = globals.edit();
@@ -126,7 +145,7 @@ public class Entries extends Fragment {
                 }
 
                 if (!filterFound) {
-//TODO - site po red opcii
+                //TODO - site po red opcii
 
                     switch(selectedItem) {
                         case "All entries":
@@ -134,6 +153,7 @@ public class Entries extends Fragment {
                             break;
                         case "Deleted":
                             selectionFilter = "Valid=0 AND ReasonInvalid LIKE 'Code 03%'";
+                            deleteBtnMode = EntriesInputListAdapter.RESTORE;
                             break;
                         case "Synchronized":
                             selectionFilter = "Valid=1 AND Synced=1";
@@ -145,6 +165,7 @@ public class Entries extends Fragment {
                 }
 
                 editor.putString("EntriesSelectionFilter",selectionFilter);
+                editor.putInt("EntriesDeleteBtnMode",deleteBtnMode);
                 editor.putBoolean("EntriesSelectionLeftJoin",leftJoin);
                 editor.commit();
                 String selection = selectionFilter + " AND " + selectionSearch;
@@ -157,10 +178,60 @@ public class Entries extends Fragment {
             }
         });
 
+        svEntries.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                /*
+                String selectionSearch;
+                if (newText.equals("")) {
+                    selectionSearch = "1";
+                } else {
+                    selectionSearch = "(CPEntries.BIB LIKE %" + newText + "%";
+                    selectionSearch += " OR ActiveRacers.FirstName LIKE %" + newText + "%";
+                    selectionSearch += " OR ActiveRacers.LastName LIKE %" + newText + "%";
+                    selectionSearch += " OR ActiveRacers.Country LIKE %" + newText + "%)";
+                }
+                SharedPreferences.Editor editor = globals.edit();
+                editor.putString("EntriesSelectionSearch",selectionSearch);
+
+                String selection = getSelectionString(globals);
+                Boolean leftJoing = globals.getBoolean("EntriesSelectionLeftJoin",true);
+                InitializeEntriesListView(getContext(),lvEntries,selection,leftJoin,getActivity());
+                */
+                Toast.makeText(getContext(), query, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String selectionSearch;
+                if (newText.equals("")) {
+                    selectionSearch = "1";
+                } else {
+                    selectionSearch = "(CPEntries.BIB LIKE '%" + newText + "%'";
+                    selectionSearch += " OR ActiveRacers.FirstName LIKE '%" + newText + "%'";
+                    selectionSearch += " OR ActiveRacers.LastName LIKE '%" + newText + "%'";
+                    selectionSearch += " OR ActiveRacers.Country LIKE '%" + newText + "%')";
+                }
+                SharedPreferences.Editor editor = globals.edit();
+                editor.putString("EntriesSelectionSearch",selectionSearch);
+                editor.commit();
+                String selection = getSelectionString(globals);
+                Boolean leftJoing = globals.getBoolean("EntriesSelectionLeftJoin",true);
+                InitializeEntriesListView(getContext(),lvEntries,selection,leftJoin,getActivity());
+               // Toast.makeText(getContext(), newText, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
 
         return rootView;
 
     }
 
+    public static String getSelectionString(SharedPreferences globals) {
+        String selectionFilter = globals.getString("EntriesSelectionFilter","1");
+        String selectionSearch = globals.getString("EntriesSelectionSearch","1");
+        return selectionFilter + " AND " + selectionSearch;
+    }
 
 }

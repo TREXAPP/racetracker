@@ -151,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
         tvSyncInfo.setText("Last sync: Never");
 
 
+        //initialize search and filter for Entries
+       // SharedPreferences globals = getSharedPreferences(GLOBALS,0);
+        SharedPreferences.Editor editor = globals.edit();
+        editor.putString("EntriesSelectionSearch","1");
+        editor.putString("EntriesSelectionFilter","1");
+        editor.putBoolean("EntriesSelectionLeftJoin",true);
+        editor.commit();
+
     }
 
     private BroadcastReceiver InitializeBroadcastReceiver() {

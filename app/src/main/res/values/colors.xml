@@ -10,4 +10,6 @@
     <color name="foreground_material_light">#eadddd</color>
     <color name="primary_text_default_material_light">#de7a4040</color>
     <color name="primary_text_material_light">#ffffff</color>
+    <color name="colorOrange">#ffba00</color>
+    <color name="colorBlue">#00b7ff</color>
 </resources>
