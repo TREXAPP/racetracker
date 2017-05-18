@@ -21,7 +21,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorLightestGray" />
+                android:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@android:color/darker_gray"
+                android:visibility="visible" />
 
             <SearchView
                 android:id="@+id/svEntries"

@@ -210,7 +210,7 @@ public class Input extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         IntentFilter myFilter = new IntentFilter();
-        myFilter.addAction("com.trex.racetracker.REFRESH_LIST");
+        myFilter.addAction("com.trex.racetracker.REFRESH_LIST_INPUT");
         if (mReceiver == null) mReceiver = InitializeBroadcastReceiver(getContext(),view,getActivity());
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mReceiver,myFilter);
     }
@@ -228,7 +228,7 @@ public class Input extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String sAction = intent.getAction();
-                if ("com.trex.racetracker.REFRESH_LIST".equals(sAction) )
+                if ("com.trex.racetracker.REFRESH_LIST_INPUT".equals(sAction) )
                 {
                     InitializeInputFragment(ctx, view, activity);
 

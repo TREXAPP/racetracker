@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import layout.Entries;
+
 import static com.trex.racetracker.DbMethods.*;
 import static com.trex.racetracker.MainActivity.AUTHORITY;
 
@@ -627,6 +629,8 @@ public class StaticMethods {
 
         */
 
+
+
         spEntries.setPrompt("Select Filter");
 
         //create source for the spinner
@@ -655,8 +659,16 @@ public class StaticMethods {
         }
         CPCursor.close();
 
-        ArrayAdapter adapter = new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,list);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,R.layout.spinner_item,list);
+
+        //spEntries.setDropDownViewResource(R.layout.setting_value_spinner_value‌​);
+
+
         spEntries.setAdapter(adapter);
+
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        spEntries.setSelection(Entries.getSpinnerSelected(globals));
     }
 
     private static void InitializeEntriesSearchView(Context context, SearchView svEntries) {

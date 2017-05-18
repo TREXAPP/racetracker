@@ -142,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
         IntentFilter myFilter = new IntentFilter();
         myFilter.addAction("com.trex.racetracker.UPDATE_LAST_SYNC");
-        myFilter.addAction("com.trex.racetracker.REFRESH_LIST");
+        myFilter.addAction("com.trex.racetracker.REFRESH_LIST_INPUT");
+        myFilter.addAction("com.trex.racetracker.REFRESH_LIST_ENTRIES");
         if (mReceiver == null) mReceiver = InitializeBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,myFilter);
 
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     ivSyncToolbar.setVisibility(View.INVISIBLE);
 
                 }
+
             }
         };
     }
