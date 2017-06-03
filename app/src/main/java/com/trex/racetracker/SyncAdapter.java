@@ -100,6 +100,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 long lastPushInMillis = globals.getLong("lastPushInMillis",0);
                 SyncEntriesWorker syncEntriesWorker_insert = new SyncEntriesWorker(getContext());
                 SyncEntriesWorker syncEntriesWorker_update = new SyncEntriesWorker(getContext());
+                SyncEntriesWorker syncEntriesWorker_pull = new SyncEntriesWorker(getContext());
                 Boolean syncSuccess = true;
 
 
@@ -136,12 +137,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
 
                 if (syncSuccess) {
+                    /*
                     SharedPreferences.Editor editor = globals.edit();
                     editor.putLong("lastPushInMillis", System.currentTimeMillis());
                     //editor.putLong("lastPullInMillis",newLastPull_temp);
                     editor.apply();
+                    */
 
                 }
+
+                //3.PULL
+                String username = globals.getString("username","");
+                 syncEntriesWorker_pull.execute(TYPE_SYNC_PULL, URL_SYNC_PULL, username, String.valueOf(lastPullInMillis));
 
 
 
@@ -224,17 +231,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 rowJSON.put("LocalEntryID",insertCursor.getString(0));
                 //rowJSON.put("EntryID",insertCursor.getString(1));
                 rowJSON.put("CPID",insertCursor.getString(2));
-                rowJSON.put("UserID",insertCursor.getString(3));
-                rowJSON.put("ActiveRacerID",insertCursor.getString(4));
-                rowJSON.put("Barcode",insertCursor.getString(5));
-                rowJSON.put("Time",insertCursor.getString(6));
-                rowJSON.put("EntryTypeID",insertCursor.getString(7));
-                rowJSON.put("Comment",insertCursor.getString(8));
-                rowJSON.put("BIB",insertCursor.getString(9));
-                rowJSON.put("Valid",insertCursor.getString(10));
-                rowJSON.put("Operator",insertCursor.getString(11));
-                rowJSON.put("ReasonInvalid",insertCursor.getString(12));
-                rowJSON.put("TimeStamp",insertCursor.getString(13));
+                rowJSON.put("CPNo",insertCursor.getString(3));
+                rowJSON.put("UserID",insertCursor.getString(4));
+                rowJSON.put("ActiveRacerID",insertCursor.getString(5));
+                rowJSON.put("Barcode",insertCursor.getString(6));
+                rowJSON.put("Time",insertCursor.getString(7));
+                rowJSON.put("EntryTypeID",insertCursor.getString(8));
+                rowJSON.put("Comment",insertCursor.getString(9));
+                rowJSON.put("BIB",insertCursor.getString(10));
+                rowJSON.put("Valid",insertCursor.getString(11));
+                rowJSON.put("Operator",insertCursor.getString(12));
+                rowJSON.put("ReasonInvalid",insertCursor.getString(13));
+                rowJSON.put("TimeStamp",insertCursor.getString(14));
 
                 jsonObj.put(String.valueOf(count),rowJSON);
                 insertCursor.moveToNext();
@@ -265,17 +273,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 rowJSON.put("LocalEntryID",updateCursor.getString(0));
                 rowJSON.put("EntryID",updateCursor.getString(1));
                 rowJSON.put("CPID",updateCursor.getString(2));
-                rowJSON.put("UserID",updateCursor.getString(3));
-                rowJSON.put("ActiveRacerID",updateCursor.getString(4));
-                rowJSON.put("Barcode",updateCursor.getString(5));
-                rowJSON.put("Time",updateCursor.getString(6));
-                rowJSON.put("EntryTypeID",updateCursor.getString(7));
-                rowJSON.put("Comment",updateCursor.getString(8));
-                rowJSON.put("BIB",updateCursor.getString(9));
-                rowJSON.put("Valid",updateCursor.getString(10));
-                rowJSON.put("Operator",updateCursor.getString(11));
-                rowJSON.put("ReasonInvalid",updateCursor.getString(12));
-                rowJSON.put("TimeStamp",updateCursor.getString(13));
+                rowJSON.put("CPNo",updateCursor.getString(3));
+                rowJSON.put("UserID",updateCursor.getString(4));
+                rowJSON.put("ActiveRacerID",updateCursor.getString(5));
+                rowJSON.put("Barcode",updateCursor.getString(6));
+                rowJSON.put("Time",updateCursor.getString(7));
+                rowJSON.put("EntryTypeID",updateCursor.getString(8));
+                rowJSON.put("Comment",updateCursor.getString(9));
+                rowJSON.put("BIB",updateCursor.getString(10));
+                rowJSON.put("Valid",updateCursor.getString(11));
+                rowJSON.put("Operator",updateCursor.getString(12));
+                rowJSON.put("ReasonInvalid",updateCursor.getString(13));
+                rowJSON.put("TimeStamp",updateCursor.getString(14));
 
                 jsonObj.put(String.valueOf(count),rowJSON);
                 updateCursor.moveToNext();

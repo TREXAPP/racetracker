@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +26,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import static com.trex.racetracker.DbMethods.*;
+import static com.trex.racetracker.R.drawable.error;
 
 /**
  * Created by Igor on 27.4.2017.
@@ -113,7 +115,55 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
 
         if (type.equals("sync_pull")) try {
             String queryUrl = params[1];
-            //TODO get params here
+            URL url = new URL(queryUrl);
+            String username = params[2];
+            String last_pull_timestamp = params[3];
+
+            //debug
+            //last_pull_timestamp = "123";
+
+            String post_data = "";
+
+            if (!type.equals("")) {
+                if (!post_data.equals("")) post_data += "&";
+                post_data += URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8");
+            }
+
+            if (!username.equals("")) {
+                if (!post_data.equals("")) post_data += "&";
+                post_data += URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
+            }
+
+            if (!last_pull_timestamp.equals("")) {
+                if (!post_data.equals("")) post_data += "&";
+                post_data += URLEncoder.encode("last_pull_timestamp", "UTF-8") + "=" + URLEncoder.encode(last_pull_timestamp, "UTF-8");
+            }
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+            bufferedWriter.write(post_data);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            outputStream.close();
+
+
+            //now get the response
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+            String line = "";
+            //    result = bufferedReader.toString();
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
        }
@@ -130,6 +180,9 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+
+        //debug
+
         if (result != null) {
 
 
@@ -163,13 +216,48 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
             }
 
 
+            Boolean changeDetected = false;
+            if (type.equals("sync_pull")) {
+
+
+
+                try {
+                    JSONObject jsonResult = new JSONObject(result);
+
+                    if (jsonResult.has("success")) {
+                        if (jsonResult.getString("success").equals("1")) {
+                            if (jsonResult.has("rowsNo")) {
+                                changeDetected = true;
+                            }
+                            if (!insertPulledEntries(context, jsonResult)) {
+                                error += "Error while writing data from pull in SQLite, CPEntries table. Contact the administrator;";
+                            }
+                        } else {
+                            error += "Error: with database! Contact the administrator.";
+
+                        }
+                    } else {
+                        error += "Error reading data from API: syncEntries_pull.php! Contact the administrator.";
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
             if (!error.equals("")) {
                 Log.e("Sync error", error);
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
             } else {
                 SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
                 SharedPreferences.Editor editor = globals.edit();
                 Long timeNow = System.currentTimeMillis();
+
                 editor.putLong("lastPushInMillis",timeNow);
+                if (changeDetected) {
+                    editor.putLong("lastPullInMillis", timeNow);
+                }
                 editor.commit();
             }
         }

@@ -164,7 +164,7 @@ public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
                     deleteAllFromActiveRacers(context);
                     if (!insertIntoActiveRacers(context,jsonResult)) {
                         error += "Error while writing in SQLite, ActiveRaces table. Contact the administrator;";
-                    };
+                    }
 
                 } else {
                     error += "Error while reading from web server sync.php. Contact the administrator;";

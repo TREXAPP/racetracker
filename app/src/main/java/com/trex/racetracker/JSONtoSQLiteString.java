@@ -388,4 +388,62 @@ public class JSONtoSQLiteString {
         return result;
     }
 
+    public String UserID(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("UserID");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+
+    public String Barcode(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("Barcode");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+
+    public String Time(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("Time");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+
+    public String EntryTypeID(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("EntryTypeID");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+    public String Timestamp(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("Timestamp");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+
+    public String Operator(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("Operator");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
 }

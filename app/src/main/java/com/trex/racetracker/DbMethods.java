@@ -12,6 +12,7 @@ import java.util.Date;
 
 import static com.trex.racetracker.DatabaseHelper.*;
 import static com.trex.racetracker.StaticMethods.*;
+import static java.sql.Types.NULL;
 
 /**
  * Created by Igor on 21.4.2017.
@@ -408,7 +409,7 @@ public class DbMethods {
             whereClause = " 1 ";
         }
 
-        String[] projection = new String[]{"LocalEntryID","EntryID","CPID","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","TimeStamp"};
+        String[] projection = new String[]{"LocalEntryID","EntryID","CPID","CPNo","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","TimeStamp"};
         String selection = whereClause;
         String sortOrder = orderbyClause;
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
@@ -530,6 +531,49 @@ public class DbMethods {
             i++;
         }
         if (result == -1) return false;
+        else return true;
+    }
+
+    public static boolean insertPulledEntries(Context context, JSONObject jsonString) {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        Uri resultUri;
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+
+        JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
+        String result="0";
+        int i=0;
+        while (i < jsonString.length()-3) {
+            if (!result.equals("-1")) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(COL_2_1,jsontosqlite.EntryID(i));
+                contentValues.put(COL_2_2,jsontosqlite.CPID(i));
+                contentValues.put(COL_2_3,jsontosqlite.CPName(i));
+                contentValues.put(COL_2_4,jsontosqlite.UserID(i));
+                contentValues.put(COL_2_5,jsontosqlite.ActiveRacerID(i));
+                contentValues.put(COL_2_6,jsontosqlite.Barcode(i));
+                contentValues.put(COL_2_7,jsontosqlite.Time(i));
+                contentValues.put(COL_2_8,jsontosqlite.EntryTypeID(i));
+                contentValues.put(COL_2_9,jsontosqlite.CPComment(i));
+                contentValues.put(COL_2_10,"1");
+                contentValues.put(COL_2_11,"0");
+                contentValues.put(COL_2_12,jsontosqlite.BIB(i));
+                contentValues.put(COL_2_13,"1");
+                contentValues.put(COL_2_14,jsontosqlite.Operator(i));
+                contentValues.put(COL_2_15,jsontosqlite.CPNo(i));
+                contentValues.put(COL_2_16,NULL);
+                contentValues.put(COL_2_17,jsontosqlite.Timestamp(i));
+                //contentValues.put(COL_2_18,jsontosqlite.LocalEntryID(i));
+
+
+                resultUri = context.getContentResolver().insert(uri, contentValues);
+                //resultUri = mProvider.insert(uri, contentValues);
+                result = resultUri != null ? resultUri.getLastPathSegment() : "1";
+
+                //result = db.insert(TABLE_1_NAME,null,contentValues);
+            }
+            i++;
+        }
+        if (result.equals("-1")) return false;
         else return true;
     }
 }
