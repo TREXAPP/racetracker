@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_periodic_sync"
+        android:summary="Occasionally the new entries will be synchronized with the server automatically. It is advisable to leave it on, but you can disable it temporarily if you know you don't have internet, or you wish to save battery life."
+        android:title="Enable Entries Synchronization" />
+
+
+    <EditTextPreference
+        android:defaultValue="60"
+        android:key="pref_sync_interval"
+        android:title="Sync frequency"
+        android:summary="Time (in seconds) between 2 synchronizations. Minimum value is 60 (if set below, 60 will be used). Set this to bigger value to save battery life."
+        android:numeric="integer"
+    />
+
+</PreferenceScreen>

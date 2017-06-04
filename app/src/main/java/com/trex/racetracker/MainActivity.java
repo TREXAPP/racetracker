@@ -236,6 +236,14 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences globals = getSharedPreferences(GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
 
+        //App version
+        //if (!globals.contains("version"))
+            editor.putString("version","0.3.002 Alpha");
+
+        //App version
+       // if (!globals.contains("AdminPass"))
+            editor.putString("AdminPass","run358");
+
         //when a user gets logged in this is set true. When no user is logged in it is false
         if (!globals.contains("islogin")) editor.putBoolean("islogin",false);
 
@@ -267,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("deviceid")) editor.putString("deviceid",android_id);
 
         //time (in minutes) after which all entries from one control points are ignored. They are stored for reference with flag valid=false
-        if (!globals.contains("timebetweenentries")) editor.putInt("timebetweenentries",1);
+        if (!globals.contains("timebetweenentries")) editor.putInt("timebetweenentries",10);
 
         //whether or not periodic sync for the entries is enabled. Will be a parameter in the settings to toggle
         //when ON it ensures successful sync, but may drain battery more
@@ -318,13 +326,43 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
 
+    public void ToggleSync(MenuItem item) {
+        SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+        SharedPreferences.Editor editor = globals.edit();
+        if (item.isChecked()) {
+            item.setChecked(false);
+            editor.putBoolean("periodic_sync",false);
+            Toast.makeText(this, "Synchronization disabled", Toast.LENGTH_SHORT).show();
+        } else {
+            item.setChecked(true);
+            editor.putBoolean("periodic_sync",true);
+            Toast.makeText(this, "Synchronization enabled", Toast.LENGTH_SHORT).show();
+        }
+        editor.commit();
+    }
+
+    public void OpenSyncSettings(MenuItem item) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra("Fragment","SyncFragment");
+        startActivity(intent);
+
+    }
+
+    public void OpenAboutSettings(MenuItem item) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra("Fragment","AboutFragment");
+        startActivity(intent);
+    }
+
+    public void OpenAdminSettings(MenuItem item) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra("Fragment","AdminFragment");
+        startActivity(intent);
+    }
 }
 

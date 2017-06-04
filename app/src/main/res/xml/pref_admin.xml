@@ -1,0 +1,42 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="pref_admin_lock"
+        android:title="Admin Password"
+        android:summary="Enter the admin password to unlock these settings."
+        android:password="true"
+        />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_allowemptyentries"
+        android:summary="Allow entry of BIB number that does not exist in the database (Useful to be ON, if my chance some runners are not inputed in the database)"
+        android:title="Allow non-registered BIBs" />
+
+    <EditTextPreference
+        android:defaultValue="3"
+        android:key="pref_inputdigitsno"
+        android:title="BIB number digits"
+        android:summary="Number of digits for the BIB numbers (default and recommended: 3)"
+        android:numeric="integer"
+        />
+
+    <EditTextPreference
+        android:defaultValue="10"
+        android:key="pref_timebetweenentries"
+        android:title="Lock runner time"
+        android:summary="Time (in minutes) after a successful entry of a runner, in which another entry of the same runner is not allowed. 0 = no lock"
+        android:numeric="integer"
+        />
+
+    <EditTextPreference
+        android:defaultValue="400"
+        android:key="pref_entryconfirmtimer"
+        android:title="[Visual] Entry Flashing Time"
+        android:summary="Duration (in miliseconds) of a keyboard flashing during an entry. Visual tweak."
+        android:numeric="integer"
+        />
+
+
+
+</PreferenceScreen>

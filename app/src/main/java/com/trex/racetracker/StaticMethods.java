@@ -22,6 +22,9 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -673,5 +676,34 @@ public class StaticMethods {
 
     private static void InitializeEntriesSearchView(Context context, SearchView svEntries) {
 
+    }
+
+    public static String EncryptPassword(String Username, String Password) {
+        String Salt = md5(Username);
+        return md5(Password+Salt);
+    }
+
+    public static String md5(String input) {
+
+        String md5 = null;
+
+        if(null == input) return null;
+
+        try {
+
+            //Create MessageDigest object for MD5
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+
+            //Update input string in message digest
+            digest.update(input.getBytes(), 0, input.length());
+
+            //Converts message digest value in base 16 (hex)
+            md5 = new BigInteger(1, digest.digest()).toString(16);
+
+        } catch (NoSuchAlgorithmException e) {
+
+            e.printStackTrace();
+        }
+        return md5;
     }
 }

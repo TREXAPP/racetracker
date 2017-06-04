@@ -27,6 +27,9 @@ import layout.Login;
 
 import org.w3c.dom.Text;
 
+import static com.trex.racetracker.R.id.etUsername;
+import static com.trex.racetracker.StaticMethods.EncryptPassword;
+
 /**
  * Created by Igor_2 on 13.11.2016.
  */
@@ -75,7 +78,9 @@ public class ConfirmLogoutDialog extends DialogFragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etPassword.getText().toString().equals(globals.getString("password",""))) {
+                String Username = globals.getString("username","");
+                String passwordEncrypted = EncryptPassword(Username,etPassword.getText().toString());
+                if (passwordEncrypted.equals(globals.getString("password",""))) {
                     //LOGOUT success!
                     tvErrorLogout.setText("Enter password to continue");
                     tvErrorLogout.setTextColor(ContextCompat.getColor(getContext(), R.color.colorDarkGray));

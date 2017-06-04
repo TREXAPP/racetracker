@@ -4,16 +4,9 @@ package layout;
  * Created by Igor on 22.10.2016.
  */
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.view.inputmethod.InputMethodManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,9 +18,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.trex.racetracker.LoginWorker;
-import com.trex.racetracker.LogoutWorker;
 import com.trex.racetracker.MainActivity;
 import com.trex.racetracker.R;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import static com.trex.racetracker.StaticMethods.*;
 
@@ -93,7 +89,8 @@ public class Login extends Fragment {
             public void onClick(View v) {
 
                 LoginWorker loginWorker = new LoginWorker(getContext(),fragmentLogin, fragmentRacers);
-                loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
+                String passwordEncrypted = EncryptPassword(etUsername.getText().toString(),etPassword.getText().toString());
+                loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),passwordEncrypted,etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
                 TurnOffKeyboard(getActivity(),getContext());
                 //turn off keyboard:
                // InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -149,6 +146,9 @@ public class Login extends Fragment {
         return fragmentLogin;
 
     }
+
+
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

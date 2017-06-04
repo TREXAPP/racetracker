@@ -1,0 +1,15 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+    <Preference
+        android:key="pref_about_key"
+        android:selectable="false"
+        android:title="RaceTracker"
+        android:summary="Multi line description\ncan go here."/>
+
+
+
+
+
+</PreferenceScreen>

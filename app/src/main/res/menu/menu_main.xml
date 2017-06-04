@@ -2,9 +2,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.trex.racetracker.MainActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+    <group
+        android:enabled="true"
+        android:visible="true">
+
+        <item
+            android:id="@+id/action_Synchronization"
+            android:orderInCategory="100"
+            android:title="Synchronization"
+            android:onClick="OpenSyncSettings"/>
+        <item
+            android:id="@+id/action_AdminSettings"
+            android:orderInCategory="100"
+            android:title="Admin Settings"
+            android:onClick="OpenAdminSettings"/>
+        <item
+            android:id="@+id/action_About"
+            android:orderInCategory="100"
+            android:title="About"
+            android:onClick="OpenAboutSettings"/>
+    </group>
+
 </menu>
