@@ -6,6 +6,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -706,4 +709,153 @@ public class StaticMethods {
         }
         return md5;
     }
+
+
+    public static EntryObj PrepareEntryObj(Context context, String inputedBIB, Integer EntryTypeID, String Barcode) {
+
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+
+        EntryObj entryObj = new EntryObj();
+        entryObj.setEntryID(null);
+        entryObj.setBIB(inputedBIB);
+        Cursor cursorRacers = getActiveRacerIDFromRacers(context, inputedBIB);
+        boolean racerFound = false;
+        boolean cpnoSet = false;
+        String raceID = "";
+
+        if (cursorRacers.getCount() == 1) {
+            racerFound = true;
+            cursorRacers.moveToFirst();
+            // ActiveRacerID, FirstName, LastName, Country, Gender, Age
+            entryObj.setActiveRacerID(Integer.parseInt(cursorRacers.getString(0)));
+            entryObj.setFirstName(cursorRacers.getString(1));
+            entryObj.setLastName(cursorRacers.getString(2));
+            entryObj.setCountry(cursorRacers.getString(3));
+            entryObj.setGender(cursorRacers.getString(4));
+            entryObj.setAge(cursorRacers.getString(5));
+            raceID = cursorRacers.getString(6);
+            entryObj.setRaceID(Integer.parseInt(raceID));
+
+        } else {
+            entryObj.setActiveRacerID(null);
+            entryObj.setFirstName(null);
+            entryObj.setLastName(null);
+            entryObj.setCountry(null);
+            entryObj.setGender(null);
+            entryObj.setAge(null);
+            entryObj.setRaceID(null);
+        }
+
+        cursorRacers.close();
+
+        entryObj.setEntryTypeID(EntryTypeID);
+        entryObj.setBarcode(Barcode);
+        entryObj.setComment("");
+        entryObj.setSynced(false);
+        entryObj.setMyEntry(true);
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        Date timeNow = calendar.getTime();
+        String formattedDate = df.format(timeNow);
+        entryObj.setTime(formattedDate); //example format: 2016-11-14 07:13:28
+        entryObj.setTimeStamp(System.currentTimeMillis());
+
+        //check if there is a previous entry close to this, whether to flag this entry valid true or false
+        int timeBetweenEntries = globals.getInt("timebetweenentries",1);
+        Date lastEntryDate = getDateForLastEntry(context, inputedBIB);
+        if (lastEntryDate != null) {
+            if (addMinutesToDate(timeBetweenEntries,lastEntryDate).before(timeNow)) {
+                entryObj.setValid(true);
+            } else {
+                entryObj.setValid(false);
+                entryObj.setReasonInvalid("Code 01: There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes");
+            }
+        } else {
+            entryObj.setValid(true);
+        }
+
+
+
+        if (globals.getBoolean("islogin",false)) {
+            entryObj.setUserID(globals.getString("username",""));
+            entryObj.setOperator(globals.getString("operator",""));
+            String loginInfoWhere;
+            String loginInfoOrder;
+            if (racerFound) {
+                loginInfoWhere = "RaceID='" + raceID + "'";
+                loginInfoOrder = "CPNo DESC";
+            } else {
+                loginInfoWhere = "1";
+                loginInfoOrder = null;
+            }
+            Cursor cursorCP = getEntryDataFromLoginInfo(context, loginInfoWhere,loginInfoOrder);
+            //set CPNo:
+            // 1. check from login info how many rows are there for this RaceID
+            //2. If this CPNo exists check the next ... and so on... Raise alarm if all are used
+
+
+
+            if (cursorCP.getCount() > 0) {
+                cursorCP.moveToFirst();
+                entryObj.setCPID(Integer.parseInt(cursorCP.getString(0)));
+                entryObj.setCPName(cursorCP.getString(1));
+
+                while (!cursorCP.isAfterLast()) {
+                    String CPNo = cursorCP.getString(2);
+
+                    if (!hasRunnerPassedThroughCP(context, inputedBIB,CPNo)) {
+                        entryObj.setCPNo(cursorCP.getString(2));
+                        cpnoSet = true;
+                    }
+                    cursorCP.moveToNext();
+                }
+                if (!cpnoSet) {
+
+                    entryObj.setValid(false);
+                    entryObj.setReasonInvalid("Code 02: The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");
+                }
+            } else {
+                entryObj.setCPID(null);
+                entryObj.setCPName(null);
+            }
+            cursorCP.close();
+
+        } else {
+            entryObj.setCPID(null);
+            entryObj.setCPName(null);
+            entryObj.setUserID(null);
+            entryObj.setOperator(null);
+            entryObj.setCPNo(null);
+        }
+
+
+
+        return entryObj;
+    }
+
+    public static String ValidateEntry(Context context, EntryObj entryObj) {
+        String status = "success";
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        if (!entryObj.isValid()) {
+            if (entryObj.getReasonInvalid().startsWith("Code 01")) {
+                status = "too soon";
+                int timeBetweenEntries = globals.getInt("timebetweenentries",1);
+                Toast.makeText(context, "There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes", Toast.LENGTH_SHORT).show();
+            }
+            if (entryObj.getReasonInvalid().startsWith("Code 02")) {
+                status = "already passed";
+                Toast.makeText(context, "The runner has already passed through this checkpoint too many times times!", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (!globals.getBoolean("islogin",false)) {
+            if (!status.equals("too soon")) {
+                status = "not logged in";
+            }
+        }
+        return status;
+    }
+
+
 }

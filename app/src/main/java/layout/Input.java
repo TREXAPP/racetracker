@@ -59,7 +59,6 @@ public class Input extends Fragment {
     private BroadcastReceiver mReceiver;
 
 
-
 /*
     private BroadcastReceiver myReceiver = new BroadcastReceiver()
     {
@@ -285,7 +284,7 @@ public class Input extends Fragment {
         if (newEntry) {
             disableEnableControls(false,layoutInput);
             BIBEntryString = "";
-            Integer timer = globals.getInt("entryconfirmtimer",100);
+            Integer timer = globals.getInt("entryconfirmtimer",400);
 
 
 
@@ -308,7 +307,50 @@ public class Input extends Fragment {
 
             DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
             //for direct entry EntryTypeID=1, Barcode = null
-            EntryObj entryObj = PrepareEntryObj(context, inputedBIB,1,null,dbHelper,tvBIBEntry);
+            EntryObj entryObj = PrepareEntryObj(context, inputedBIB,1,null);
+            String status = ValidateEntry(context,entryObj);
+
+            MediaPlayer mpSuccess = MediaPlayer.create(context, R.raw.beep_short);
+            MediaPlayer mpError = MediaPlayer.create(context, R.raw.beep_long);
+
+
+            //set colors depending on status:
+            switch (status) {
+                case "not logged in":
+                    //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+                    //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                    layoutInput.setBackgroundColor(Color.parseColor("#FFBBD0BF"));  //light gray
+                    mpSuccess.start();
+                    break;
+                case "success":
+                    //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFD9DDFF"));
+                    // tvBIBEntry.setTextColor(Color.parseColor("#FF004F0D"));
+                    layoutInput.setBackgroundColor(Color.parseColor("#FF7BFDB1"));  //lightest green
+                    mpSuccess.start();
+                    break;
+                case "too soon":
+                    tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));   //red
+                    tvBIBEntry.setTextColor(Color.parseColor("#FFFFFFFF"));         //white
+                    layoutInput.setBackgroundColor(Color.parseColor("#FFFF0004"));  //red
+                    mpError.start();
+                    break;
+                case "already passed":
+                    tvBIBEntry.setBackgroundColor(Color.parseColor("#FF3E50FF"));   //blue
+                    tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));         //lightest green
+                    layoutInput.setBackgroundColor(Color.parseColor("#FF3E50FF"));  //blue
+                    mpError.start();
+                    break;
+                default:
+                    tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+                    tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
+                    mpSuccess.start();
+                    break;
+            }
+
+            // FF7BFDB1 lightgreen
+            // FFFF0004 red
+            //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
+            //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
 
             if (!(insertIntoCPEntries(context,entryObj,true))) {
                 Toast.makeText(context, "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
@@ -341,181 +383,6 @@ public class Input extends Fragment {
         editor.apply();
 
     }
-
-    private EntryObj PrepareEntryObj(Context context, String inputedBIB, Integer EntryTypeID, String Barcode, DatabaseHelper dbHelper, TextView tvBIBEntry) {
-
-        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-
-        EntryObj entryObj = new EntryObj();
-        entryObj.setEntryID(null);
-        entryObj.setBIB(inputedBIB);
-        Cursor cursorRacers = getActiveRacerIDFromRacers(context, inputedBIB);
-        boolean racerFound = false;
-        boolean cpnoSet = false;
-        String status = "success";
-        String raceID = "";
-
-        if (cursorRacers.getCount() == 1) {
-            racerFound = true;
-            cursorRacers.moveToFirst();
-            // ActiveRacerID, FirstName, LastName, Country, Gender, Age
-            entryObj.setActiveRacerID(Integer.parseInt(cursorRacers.getString(0)));
-            entryObj.setFirstName(cursorRacers.getString(1));
-            entryObj.setLastName(cursorRacers.getString(2));
-            entryObj.setCountry(cursorRacers.getString(3));
-            entryObj.setGender(cursorRacers.getString(4));
-            entryObj.setAge(cursorRacers.getString(5));
-            raceID = cursorRacers.getString(6);
-            entryObj.setRaceID(Integer.parseInt(raceID));
-
-        } else {
-            entryObj.setActiveRacerID(null);
-            entryObj.setFirstName(null);
-            entryObj.setLastName(null);
-            entryObj.setCountry(null);
-            entryObj.setGender(null);
-            entryObj.setAge(null);
-            entryObj.setRaceID(null);
-        }
-
-        cursorRacers.close();
-
-        entryObj.setEntryTypeID(EntryTypeID);
-        entryObj.setBarcode(Barcode);
-        entryObj.setComment("");
-        entryObj.setSynced(false);
-        entryObj.setMyEntry(true);
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        Date timeNow = calendar.getTime();
-        String formattedDate = df.format(timeNow);
-        entryObj.setTime(formattedDate); //example format: 2016-11-14 07:13:28
-        entryObj.setTimeStamp(System.currentTimeMillis());
-
-        //check if there is a previous entry close to this, whether to flag this entry valid true or false
-        int timeBetweenEntries = globals.getInt("timebetweenentries",1);
-        Date lastEntryDate = getDateForLastEntry(context, inputedBIB);
-        if (lastEntryDate != null) {
-            if (addMinutesToDate(timeBetweenEntries,lastEntryDate).before(timeNow)) {
-                entryObj.setValid(true);
-            } else {
-                entryObj.setValid(false);
-                entryObj.setReasonInvalid("Code 01: There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes");
-                Toast.makeText(getContext(), "There was a valid entry for this runner in the last " + timeBetweenEntries + " minutes", Toast.LENGTH_SHORT).show();
-                status = "too soon";
-            }
-        } else {
-            entryObj.setValid(true);
-        }
-
-
-
-        if (globals.getBoolean("islogin",false)) {
-            entryObj.setUserID(globals.getString("username",""));
-            entryObj.setOperator(globals.getString("operator",""));
-            String loginInfoWhere;
-            String loginInfoOrder;
-            if (racerFound) {
-                loginInfoWhere = "RaceID='" + raceID + "'";
-                loginInfoOrder = "CPNo DESC";
-            } else {
-                loginInfoWhere = "1";
-                loginInfoOrder = null;
-            }
-            Cursor cursorCP = getEntryDataFromLoginInfo(context, loginInfoWhere,loginInfoOrder);
-            //set CPNo:
-            // 1. check from login info how many rows are there for this RaceID
-            //2. If this CPNo exists check the next ... and so on... Raise alarm if all are used
-
-
-
-            if (cursorCP.getCount() > 0) {
-                cursorCP.moveToFirst();
-                entryObj.setCPID(Integer.parseInt(cursorCP.getString(0)));
-                entryObj.setCPName(cursorCP.getString(1));
-
-                while (!cursorCP.isAfterLast()) {
-                    String CPNo = cursorCP.getString(2);
-
-                    if (!hasRunnerPassedThroughCP(context, inputedBIB,CPNo)) {
-                        entryObj.setCPNo(cursorCP.getString(2));
-                        cpnoSet = true;
-                    }
-                    cursorCP.moveToNext();
-                }
-                if (!cpnoSet) {
-
-                    Toast.makeText(getContext(), "The runner has already passed through this checkpoint " + cursorCP.getCount() + " times", Toast.LENGTH_SHORT).show();
-                    entryObj.setValid(false);
-                    entryObj.setReasonInvalid("Code 02: The runner has already passed through this checkpoint " + cursorCP.getCount() + " times");
-                    status = "already passed";
-                }
-            } else {
-                entryObj.setCPID(null);
-                entryObj.setCPName(null);
-            }
-            cursorCP.close();
-
-        } else {
-            entryObj.setCPID(null);
-            entryObj.setCPName(null);
-            entryObj.setUserID(null);
-            entryObj.setOperator(null);
-            entryObj.setCPNo(null);
-        }
-
-        if (!globals.getBoolean("islogin",false)) {
-            if (!status.equals("too soon")) {
-                status = "not logged in";
-            }
-        }
-
-        MediaPlayer mpSuccess = MediaPlayer.create(getContext(), R.raw.beep_short);
-        MediaPlayer mpError = MediaPlayer.create(getContext(), R.raw.beep_long);
-
-
-        //set colors depending on status:
-        switch (status) {
-            case "not logged in":
-              //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
-              //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
-                layoutInput.setBackgroundColor(Color.parseColor("#FFBBD0BF"));  //light gray
-                mpSuccess.start();
-                break;
-            case "success":
-              //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFD9DDFF"));
-               // tvBIBEntry.setTextColor(Color.parseColor("#FF004F0D"));
-                layoutInput.setBackgroundColor(Color.parseColor("#FF7BFDB1"));  //lightest green
-                mpSuccess.start();
-                break;
-            case "too soon":
-                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));   //red
-                tvBIBEntry.setTextColor(Color.parseColor("#FFFFFFFF"));         //white
-                layoutInput.setBackgroundColor(Color.parseColor("#FFFF0004"));  //red
-                mpError.start();
-                break;
-            case "already passed":
-                tvBIBEntry.setBackgroundColor(Color.parseColor("#FF3E50FF"));   //blue
-                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));         //lightest green
-                layoutInput.setBackgroundColor(Color.parseColor("#FF3E50FF"));  //blue
-                mpError.start();
-                break;
-            default:
-                tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
-                tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
-                mpSuccess.start();
-                break;
-        }
-
-        // FF7BFDB1 lightgreen
-        // FFFF0004 red
-        //  tvBIBEntry.setBackgroundColor(Color.parseColor("#FFFF0004"));
-        //  tvBIBEntry.setTextColor(Color.parseColor("#FF7BFDB1"));
-
-        return entryObj;
-    }
-
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
