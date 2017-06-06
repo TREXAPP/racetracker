@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
 
         //App version
         //if (!globals.contains("version"))
-            editor.putString("version","0.3.003 Alpha");
+            editor.putString("version","0.3.004 Alpha");
 
         //App version
        // if (!globals.contains("AdminPass"))
@@ -427,6 +428,7 @@ public class MainActivity extends AppCompatActivity {
 
             final ViewGroup layoutInput = (ViewGroup) findViewById(R.id.layoutInput);
             final TextView tvBIBEntry = (TextView) findViewById(R.id.tvBIBEntry);
+            final ListView lvInputEntries = (ListView) findViewById(R.id.lvInputEntries);
             //TODO logic here!
             //1. form an entry
             //2. write the entry in sqlite
@@ -499,9 +501,11 @@ public class MainActivity extends AppCompatActivity {
 
             if (!(insertIntoCPEntries(this,entryObj,true))) {
                 Toast.makeText(this, "Error writing Entry into local database! Contact the administrator.", Toast.LENGTH_SHORT).show();
+            } else {
+                PopulateInputEntriesListView(this,lvInputEntries, MainActivity.this);
             }
 
-            Toast.makeText(this, "Testing NFC. Read " + tagContent, Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Testing NFC. Read " + tagContent, Toast.LENGTH_SHORT).show();
            // txtTagContent.setText(tagContent);
 
         } else {
