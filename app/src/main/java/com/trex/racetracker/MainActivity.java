@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
@@ -257,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
 
         //App version
         //if (!globals.contains("version"))
-            editor.putString("version","0.3.004 Alpha");
+            editor.putString("version","0.3.005 Alpha");
 
         //App version
        // if (!globals.contains("AdminPass"))
@@ -321,7 +322,12 @@ public class MainActivity extends AppCompatActivity {
         contentResolver.unregisterContentObserver(mObserver);
         TogglePeriodicSync(mAccount,this);
         //nfc
-        disableForegroundDispatchSystem();
+        NfcManager manager = (NfcManager) this.getSystemService(Context.NFC_SERVICE);
+        NfcAdapter adapter = manager.getDefaultAdapter();
+        if (adapter != null && adapter.isEnabled()) {
+            // adapter exists and is enabled.
+            disableForegroundDispatchSystem();
+        }
 
     }
 
@@ -332,7 +338,13 @@ public class MainActivity extends AppCompatActivity {
         contentResolver.registerContentObserver(mUri, true, mObserver);
         TogglePeriodicSync(mAccount,this);
         //nfc
-        enableForegroundDispatchSystem();
+        NfcManager manager = (NfcManager) this.getSystemService(Context.NFC_SERVICE);
+        NfcAdapter adapter = manager.getDefaultAdapter();
+        if (adapter != null && adapter.isEnabled()) {
+            // adapter exists and is enabled.
+            enableForegroundDispatchSystem();
+        }
+
     }
 
     @Override
