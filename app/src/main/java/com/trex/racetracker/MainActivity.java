@@ -270,9 +270,6 @@ public class MainActivity extends AppCompatActivity {
         //the username for the logged user. if no user is logged, this is empty string
         if (!globals.contains("username")) editor.putString("username","");
 
-        //the starting time of the race. So far it has no uses (TODO?)
-        if (!globals.contains("starttime")) editor.putString("starttime","");
-
         //the operator that is set when user is logged. Can be empty string even if user is logged. If no user is logged it is also an empty string
         if (!globals.contains("operator")) editor.putString("operator","");
 

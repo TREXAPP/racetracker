@@ -26,7 +26,7 @@ public class EntryObj {
     private String LastName;
     private String Country;
     private String Gender;
-    private String Age;
+    private int Age;
     private String ReasonInvalid;
     private Long TimeStamp;
 
@@ -50,7 +50,7 @@ public class EntryObj {
         this.LastName = null;
         this.Country = null;
         this.Gender = null;
-        this.Age = null;
+        this.Age = 0;
         this.ReasonInvalid = null;
         this.TimeStamp = null;
     }
@@ -215,11 +215,11 @@ public class EntryObj {
         Gender = gender;
     }
 
-    public String getAge() {
+    public int getAge() {
         return Age;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         Age = age;
     }
 

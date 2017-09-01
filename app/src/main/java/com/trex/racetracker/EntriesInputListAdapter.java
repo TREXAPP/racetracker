@@ -78,7 +78,11 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
             tvTime.setText(entryObj.getTime().substring(11,19)); //TODO: Format if needed!
           //  tvTime.setText(entryObj.getTime()); //TODO: Format if needed!
             tvCountry.setText(entryObj.getCountry());
-            tvAge.setText(entryObj.getAge());
+            if (entryObj.getAge() == 0) {
+                tvAge.setText("");
+            } else {
+                tvAge.setText(String.valueOf(entryObj.getAge()));
+            }
             tvGender.setText(entryObj.getGender());
             tvBIB.setText(entryObj.getBIB());
 
@@ -91,7 +95,7 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
             }
 
             if (globals.getBoolean("islogin",false)) {
-                if (entryObj.getCountry().equals("") && entryObj.getAge().equals("") && entryObj.getGender().equals("")) {
+                if (entryObj.getCountry().equals("") && (entryObj.getAge() == 0) && entryObj.getGender().equals("")) {
                     layoutWrapper.setBackgroundColor(Color.parseColor("#FFCC0000")); //red
                     if (entryObj.getFirstName().equals("") && entryObj.getLastName().equals("")) {
                         layoutRacerInfo.setBackgroundColor(Color.parseColor("#FFCC0000")); //red

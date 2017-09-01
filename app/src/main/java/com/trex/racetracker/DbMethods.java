@@ -212,7 +212,7 @@ public class DbMethods {
         return cursor;
         */
 
-        String[] projection = new String[]{"ActiveRacerID","FirstName","LastName", "Country", "Gender", "Age", "RaceID"};
+        String[] projection = new String[]{"ActiveRacerID","FirstName","LastName", "Country", "Gender", "DateOfBirth", "RaceID"};
         String selection = "BIB = '" +  inputedBIB + "'";
         String sortOrder = "";
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_1_NAME);

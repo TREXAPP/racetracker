@@ -136,7 +136,7 @@ public class StaticMethods {
             String Name = null;
             String LastName = null;
             String Country = null;
-            String Age = null;
+            int Age = 0;
             String Gender = null;
 
 
@@ -146,7 +146,7 @@ public class StaticMethods {
                 Name = cursorRacer.getString(1);
                 LastName = cursorRacer.getString(2);
                 Country = cursorRacer.getString(3);
-                Age = cursorRacer.getString(5);
+                Age = calculateAge(String.valueOf(cursorRacer.getString(5)));
                 Gender = cursorRacer.getString(4);
             }
             cursorRacer.close();
@@ -171,8 +171,8 @@ public class StaticMethods {
             if (Country != null) EntryObjArray[i].setCountry(Country);
             else EntryObjArray[i].setCountry("");
 
-            if (Age != null) EntryObjArray[i].setAge(Age);
-            else EntryObjArray[i].setAge("");
+            if (Age != 0) EntryObjArray[i].setAge(Age);
+            else EntryObjArray[i].setAge(0);
 
             if (Gender != null) EntryObjArray[i].setGender(Gender);
             else EntryObjArray[i].setGender("");
@@ -549,7 +549,7 @@ public class StaticMethods {
             String Name = null;
             String LastName = null;
             String Country = null;
-            String Age = null;
+            int Age = 0;
             String Gender = null;
 
 
@@ -559,7 +559,7 @@ public class StaticMethods {
                 Name = cursorRacer.getString(1);
                 LastName = cursorRacer.getString(2);
                 Country = cursorRacer.getString(3);
-                Age = cursorRacer.getString(5);
+                Age = calculateAge(String.valueOf(cursorRacer.getString(5)));
                 Gender = cursorRacer.getString(4);
             }
             cursorRacer.close();
@@ -584,8 +584,8 @@ public class StaticMethods {
             if (Country != null) EntryObjArray[i].setCountry(Country);
             else EntryObjArray[i].setCountry("");
 
-            if (Age != null) EntryObjArray[i].setAge(Age);
-            else EntryObjArray[i].setAge("");
+            if (Age != 0) EntryObjArray[i].setAge(Age);
+            else EntryObjArray[i].setAge(0);
 
             if (Gender != null) EntryObjArray[i].setGender(Gender);
             else EntryObjArray[i].setGender("");
@@ -724,13 +724,13 @@ public class StaticMethods {
         if (cursorRacers.getCount() == 1) {
             racerFound = true;
             cursorRacers.moveToFirst();
-            // ActiveRacerID, FirstName, LastName, Country, Gender, Age
+            // ActiveRacerID, FirstName, LastName, Country, Gender, DateOfBirth
             entryObj.setActiveRacerID(Integer.parseInt(cursorRacers.getString(0)));
             entryObj.setFirstName(cursorRacers.getString(1));
             entryObj.setLastName(cursorRacers.getString(2));
             entryObj.setCountry(cursorRacers.getString(3));
             entryObj.setGender(cursorRacers.getString(4));
-            entryObj.setAge(cursorRacers.getString(5));
+            entryObj.setAge(calculateAge(cursorRacers.getString(5)));
             raceID = cursorRacers.getString(6);
             entryObj.setRaceID(Integer.parseInt(raceID));
 
@@ -740,7 +740,7 @@ public class StaticMethods {
             entryObj.setLastName(null);
             entryObj.setCountry(null);
             entryObj.setGender(null);
-            entryObj.setAge(null);
+            entryObj.setAge(0);
             entryObj.setRaceID(null);
         }
 
@@ -763,7 +763,8 @@ public class StaticMethods {
         int timeBetweenEntries = globals.getInt("timebetweenentries",1);
         Date lastEntryDate = getDateForLastEntry(context, inputedBIB);
         if (lastEntryDate != null) {
-            if (addMinutesToDate(timeBetweenEntries,lastEntryDate).before(timeNow)) {
+            if (!(lastEntryDate.before(timeNow) && addMinutesToDate(timeBetweenEntries,lastEntryDate).after(timeNow))) {
+           // if ((addMinutesToDate(timeBetweenEntries,lastEntryDate).before(timeNow)) && (lastEntryDate.after(timeNow))) {
                 entryObj.setValid(true);
             } else {
                 entryObj.setValid(false);
@@ -855,15 +856,14 @@ public class StaticMethods {
         return status;
     }
 
-    public static int calculateAge(Context ctx, String DateOfBirth) {
+    public static int calculateAge(String DateOfBirth) {
 
-        SharedPreferences globals = ctx.getSharedPreferences(MainActivity.GLOBALS, 0);
 
         int age;
         int DOByear = Integer.parseInt(DateOfBirth.substring(0,4));
-        int DOBmonth = Integer.parseInt(DateOfBirth.substring(0,4));
-        int DOBday = Integer.parseInt(DateOfBirth.substring(0,4));
-        //int DOByear, int DOBmonth, int DOBday
+        int DOBmonth = Integer.parseInt(DateOfBirth.substring(5,7));
+        int DOBday = Integer.parseInt(DateOfBirth.substring(8,10));
+
         final Calendar calenderToday = Calendar.getInstance();
         int currentYear = calenderToday.get(Calendar.YEAR);
         int currentMonth = 1 + calenderToday.get(Calendar.MONTH);

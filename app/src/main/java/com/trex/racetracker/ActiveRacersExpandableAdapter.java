@@ -123,7 +123,11 @@ public class ActiveRacersExpandableAdapter extends BaseExpandableListAdapter {
             tvName.setText(activeRacerObj.getFirstName());
             tvLastName.setText(activeRacerObj.getLastName());
             tvCountry.setText(activeRacerObj.getCountry());
-            tvAge.setText(activeRacerObj.getAge());
+            if (activeRacerObj.getAge() == 0) {
+                tvAge.setText("");
+            } else {
+                tvAge.setText(String.valueOf(activeRacerObj.getAge()));
+            }
             tvGender.setText(activeRacerObj.getGender());
             tvTimeLast.setText(activeRacerObj.getTimeLast());
             tvCPNo.setText(activeRacerObj.getCPNo());

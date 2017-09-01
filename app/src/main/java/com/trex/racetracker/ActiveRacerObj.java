@@ -1,4 +1,6 @@
 package com.trex.racetracker;
+import android.content.Context;
+
 import static com.trex.racetracker.StaticMethods.*;
 
 /**
@@ -11,7 +13,7 @@ public class ActiveRacerObj {
     private String FirstName;
     private String LastName;
     private String Country;
-    private String Age;
+    private int Age;
     private String Gender;
     private String TimeLast;
     private String CPNo;
@@ -23,7 +25,7 @@ public class ActiveRacerObj {
         this.FirstName = "";
         this.LastName = "";
         this.Country = "";
-        this.Age = "";
+        this.Age = 0;
         this.Gender = "";
         this.TimeLast = "";
         this.CPNo = "";
@@ -31,7 +33,7 @@ public class ActiveRacerObj {
         this.DateOfBirth = "";
     }
 
-    public ActiveRacerObj(String myBIB, String myFirstName, String myLastName, String myCountry, String myAge, String myGender, String myTimeLast, String myCPNo, String myCPName, String myDateOfBirth) {
+    public ActiveRacerObj(String myBIB, String myFirstName, String myLastName, String myCountry, int myAge, String myGender, String myTimeLast, String myCPNo, String myCPName, String myDateOfBirth) {
        if (myBIB != null) {
            this.BIB = myBIB;
        } else {
@@ -56,10 +58,10 @@ public class ActiveRacerObj {
             this.Country = "";
         }
 
-        if (myAge != null) {
+        if (myAge != 0) {
             this.Age = myAge;
         } else {
-            this.Age = "";
+            this.Age = 0;
         }
 
         if (myGender != null) {
@@ -121,7 +123,7 @@ public class ActiveRacerObj {
     public String getDateOfBirth() {
         return DateOfBirth;
     }
-    public String getAge() {
+    public int getAge() {
         return Age;
     }
 
@@ -157,10 +159,10 @@ public class ActiveRacerObj {
     public void setDateOfBirth(String myDateOfBirth) {
         if (myDateOfBirth != null) {
             this.DateOfBirth = myDateOfBirth;
-            //this.Age = calculateAge(this.DateOfBirth);
+            this.Age = calculateAge(DateOfBirth);
         } else {
             this.DateOfBirth = "";
-            //this.Age = "";
+            this.Age = 0;
         }
 
         //TODO
