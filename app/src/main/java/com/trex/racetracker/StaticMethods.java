@@ -6,8 +6,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -296,8 +294,8 @@ public class StaticMethods {
                     child.setCountry(cursorRacers.getString(3));
                 } else  child.setCountry("");
                 if (cursorRacers.getString(4) != null && !cursorRacers.getString(4).equals("null")) {
-                    child.setAge(cursorRacers.getString(4));
-                } else  child.setAge("");
+                    child.setDateOfBirth(cursorRacers.getString(4));
+                } else  child.setDateOfBirth("");
                 if (cursorRacers.getString(5) != null && !cursorRacers.getString(5).equals("null")) {
                     child.setGender(cursorRacers.getString(5));
                 } else  child.setGender("");
@@ -855,6 +853,33 @@ public class StaticMethods {
             }
         }
         return status;
+    }
+
+    public static int calculateAge(Context ctx, String DateOfBirth) {
+
+        SharedPreferences globals = ctx.getSharedPreferences(MainActivity.GLOBALS, 0);
+
+        int age;
+        int DOByear = Integer.parseInt(DateOfBirth.substring(0,4));
+        int DOBmonth = Integer.parseInt(DateOfBirth.substring(0,4));
+        int DOBday = Integer.parseInt(DateOfBirth.substring(0,4));
+        //int DOByear, int DOBmonth, int DOBday
+        final Calendar calenderToday = Calendar.getInstance();
+        int currentYear = calenderToday.get(Calendar.YEAR);
+        int currentMonth = 1 + calenderToday.get(Calendar.MONTH);
+        int todayDay = calenderToday.get(Calendar.DAY_OF_MONTH);
+
+        age = currentYear - DOByear;
+
+        if(DOBmonth > currentMonth){
+            --age;
+        }
+        else if(DOBmonth == currentMonth){
+            if(DOBday > todayDay){
+                --age;
+            }
+        }
+        return age;
     }
 
 

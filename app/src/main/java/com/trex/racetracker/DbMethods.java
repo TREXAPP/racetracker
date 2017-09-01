@@ -178,7 +178,7 @@ public class DbMethods {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery(query,null);
         */
-        String[] projection = new String[]{"BIB","FirstName","LastName","Country","Age","Gender","ActiveRacerID"};
+        String[] projection = new String[]{"BIB","FirstName","LastName","Country","DateOfBirth","Gender","ActiveRacerID"};
         String sortOrder = "BIB ASC";
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_1_NAME);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
@@ -213,7 +213,7 @@ public class DbMethods {
         */
 
         String[] projection = new String[]{"ActiveRacerID","FirstName","LastName", "Country", "Gender", "Age", "RaceID"};
-        String selection = "BIB = " +  inputedBIB;
+        String selection = "BIB = '" +  inputedBIB + "'";
         String sortOrder = "";
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_1_NAME);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);

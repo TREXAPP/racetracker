@@ -1,4 +1,5 @@
 package com.trex.racetracker;
+import static com.trex.racetracker.StaticMethods.*;
 
 /**
  * Created by Igor_2 on 11.11.2016.
@@ -15,6 +16,7 @@ public class ActiveRacerObj {
     private String TimeLast;
     private String CPNo;
     private String CPName;
+    private String DateOfBirth;
 
     public ActiveRacerObj() {
         this.BIB = "";
@@ -26,9 +28,10 @@ public class ActiveRacerObj {
         this.TimeLast = "";
         this.CPNo = "";
         this.CPName = "";
+        this.DateOfBirth = "";
     }
 
-    public ActiveRacerObj(String myBIB, String myFirstName, String myLastName, String myCountry, String myAge, String myGender, String myTimeLast, String myCPNo, String myCPName) {
+    public ActiveRacerObj(String myBIB, String myFirstName, String myLastName, String myCountry, String myAge, String myGender, String myTimeLast, String myCPNo, String myCPName, String myDateOfBirth) {
        if (myBIB != null) {
            this.BIB = myBIB;
        } else {
@@ -83,6 +86,12 @@ public class ActiveRacerObj {
             this.CPName = "";
         }
 
+        if (myDateOfBirth != null) {
+            this.DateOfBirth = myDateOfBirth;
+        } else {
+            this.DateOfBirth = "";
+        }
+
     }
 
     public String getBIB() {
@@ -97,9 +106,6 @@ public class ActiveRacerObj {
     public String getCountry() {
         return Country;
     }
-    public String getAge() {
-        return Age;
-    }
     public String getGender() {
         return Gender;
     }
@@ -111,6 +117,12 @@ public class ActiveRacerObj {
     }
     public String getCPName() {
         return CPName;
+    }
+    public String getDateOfBirth() {
+        return DateOfBirth;
+    }
+    public String getAge() {
+        return Age;
     }
 
     public void setBIB(String myBIB) {
@@ -142,12 +154,17 @@ public class ActiveRacerObj {
             this.Country = "";
         }
     }
-    public void setAge(String myAge) {
-        if (myAge != null) {
-            this.Age = myAge;
+    public void setDateOfBirth(String myDateOfBirth) {
+        if (myDateOfBirth != null) {
+            this.DateOfBirth = myDateOfBirth;
+            //this.Age = calculateAge(this.DateOfBirth);
         } else {
-            this.Age = "";
+            this.DateOfBirth = "";
+            //this.Age = "";
         }
+
+        //TODO
+        //set Age HERE!!!
     }
     public void setGender(String myGender) {
         if (myGender != null) {
@@ -177,6 +194,7 @@ public class ActiveRacerObj {
             this.CPName = "";
         }
     }
+
 
 
 }
