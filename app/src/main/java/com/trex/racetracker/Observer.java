@@ -54,7 +54,7 @@ public class Observer extends ContentObserver {
 
             ContentResolver.requestSync(mAccount, AUTHORITY, params);
             Log.d("info","request sync");
-            Toast.makeText(context, "request sync", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "request sync", Toast.LENGTH_SHORT).show();
 
             lastTimeofUpdate = System.currentTimeMillis();
         }
