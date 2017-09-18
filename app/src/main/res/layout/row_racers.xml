@@ -2,113 +2,116 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal" android:layout_width="match_parent"
     android:id="@+id/row_racers"
+    android:layout_width="match_parent"
     android:layout_height="46dp"
+    android:layout_margin="10dp"
     android:divider="@drawable/list_divider"
     android:gravity="center_vertical"
-    app:layout_anchorGravity="center_vertical"
-    android:layout_margin="10dp">
+    android:orientation="horizontal"
+    app:layout_anchorGravity="center_vertical">
 
     <TextView
-        android:text="222"
-        android:layout_height="match_parent"
         android:id="@+id/tvBIB"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-condensed"
-        android:background="@color/colorLightestGray"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_weight="0"
         android:layout_width="60dp"
-        android:gravity="center" />
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:background="@color/colorLightestGray"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="222"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_weight="1"
+            android:id="@+id/llName"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@color/colorLightestGray"
+            android:orientation="vertical"
             android:paddingLeft="3dp">
 
             <TextView
-                android:text="Name"
-                android:layout_width="match_parent"
                 android:id="@+id/tvName"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"
-                android:textSize="16sp"
+                android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:maxLines="1" />
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:text="LastName"
-                android:layout_width="match_parent"
                 android:id="@+id/tvLastName"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"
-                android:textSize="14sp"
+                android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:layout_gravity="fill"
                 android:layout_weight="1"
-                android:layout_gravity="fill" />
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_vertical"
+                android:text="LastName"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="0"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
+        android:layout_weight="0"
         android:background="@color/colorPrimary"
+        android:orientation="vertical"
         android:paddingLeft="3dp"
-        android:paddingRight="3dp"
-        android:layout_width="50dp">
+        android:paddingRight="3dp">
 
         <TextView
-            android:text="MKD"
-            android:layout_width="match_parent"
             android:id="@+id/tvCountry"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-condensed" />
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="MKD"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <TextView
-                android:text="32"
+                android:id="@+id/tvAge"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/tvAge"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:text="32"
                 android:textColor="@color/colorAccent"
+                android:textColorLink="@color/colorPrimary"
                 android:textSize="12sp" />
 
             <TextView
-                android:text="F"
+                android:id="@+id/tvGender"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/tvGender"
                 android:layout_weight="1"
                 android:gravity="right|center_vertical"
+                android:text="F"
                 android:textColor="@color/colorAccent"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -116,56 +119,56 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
-        android:background="@color/colorPrimaryDark"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:layout_weight="0"
         android:layout_marginLeft="2dp"
+        android:layout_weight="0"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical"
         android:paddingLeft="1dp"
-        android:paddingRight="1dp"
-        android:layout_width="50dp">
+        android:paddingRight="1dp">
 
         <TextView
-            android:text="23:23"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:id="@+id/tvTimeLast"
-            android:layout_weight="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textStyle="italic"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/colorAccent"
-            android:textSize="10sp"
-            android:gravity="center"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:text="CP: 2"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="23:23"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:textStyle="italic" />
+
+        <TextView
             android:id="@+id/tvCPNo"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textStyle="italic"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/colorAccent"
-            android:textSize="10sp"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:text="Prisad"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/tvCPName"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textStyle="italic"
             android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/colorAccent"
+            android:gravity="center"
+            android:text="CP: 2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tvCPName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="Prisad"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@android:color/white"
             android:textSize="8sp"
-            android:layout_gravity="center" />
+            android:textStyle="italic" />
     </LinearLayout>
 
 </LinearLayout>

@@ -276,6 +276,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             String Summary = "";
             Summary += "\n";
+            Summary += "DeviceID:   ";
+            Summary += globals.getString("deviceid","N/A") + "\n";
+            Summary += "============================\n";
             Summary += "App version:   ";
             Summary += globals.getString("version","N/A");
             Summary += "\n\n";
@@ -285,11 +288,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Summary += "Author:   ";
             Summary += "Igor Josifov\n";
             Summary += "+389 78 833 228  |  ";
-            Summary += "http://be.net/igority";
-
+            Summary += "igority@gmail.com\n";
+            Summary += "============================\n";
+            Summary += "Disclaimer: This app, along with the web tracking system was created solely for the purpose of the CAT™ tracking system, to be used for, but not exclusivelly, the Krali Marko Trails 2017 race\n";
+            Summary += "The Author holds the full rights of the app and the tracking system, and can be used only with his consent.\n";
+            Summary += "Any unauthorised using, copying, muliplying and modifying is strictly FORBIDDEN and on such actions will be responded legaly.\n";
             Summary += "\n\n";
-            Summary += "DeviceID:   ";
-            Summary += globals.getString("deviceid","N/A");
+
 
             getPreferenceScreen().findPreference("pref_about_key").setSummary(Summary);
 

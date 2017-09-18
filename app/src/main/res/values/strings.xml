@@ -79,4 +79,5 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_sync_settings">Synchronization Settings</string>
+    <string name="Title"><b>RaceTracker</b></string>
 </resources>

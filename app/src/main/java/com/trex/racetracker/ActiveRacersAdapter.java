@@ -1,11 +1,13 @@
 package com.trex.racetracker;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -34,6 +36,7 @@ class ActiveRacersAdapter extends ArrayAdapter<ActiveRacerObj> {
         TextView tvTimeLast = (TextView) customView.findViewById(R.id.tvTimeLast);
         TextView tvCPNo = (TextView) customView.findViewById(R.id.tvCPNo);
         TextView tvCPName = (TextView) customView.findViewById(R.id.tvCPName);
+        LinearLayout llName = (LinearLayout) customView.findViewById(R.id.llName);
 
         if (activeRacerObj != null) {
             tvBIB.setText(activeRacerObj.getBIB());
@@ -50,6 +53,10 @@ class ActiveRacersAdapter extends ArrayAdapter<ActiveRacerObj> {
             tvTimeLast.setText(activeRacerObj.getTimeLast());
             tvCPNo.setText(activeRacerObj.getCPNo());
             tvCPName.setText(activeRacerObj.getCPName());
+            if (activeRacerObj.getTimeLast().equals("") || activeRacerObj.getTimeLast() != null) {
+                tvBIB.setBackgroundColor(Color.parseColor("#007ACC"));
+                llName.setBackgroundColor(Color.parseColor("#007ACC"));
+            }
         }
         return customView;
 

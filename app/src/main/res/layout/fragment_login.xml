@@ -84,79 +84,80 @@
             android:id="@+id/layoutLoginInfo">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryLighest"
                 android:layout_margin="5dp"
-                android:layout_weight="0">
+                android:layout_weight="0"
+                android:background="@color/colorPrimaryLighest"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="3dp">
+                    android:layout_margin="3dp"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:text="Operator:"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
                         android:id="@+id/tvOperatorLabel"
-                        android:layout_weight="0" />
-
-                    <TextView
-                        android:text="Zoki"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tvOperator"
-                        android:layout_weight="1"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="3dp">
-
-                    <TextView
-                        android:text="Username:"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tvUsernameLabel"
-                        android:layout_weight="0"
-                        android:layout_width="100dp" />
-
-                    <TextView
-                        android:text="treskavec1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tvUsername"
-                        android:layout_weight="1"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:layout_margin="3dp">
-
-                    <TextView
-                        android:text="Control Point:"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvControlPointLabel"
-                        android:layout_weight="0" />
+                        android:layout_weight="0"
+                        android:text="Operator:"
+                        android:textColorLink="@color/colorAccent" />
 
                     <TextView
-                        android:text="Treskavec"
+                        android:id="@+id/tvOperator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Zoki"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvUsernameLabel"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="Username:" />
+
+                    <TextView
+                        android:id="@+id/tvUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="treskavec1"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:layout_weight="0"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvControlPointLabel"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="Control Point:" />
+
+                    <TextView
+                        android:id="@+id/tvControlPoint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvControlPoint"
                         android:layout_weight="1"
+                        android:text="Treskavec"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>

@@ -97,16 +97,22 @@ public class MainActivity extends AppCompatActivity {
 
     private BroadcastReceiver mReceiver;
     private TextView tvSyncInfo;
-    private ImageView ivSyncToolbar;
+   // private ImageView ivSyncToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //toolbar.setNavigationIcon(R.drawable.ic_toolbar);
+        toolbar.setTitle("");
+        toolbar.setSubtitle("");
+        //toolbar.setLogo(R.drawable.ic_toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        ivSyncToolbar = (ImageView) findViewById(R.id.ivSyncToolbar);
+        //ivSyncToolbar = (ImageView) findViewById(R.id.ivSyncToolbar);
         tvSyncInfo = (TextView) findViewById(R.id.tvSyncInfo);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -168,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,myFilter);
 
         //initialize info for sync
-        ivSyncToolbar.setVisibility(View.INVISIBLE);
+       // ivSyncToolbar.setVisibility(View.INVISIBLE);
         tvSyncInfo.setText("Last sync: Never");
 
 
@@ -199,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                         String dateString = new SimpleDateFormat("HH:mm:ss").format(new Date(lastPull));
                         tvSyncInfo.setText("Last sync: " + dateString);
                     }
-                    ivSyncToolbar.setVisibility(View.INVISIBLE);
+                  //  ivSyncToolbar.setVisibility(View.INVISIBLE);
 
                 }
 
@@ -258,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         //App version
         //if (!globals.contains("version"))
-            editor.putString("version","0.4.001 Beta");
+            editor.putString("version","0.4.002 Beta");
 
         //App version
        // if (!globals.contains("AdminPass"))

@@ -2,12 +2,14 @@ package com.trex.racetracker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -117,6 +119,7 @@ public class ActiveRacersExpandableAdapter extends BaseExpandableListAdapter {
         TextView tvTimeLast = (TextView) convertView.findViewById(R.id.tvTimeLast);
         TextView tvCPNo = (TextView) convertView.findViewById(R.id.tvCPNo);
         TextView tvCPName = (TextView) convertView.findViewById(R.id.tvCPName);
+        LinearLayout llName = (LinearLayout) convertView.findViewById(R.id.llName);
 
         if (activeRacerObj != null) {
             tvBIB.setText(activeRacerObj.getBIB());
