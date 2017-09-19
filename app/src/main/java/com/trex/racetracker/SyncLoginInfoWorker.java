@@ -73,7 +73,7 @@ public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
             rows.close();
 
             mysqlQuery = "SELECT ";
-            mysqlQuery += "ActiveRacerID, Racers.RacerID, RaceID, Age, BIB, ChipCode, Started, Registered, ActiveRacers.Timestamp AS ActiveRacersTS, ActiveRacers.Comment AS ActiveRacersComment, ";
+            mysqlQuery += "ActiveRacerID, Racers.RacerID, RaceID, Age, BIB, ChipCode, Hide, Registered, ActiveRacers.Timestamp AS ActiveRacersTS, ActiveRacers.Comment AS ActiveRacersComment, ";
             mysqlQuery += "FirstName, LastName, Gender, DateOfBirth, YearBirth, Nationality, Country, Teams.TeamID, CityOfResidence, TShirtSize, Email, Tel, Food, Racers.Timestamp AS RacersTS, Racers.Comment AS Racers_Comment,";
             mysqlQuery += "TeamName, TeamDescription ";
             mysqlQuery += "FROM ActiveRacers JOIN Racers ON ActiveRacers.RacerID = Racers.RacerID JOIN Teams ON Racers.TeamID = Teams.TeamID WHERE ";

@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_1_4 = "Age";
     public static final String COL_1_5 = "BIB";
     public static final String COL_1_6 = "ChipCode";
-    public static final String COL_1_7= "Started";
+    public static final String COL_1_7= "Hide";
     public static final String COL_1_8 = "Registered";
     public static final String COL_1_9 = "ActiveRacersTS";
     public static final String COL_1_10 = "ActiveRacersComment";

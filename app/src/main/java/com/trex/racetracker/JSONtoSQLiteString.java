@@ -158,10 +158,10 @@ public class JSONtoSQLiteString {
         return result;
     }
 
-    public String Started(int i) {
+    public String Hide(int i) {
         String result;
         try {
-            result = json.getJSONObject(String.valueOf(i)).getString("Started");
+            result = json.getJSONObject(String.valueOf(i)).getString("Hide");
         } catch (JSONException e) {
             result = null;
         }

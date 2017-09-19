@@ -128,7 +128,7 @@ public class DbMethods {
                 contentValues.put(COL_1_4,jsontosqlite.Age(i));
                 contentValues.put(COL_1_5,jsontosqlite.BIB(i));
                 contentValues.put(COL_1_6,jsontosqlite.ChipCode(i));
-                contentValues.put(COL_1_7,jsontosqlite.Started(i));
+                contentValues.put(COL_1_7,jsontosqlite.Hide(i));
                 contentValues.put(COL_1_8,jsontosqlite.Registered(i));
                 contentValues.put(COL_1_9,jsontosqlite.ActiveRacersTS(i));
                 contentValues.put(COL_1_10,jsontosqlite.ActiveRacersComment(i));
