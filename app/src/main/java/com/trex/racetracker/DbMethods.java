@@ -448,11 +448,12 @@ public class DbMethods {
         contentValues.put("Synced","0");
         if (deleteBtnMode == EntriesInputListAdapter.RESTORE) {
             contentValues.put("Valid","1");
+            contentValues.put("ReasonInvalid","Code 04: Restored from deleted.");
         } else {
             contentValues.put("Valid","0");
+            contentValues.put("ReasonInvalid","Code 03: Manually deleted");
         }
 
-        contentValues.put("ReasonInvalid","Code 03: Manually deleted");
         int result = context.getContentResolver().update(uri, contentValues,whereClause,null);
         if (notifyChange) {
             context.getContentResolver().notifyChange(uri, null, false);
@@ -533,7 +534,7 @@ public class DbMethods {
         if (result == -1) return false;
         else return true;
     }
-
+/*
     public static boolean insertPulledEntries(Context context, JSONObject jsonString) {
         //SQLiteDatabase db = this.getWritableDatabase();
         Uri resultUri;
@@ -576,4 +577,5 @@ public class DbMethods {
         if (result.equals("-1")) return false;
         else return true;
     }
+*/
 }

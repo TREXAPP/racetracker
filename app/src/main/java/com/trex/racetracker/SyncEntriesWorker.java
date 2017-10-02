@@ -113,6 +113,7 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
             e.printStackTrace();
         }
 
+        /*
         if (type.equals("sync_pull")) try {
             String queryUrl = params[1];
             URL url = new URL(queryUrl);
@@ -167,7 +168,7 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
         } catch (Exception e) {
             e.printStackTrace();
        }
-
+        */
 
         if (result.equals("")) {
             return null;
@@ -217,6 +218,7 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
 
 
             Boolean changeDetected = false;
+            /*
             if (type.equals("sync_pull")) {
 
 
@@ -244,7 +246,7 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
                     e.printStackTrace();
                 }
             }
-
+            */
 
             if (!error.equals("")) {
                 Log.e("Sync error", error);
@@ -255,9 +257,7 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
                 Long timeNow = System.currentTimeMillis();
 
                 editor.putLong("lastPushInMillis",timeNow);
-                if (changeDetected) {
-                    editor.putLong("lastPullInMillis", timeNow);
-                }
+
                 editor.commit();
             }
         }

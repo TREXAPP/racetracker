@@ -69,7 +69,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="50dp"
+        android:layout_width="70dp"
         android:layout_height="match_parent"
         android:layout_weight="0"
         android:background="@color/colorPrimary"
@@ -116,59 +116,6 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_weight="0"
-        android:background="@color/colorPrimaryDark"
-        android:orientation="vertical"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp">
-
-        <TextView
-            android:id="@+id/tvTimeLast"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="center"
-            android:text="23:23"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@android:color/white"
-            android:textSize="10sp"
-            android:textStyle="italic" />
-
-        <TextView
-            android:id="@+id/tvCPNo"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="center"
-            android:text="CP: 2"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@android:color/white"
-            android:textSize="10sp"
-            android:textStyle="italic" />
-
-        <TextView
-            android:id="@+id/tvCPName"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="center"
-            android:text="Prisad"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@android:color/white"
-            android:textSize="8sp"
-            android:textStyle="italic" />
     </LinearLayout>
 
 </LinearLayout>

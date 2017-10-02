@@ -175,13 +175,6 @@ public class ActiveRacerObj {
             this.Gender = "";
         }
     }
-    public void setTimeLast(String myTimeLast) {
-        if (myTimeLast != null) {
-            this.TimeLast = myTimeLast;
-        } else {
-            this.TimeLast = "";
-        }
-    }
     public void setCPNo(String myCPNo) {
         if (myCPNo != null) {
             this.CPNo = myCPNo;

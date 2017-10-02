@@ -33,9 +33,7 @@ class ActiveRacersAdapter extends ArrayAdapter<ActiveRacerObj> {
         TextView tvCountry = (TextView) customView.findViewById(R.id.tvCountry);
         TextView tvAge = (TextView) customView.findViewById(R.id.tvAge);
         TextView tvGender = (TextView) customView.findViewById(R.id.tvGender);
-        TextView tvTimeLast = (TextView) customView.findViewById(R.id.tvTimeLast);
         TextView tvCPNo = (TextView) customView.findViewById(R.id.tvCPNo);
-        TextView tvCPName = (TextView) customView.findViewById(R.id.tvCPName);
         LinearLayout llName = (LinearLayout) customView.findViewById(R.id.llName);
 
         if (activeRacerObj != null) {
@@ -50,9 +48,7 @@ class ActiveRacersAdapter extends ArrayAdapter<ActiveRacerObj> {
             }
 
             tvGender.setText(activeRacerObj.getGender());
-            tvTimeLast.setText(activeRacerObj.getTimeLast());
             tvCPNo.setText(activeRacerObj.getCPNo());
-            tvCPName.setText(activeRacerObj.getCPName());
             if (activeRacerObj.getTimeLast().equals("") || activeRacerObj.getTimeLast() != null) {
                 tvBIB.setBackgroundColor(Color.parseColor("#007ACC"));
                 llName.setBackgroundColor(Color.parseColor("#007ACC"));

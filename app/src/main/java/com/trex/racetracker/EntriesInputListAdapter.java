@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import layout.DeleteEntryDialog;
 import layout.EditEntryDialog;
 
 import static android.R.drawable.ic_menu_close_clear_cancel;
@@ -36,7 +37,7 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
 
     Activity activity;
     private ListView lvInputEntries;
-    private int deleteBtnMode;
+    private int deleteBtnMode = EntriesListAdapter.DELETE;
 
 
     public EntriesInputListAdapter(Context context, EntryObj[] entryObj, Activity act, ListView lvInputEntries) {
@@ -116,7 +117,7 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
                 tvTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
             }
         }
-
+        /*
         //onclick events for the 2 buttons
         ibtDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +133,16 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
 
             }
         });
+        */
+        ibtDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteEntryDialog dialog = new DeleteEntryDialog(getContext(),activity, entryObj,lvInputEntries,EditEntryDialog.INPUT, deleteBtnMode);
+                dialog.show(activity.getFragmentManager(),"deleteEntry");
+            }
+        });
+
+
 
         ibtEdit.setOnClickListener(new View.OnClickListener() {
             @Override

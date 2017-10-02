@@ -116,9 +116,7 @@ public class ActiveRacersExpandableAdapter extends BaseExpandableListAdapter {
         TextView tvCountry = (TextView) convertView.findViewById(R.id.tvCountry);
         TextView tvAge = (TextView) convertView.findViewById(R.id.tvAge);
         TextView tvGender = (TextView) convertView.findViewById(R.id.tvGender);
-        TextView tvTimeLast = (TextView) convertView.findViewById(R.id.tvTimeLast);
         TextView tvCPNo = (TextView) convertView.findViewById(R.id.tvCPNo);
-        TextView tvCPName = (TextView) convertView.findViewById(R.id.tvCPName);
         LinearLayout llName = (LinearLayout) convertView.findViewById(R.id.llName);
 
         if (activeRacerObj != null) {
@@ -132,9 +130,6 @@ public class ActiveRacersExpandableAdapter extends BaseExpandableListAdapter {
                 tvAge.setText(String.valueOf(activeRacerObj.getAge()));
             }
             tvGender.setText(activeRacerObj.getGender());
-            tvTimeLast.setText(activeRacerObj.getTimeLast());
-            tvCPNo.setText(activeRacerObj.getCPNo());
-            tvCPName.setText(activeRacerObj.getCPName());
         }
         return convertView;
     }

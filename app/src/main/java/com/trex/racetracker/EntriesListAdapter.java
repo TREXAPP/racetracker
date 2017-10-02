@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import layout.DeleteEntryDialog;
 import layout.EditEntryDialog;
 import layout.Entries;
 
@@ -133,7 +134,7 @@ public class EntriesListAdapter extends ArrayAdapter<EntryObj> {
                 tvTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
             }
         }
-
+        /*
         //onclick events for the 2 buttons
         ibtDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,8 +149,19 @@ public class EntriesListAdapter extends ArrayAdapter<EntryObj> {
                 Boolean leftJoin = globals.getBoolean("EntriesSelectionLeftJoin",true);
                 InitializeEntriesListView(getContext(),lvEntries, selection, leftJoin, activity);
                // PopulateInputEntriesListView(getContext(),lvInputEntries, activity);
-                Toast.makeText(getContext(), "Entry deleted!", Toast.LENGTH_SHORT).show();
-
+                if (deleteBtnMode == RESTORE) {
+                    Toast.makeText(getContext(), "Entry restored!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Entry deleted!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        */
+        ibtDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteEntryDialog dialog = new DeleteEntryDialog(getContext(),activity, entryObj,lvEntries,EditEntryDialog.ENTRIES, deleteBtnMode);
+                dialog.show(activity.getFragmentManager(),"deleteEntry");
             }
         });
 

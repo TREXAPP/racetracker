@@ -302,6 +302,7 @@ public class StaticMethods {
 
                 Cursor lastEntryRow = getLastEntryRow(context, cursorRacers.getString(6));
                 lastEntryRow.moveToFirst();
+                /*
                 if (lastEntryRow.getCount()>0) {
                     if (lastEntryRow.getString(0) != null && !lastEntryRow.getString(0).equals("null")) {
                         child.setTimeLast(lastEntryRow.getString(0).substring(11,19));
@@ -325,6 +326,7 @@ public class StaticMethods {
                     child.setCPNo("");
                     child.setCPName("");
                 }
+                */
                 lastEntryRow.close();
                 childList.add(child);
                 j++;
@@ -654,6 +656,7 @@ public class StaticMethods {
         }
         racesCursor.close();
 
+        /*
         //fill list with Control points
         Cursor CPCursor = getDistinctCPFromEntries(context,"Valid = 1");
         CPCursor.moveToFirst();
@@ -662,6 +665,7 @@ public class StaticMethods {
             CPCursor.moveToNext();
         }
         CPCursor.close();
+        */
 
         //ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,R.layout.spinner_item,list);

@@ -197,12 +197,12 @@ public class MainActivity extends AppCompatActivity {
                 if ("com.trex.racetracker.UPDATE_LAST_SYNC".equals(sAction) )
                 {
                     SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
-                    Long lastPull = globals.getLong("lastPushInMillis",0);
+                    Long lastSync = globals.getLong("lastPushInMillis",0);
 
-                    if (lastPull == 0) {
+                    if (lastSync == 0) {
                         tvSyncInfo.setText("Last sync: Never");
                     } else {
-                        String dateString = new SimpleDateFormat("HH:mm:ss").format(new Date(lastPull));
+                        String dateString = new SimpleDateFormat("HH:mm:ss").format(new Date(lastSync));
                         tvSyncInfo.setText("Last sync: " + dateString);
                     }
                   //  ivSyncToolbar.setVisibility(View.INVISIBLE);
@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("lastPushInMillis")) editor.putLong("lastPushInMillis",0);
 
         //when was the last pull of entries made. 0 = never
-        if (!globals.contains("lastPullInMillis")) editor.putLong("lastPullInMillis",0);
+        //if (!globals.contains("lastPullInMillis")) editor.putLong("lastPullInMillis",0);
 
         editor.commit();
 

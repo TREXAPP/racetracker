@@ -43,9 +43,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     protected static final String TYPE_SYNC_PUSH_INSERT = "sync_push_insert";
     protected static final String TYPE_SYNC_PUSH_UPDATE = "sync_push_update";
-    protected static final String TYPE_SYNC_PULL = "sync_pull";
+   // protected static final String TYPE_SYNC_PULL = "sync_pull";
     protected static final String URL_SYNC_PUSH = "http://app.trex.mk/syncEntries_push.php";
-    protected static final String URL_SYNC_PULL = "http://app.trex.mk/syncEntries_pull.php";
+   // protected static final String URL_SYNC_PULL = "http://app.trex.mk/syncEntries_pull.php";
     private Context serviceContext;
     private LocalBroadcastManager mBroadcaster;
 
@@ -96,11 +96,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
             if (globals.getBoolean("periodic_sync",true)) {
                 if (globals.getBoolean("islogin", false)) {
-                    long lastPullInMillis = globals.getLong("lastPullInMillis", 0);
+                    //long lastPullInMillis = globals.getLong("lastPullInMillis", 0);
                     long lastPushInMillis = globals.getLong("lastPushInMillis", 0);
                     SyncEntriesWorker syncEntriesWorker_insert = new SyncEntriesWorker(getContext());
                     SyncEntriesWorker syncEntriesWorker_update = new SyncEntriesWorker(getContext());
-                    SyncEntriesWorker syncEntriesWorker_pull = new SyncEntriesWorker(getContext());
+                    //SyncEntriesWorker syncEntriesWorker_pull = new SyncEntriesWorker(getContext());
                     Boolean syncSuccess = true;
 
 
@@ -147,18 +147,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     }
 
                     //3.PULL
+                    /*
                     String username = globals.getString("username", "");
                     syncEntriesWorker_pull.execute(TYPE_SYNC_PULL, URL_SYNC_PULL, username, String.valueOf(lastPullInMillis));
+                    */
 
 
-
-            /*
-            syncEntriesWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
-            SendEntriesToServer(lastPullInMiliSecs);
-            GetNewEntriesFromServer(lastPushInMiliSecs);
-
-
-            */
                 }
             }
 
