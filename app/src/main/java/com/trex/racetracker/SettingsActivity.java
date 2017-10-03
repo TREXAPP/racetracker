@@ -143,7 +143,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 editor.putBoolean("pref_allowemptyentries",globals.getBoolean("allowemptyentries",true));
                 editor.putString("pref_inputdigitsno",String.valueOf(globals.getInt("inputdigitsno",3)));
                 editor.putString("pref_timebetweenentries",String.valueOf(globals.getInt("timebetweenentries",10)));
-                editor.putString("pref_entryconfirmtimer",String.valueOf(globals.getInt("entryconfirmtimer",400)));
+                editor.putString("pref_entryvisualconfirmtimer",String.valueOf(globals.getInt("entryvisualconfirmtimer",400)));
 
                 break;
 
@@ -191,12 +191,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(false);
                 getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(false);
                 getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(false);
-                getPreferenceScreen().findPreference("pref_entryconfirmtimer").setEnabled(false);
+                getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(false);
             } else {
                 getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(true);
-                getPreferenceScreen().findPreference("pref_entryconfirmtimer").setEnabled(true);
+                getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(true);
             }
 
         }
@@ -222,12 +222,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(false);
-                        getPreferenceScreen().findPreference("pref_entryconfirmtimer").setEnabled(false);
+                        getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(false);
                     } else {
                         getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(true);
-                        getPreferenceScreen().findPreference("pref_entryconfirmtimer").setEnabled(true);
+                        getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(true);
                     }
                     break;
                 case "pref_allowemptyentries":
@@ -242,8 +242,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     editor.putInt("timebetweenentries",Integer.parseInt(sharedPreferences.getString(key,"10")));
                     break;
 
-                case "pref_entryconfirmtimer":
-                    editor.putInt("entryconfirmtimer",Integer.parseInt(sharedPreferences.getString(key,"400")));
+                case "pref_entryvisualconfirmtimer":
+                    editor.putInt("entryvisualconfirmtimer",Integer.parseInt(sharedPreferences.getString(key,"400")));
                     break;
 
             }

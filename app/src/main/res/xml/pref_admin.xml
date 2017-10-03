@@ -30,8 +30,16 @@
         />
 
     <EditTextPreference
+        android:defaultValue="5000"
+        android:key="pref_entryresettimer"
+        android:title="Entry Reset Time"
+        android:summary="Duration (in miliseconds) after which the entered digits are reseted. This is set to avoid unintentional entries."
+        android:numeric="integer"
+        />
+
+    <EditTextPreference
         android:defaultValue="400"
-        android:key="pref_entryconfirmtimer"
+        android:key="pref_entryvisualconfirmtimer"
         android:title="[Visual] Entry Flashing Time"
         android:summary="Duration (in miliseconds) of a keyboard flashing during an entry. Visual tweak."
         android:numeric="integer"

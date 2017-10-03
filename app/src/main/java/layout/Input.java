@@ -253,7 +253,7 @@ public class Input extends Fragment {
     }
 
     public void DigitPressed(Context context, String digit, View view) {
-        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+        final SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
         boolean newEntry = false;
         if (!globals.contains("EntryNoState")) {
@@ -277,6 +277,9 @@ public class Input extends Fragment {
             if (BIBEntryString.length() >= globals.getInt("inputdigitsno",3)) {
                 newEntry = true;
             }
+
+
+
         }
 
         tvBIBEntry.setText(BIBEntryString);
@@ -284,12 +287,11 @@ public class Input extends Fragment {
         if (newEntry) {
             disableEnableControls(false,layoutInput);
             BIBEntryString = "";
-            Integer timer = globals.getInt("entryconfirmtimer",400);
+            Integer visualTimer = globals.getInt("entryvisualconfirmtimer",400);
 
 
 
-
-            new CountDownTimer(timer, timer) {
+            new CountDownTimer(visualTimer, visualTimer) {
 
                 public void onTick(long millisUntilFinished) {
                    //nothing to do here
@@ -304,6 +306,7 @@ public class Input extends Fragment {
                     disableEnableControls(true,layoutInput);
                 }
             }.start();
+
 
             DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
             //for direct entry EntryTypeID=1, Barcode = null
@@ -377,6 +380,30 @@ public class Input extends Fragment {
             tvBIBEntry.setText("");
 
 */
+        } else {
+            //delete after 5 secs
+            Integer resetTimer = globals.getInt("entryresettimer",5000);
+            final String currentBIBValue = tvBIBEntry.getText().toString();
+            SharedPreferences.Editor editor1 = globals.edit();
+            editor1.putString("currentBIBValue",tvBIBEntry.getText().toString());
+            editor1.commit();
+            new CountDownTimer(resetTimer, resetTimer) {
+
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    //nothing
+                }
+
+                @Override
+                public void onFinish() {
+                    if (currentBIBValue.equals(globals.getString("currentBIBValue",""))) {
+                        tvBIBEntry.setText("");
+                        SharedPreferences.Editor editor2 = globals.edit();
+                        editor2.putString("EntryNoState","");
+                        editor2.commit();
+                    }
+                }
+            }.start();
         }
 
         editor.putString("EntryNoState",BIBEntryString);

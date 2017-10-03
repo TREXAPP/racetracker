@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         //App version
         //if (!globals.contains("version"))
-            editor.putString("version","1.101");
+            editor.putString("version","1.102");
 
         //App version
        // if (!globals.contains("AdminPass"))
@@ -285,8 +285,11 @@ public class MainActivity extends AppCompatActivity {
         //The default number of digits that the BIB numbers have. Default is 3, but can be changed in parameters. Important for the Input
         if (!globals.contains("inputdigitsno")) editor.putInt("inputdigitsno",3);
 
+        //The time (in miliseconds) after which the entered digits are reseted. This is to avoid unintentional entries.
+        if (!globals.contains("entryresettimer")) editor.putInt("entryresettimer",5000);
+
         //The time (in miliseconds) that the entered BIB number stays flashing before it dissapears. Default is 100ms, but can be changed in parameters
-        if (!globals.contains("entryconfirmtimer")) editor.putInt("entryconfirmtimer",400);
+        if (!globals.contains("entryvisualconfirmtimer")) editor.putInt("entryvisualconfirmtimer",400);
 
         //whether or not to allow entry of nonexisting racers. If you are sure that all the racers are correctly syncronized and
         //if there wont be last minute changes that is possible not to be syncronized, then you can set this false. Otherwise,
@@ -454,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
             String status = ValidateEntry(this,entryObj);
 
             disableEnableControls(false,layoutInput);
-            Integer timer = globals.getInt("entryconfirmtimer",400);
+            Integer timer = globals.getInt("entryvisualconfirmtimer",400);
 
 
 
@@ -520,8 +523,11 @@ public class MainActivity extends AppCompatActivity {
                 PopulateInputEntriesListView(this,lvInputEntries, MainActivity.this);
             }
 
-           // Toast.makeText(this, "Testing NFC. Read " + tagContent, Toast.LENGTH_SHORT).show();
-           // txtTagContent.setText(tagContent);
+            SharedPreferences.Editor editor = globals.edit();
+            editor.putString("EntryNoState","");
+            editor.commit();
+
+            tvBIBEntry.setText("");
 
         } else {
             Toast.makeText(this, "No NDEF records found!", Toast.LENGTH_SHORT).show();
