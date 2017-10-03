@@ -4,8 +4,10 @@ package layout;
  * Created by Igor on 22.10.2016.
  */
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -24,10 +26,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.trex.racetracker.Provider.AUTHORITY;
 import static com.trex.racetracker.StaticMethods.*;
 import static com.trex.racetracker.DbMethods.*;
 
@@ -57,6 +61,7 @@ public class Input extends Fragment {
     public ListView lvInputEntries;
     private boolean viewInflated;
     private BroadcastReceiver mReceiver;
+    private Account mAccount;
 
 
 /*
@@ -93,6 +98,27 @@ public class Input extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_input, container, false);
+        mAccount = MainActivity.CreateSyncAccount(getContext());
+
+        //manual sync button
+        ImageButton ibManualSync = (ImageButton) rootView.findViewById(R.id.ibManualSync);
+        ibManualSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Sync called...", Toast.LENGTH_SHORT).show();
+                // Pass the settings flags by inserting them in a bundle
+                Bundle settingsBundle = new Bundle();
+                settingsBundle.putBoolean(
+                        ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                settingsBundle.putBoolean(
+                        ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        /*
+         * Request the sync for the default account, authority, and
+         * manual sync settings
+         */
+                ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+            }
+        });
 
         //debug
         //insert sample
@@ -408,6 +434,10 @@ public class Input extends Fragment {
 
         editor.putString("EntryNoState",BIBEntryString);
         editor.apply();
+
+    }
+
+    public void SyncCalled(Context context, View view) {
 
     }
 

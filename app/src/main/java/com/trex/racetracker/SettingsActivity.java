@@ -144,6 +144,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 editor.putString("pref_inputdigitsno",String.valueOf(globals.getInt("inputdigitsno",3)));
                 editor.putString("pref_timebetweenentries",String.valueOf(globals.getInt("timebetweenentries",10)));
                 editor.putString("pref_entryvisualconfirmtimer",String.valueOf(globals.getInt("entryvisualconfirmtimer",400)));
+                editor.putString("pref_entryresettimer",String.valueOf(globals.getInt("pref_entryresettimer",5000)));
 
                 break;
 
@@ -192,11 +193,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(false);
                 getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(false);
                 getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(false);
+                getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(false);
             } else {
                 getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(true);
+                getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(true);
             }
 
         }
@@ -223,11 +226,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(false);
+                        getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(false);
                     } else {
                         getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(true);
+                        getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(true);
                     }
                     break;
                 case "pref_allowemptyentries":
@@ -244,6 +249,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 case "pref_entryvisualconfirmtimer":
                     editor.putInt("entryvisualconfirmtimer",Integer.parseInt(sharedPreferences.getString(key,"400")));
+                    break;
+
+                case "pref_entryresettimer":
+                    editor.putInt("entryresettimer",Integer.parseInt(sharedPreferences.getString(key,"5000")));
                     break;
 
             }
@@ -290,9 +299,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Summary += "+389 78 833 228  |  ";
             Summary += "igority@gmail.com\n";
             Summary += "============================\n";
-            Summary += "Disclaimer: This app, along with the web tracking system was created solely for the purpose of the CAT™ tracking system, to be used for, but not exclusivelly, the Krali Marko Trails 2017 race\n";
+            Summary += "Disclaimer: This app, along with the web tracking system was created solely for the purpose of the CAT™ tracking system, to be used for, but not exclusively, the Krali Marko Trails 2017 race\n";
             Summary += "The Author holds the full rights of the app and the tracking system, and can be used only with his consent.\n";
-            Summary += "Any unauthorised using, copying, muliplying and modifying is strictly FORBIDDEN and on such actions will be responded legaly.\n";
+            Summary += "Any unauthorised using, copying, muliplying and modifying is strictly FORBIDDEN and on such actions will be responded legally.\n";
             Summary += "\n\n";
 
 

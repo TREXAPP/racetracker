@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         //App version
         //if (!globals.contains("version"))
-            editor.putString("version","1.102");
+            editor.putString("version","1.103");
 
         //App version
        // if (!globals.contains("AdminPass"))
