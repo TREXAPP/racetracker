@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         //App version
         //if (!globals.contains("version"))
-            editor.putString("version","1.103");
+            editor.putString("version","1.3");
 
         //App version
        // if (!globals.contains("AdminPass"))
@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("inputdigitsno")) editor.putInt("inputdigitsno",3);
 
         //The time (in miliseconds) after which the entered digits are reseted. This is to avoid unintentional entries.
-        if (!globals.contains("entryresettimer")) editor.putInt("entryresettimer",5000);
+        if (!globals.contains("entryresettimer")) editor.putInt("entryresettimer",10000);
 
         //The time (in miliseconds) that the entered BIB number stays flashing before it dissapears. Default is 100ms, but can be changed in parameters
         if (!globals.contains("entryvisualconfirmtimer")) editor.putInt("entryvisualconfirmtimer",400);

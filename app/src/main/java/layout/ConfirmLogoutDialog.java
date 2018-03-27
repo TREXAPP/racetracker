@@ -79,8 +79,8 @@ public class ConfirmLogoutDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String Username = globals.getString("username","");
-                String passwordEncrypted = EncryptPassword(Username,etPassword.getText().toString());
-                if (passwordEncrypted.equals(globals.getString("password",""))) {
+              //  String passwordEncrypted = EncryptPassword(Username,etPassword.getText().toString());
+                if (etPassword.getText().toString().equals(globals.getString("password",""))) {
                     //LOGOUT success!
                     tvErrorLogout.setText("Enter password to continue");
                     tvErrorLogout.setTextColor(ContextCompat.getColor(getContext(), R.color.colorDarkGray));

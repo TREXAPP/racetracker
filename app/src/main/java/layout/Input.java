@@ -408,7 +408,7 @@ public class Input extends Fragment {
 */
         } else {
             //delete after 5 secs
-            Integer resetTimer = globals.getInt("entryresettimer",5000);
+            Integer resetTimer = globals.getInt("entryresettimer",10000);
             final String currentBIBValue = tvBIBEntry.getText().toString();
             SharedPreferences.Editor editor1 = globals.edit();
             editor1.putString("currentBIBValue",tvBIBEntry.getText().toString());

@@ -39,8 +39,8 @@ public class Login extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     protected static final String TYPE_LOGIN = "login";
     protected static final String TYPE_LOGOUT= "logout";
-    protected static final String URL_LOGIN = "http://app.trex.mk/login.php";
-    protected static final String URL_LOGOUT = "http://app.trex.mk/logout.php";
+    protected static final String URL_LOGIN = "http://results.vodnomatka.mk/login.php";
+    protected static final String URL_LOGOUT = "http://results.vodnomatka.mk/logout.php";
     protected static final String COMMENT_LOGIN = "";
     protected static final String COMMENT_LOGOUT = "";
 
@@ -89,8 +89,8 @@ public class Login extends Fragment {
             public void onClick(View v) {
 
                 LoginWorker loginWorker = new LoginWorker(getContext(),fragmentLogin, fragmentRacers);
-                String passwordEncrypted = EncryptPassword(etUsername.getText().toString(),etPassword.getText().toString());
-                loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),passwordEncrypted,etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
+             //   String passwordEncrypted = EncryptPassword(etUsername.getText().toString(),etPassword.getText().toString());
+                loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
                 TurnOffKeyboard(getActivity(),getContext());
                 //turn off keyboard:
                // InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
