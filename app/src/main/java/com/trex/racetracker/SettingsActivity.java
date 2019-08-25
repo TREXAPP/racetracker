@@ -144,7 +144,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 editor.putString("pref_inputdigitsno",String.valueOf(globals.getInt("inputdigitsno",3)));
                 editor.putString("pref_timebetweenentries",String.valueOf(globals.getInt("timebetweenentries",10)));
                 editor.putString("pref_entryvisualconfirmtimer",String.valueOf(globals.getInt("entryvisualconfirmtimer",400)));
-                editor.putString("pref_entryresettimer",String.valueOf(globals.getInt("pref_entryresettimer",10000)));
+                editor.putString("pref_entryresettimer",String.valueOf(globals.getInt("pref_entryresettimer",15000)));
 
                 break;
 
@@ -252,7 +252,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     break;
 
                 case "pref_entryresettimer":
-                    editor.putInt("entryresettimer",Integer.parseInt(sharedPreferences.getString(key,"10000")));
+                    editor.putInt("entryresettimer",Integer.parseInt(sharedPreferences.getString(key,"15000")));
                     break;
 
             }

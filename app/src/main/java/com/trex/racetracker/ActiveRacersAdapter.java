@@ -3,10 +3,10 @@ package com.trex.racetracker;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.widget.ArrayAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
