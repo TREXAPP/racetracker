@@ -180,7 +180,7 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
 
                     //login successful. Now synchronize the racers
                     final String TYPE_SYNC = "sync";
-                    final String URL_SYNC = "https://results.germiaultratrail.com/sync.php";
+                    final String URL_SYNC = "https://chupino.trex.mk/sync.php";
                     final String COMMENT_SYNC = "";
 
                     SyncLoginInfoWorker syncLoginInfoWorker = new SyncLoginInfoWorker(context, fragmentLogin, viewRacers);
