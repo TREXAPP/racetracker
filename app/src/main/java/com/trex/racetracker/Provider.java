@@ -1,28 +1,16 @@
 package com.trex.racetracker;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.UriMatcher;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.widget.Switch;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.trex.racetracker.Database.DatabaseHelper;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
-import static com.trex.racetracker.DatabaseHelper.*;
 import static java.sql.Types.NULL;
-import static java.util.Objects.isNull;
 
 /**
  * Created by Igor on 18.4.2017.
@@ -103,7 +91,6 @@ public class Provider extends ContentProvider {
                 break;
 
         }
-
 
         if (database.equals(NULL)) {
             database = DatabaseHelper.getInstance(getContext());

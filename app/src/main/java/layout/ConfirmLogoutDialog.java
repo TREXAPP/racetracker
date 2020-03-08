@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.inputmethod.InputMethodManager;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -18,17 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.trex.racetracker.LogoutWorker;
-import com.trex.racetracker.MainActivity;
+import com.trex.racetracker.Workers.LogoutWorker;
+import com.trex.racetracker.Activities.MainActivity;
 import com.trex.racetracker.R;
 import com.trex.racetracker.StaticMethods;
-
-import layout.Login;
-
-import org.w3c.dom.Text;
-
-import static com.trex.racetracker.R.id.etUsername;
-import static com.trex.racetracker.StaticMethods.EncryptPassword;
 
 /**
  * Created by Igor_2 on 13.11.2016.
@@ -88,7 +79,7 @@ public class ConfirmLogoutDialog extends DialogFragment {
 
                     final String DeviceID = globals.getString("deviceid","");
                     LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentLogin,fragmentRacers, handler);
-                    logoutWorker.execute(Login.TYPE_LOGOUT,Login.URL_LOGOUT,globals.getString("username",""),globals.getString("operator",""),DeviceID,Login.COMMENT_LOGOUT);
+                    logoutWorker.execute(LoginTab.TYPE_LOGOUT, LoginTab.URL_LOGOUT,globals.getString("username",""),globals.getString("operator",""),DeviceID, LoginTab.COMMENT_LOGOUT);
 
                     getDialog().dismiss();
                     //turn off keyboard:

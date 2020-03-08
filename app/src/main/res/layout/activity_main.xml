@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.trex.racetracker.MainActivity">
+    tools:context="com.trex.racetracker.Activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -28,7 +28,7 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="40dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="4dp"
                 android:layout_weight="0.45"
@@ -83,10 +83,9 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:verticalScrollbarPosition="defaultPosition"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
 
 
 </android.support.design.widget.CoordinatorLayout>

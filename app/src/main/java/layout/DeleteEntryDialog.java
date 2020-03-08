@@ -12,22 +12,18 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.trex.racetracker.EntriesListAdapter;
-import com.trex.racetracker.EntryObj;
-import com.trex.racetracker.MainActivity;
+import com.trex.racetracker.Adapters.EntriesListAdapter;
+import com.trex.racetracker.Models.EntryObj;
+import com.trex.racetracker.Activities.MainActivity;
 import com.trex.racetracker.R;
 
-import static com.trex.racetracker.DbMethods.setEntryDeleted;
+import static com.trex.racetracker.Database.DbMethods.setEntryDeleted;
 import static com.trex.racetracker.StaticMethods.InitializeEntriesListView;
 import static com.trex.racetracker.StaticMethods.PopulateInputEntriesListView;
-
-import com.trex.racetracker.EntriesInputListAdapter;
 
 /**
  * Created by Igor on 02.10.2017.
@@ -112,7 +108,7 @@ public class DeleteEntryDialog extends DialogFragment {
                         Toast.makeText(context, "Entry restored!", Toast.LENGTH_SHORT).show();
                     }
 
-                    String selection = Entries.getSelectionString(globals);
+                    String selection = EntriesTab.getSelectionString(globals);
                     Boolean leftJoin = globals.getBoolean("EntriesSelectionLeftJoin",true);
                     InitializeEntriesListView(context,listView, selection, leftJoin, activity);
 

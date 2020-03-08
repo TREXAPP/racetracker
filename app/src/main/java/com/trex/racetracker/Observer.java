@@ -8,9 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
-import static com.trex.racetracker.MainActivity.AUTHORITY;
+import static com.trex.racetracker.Activities.MainActivity.AUTHORITY;
 
 /**
  * Created by Igor on 26.4.2017.

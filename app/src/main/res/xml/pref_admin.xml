@@ -4,13 +4,20 @@
         android:key="pref_admin_lock"
         android:title="Admin Password"
         android:summary="Enter the admin password to unlock these settings."
-        android:password="true"
+        android:inputType="textPassword"
+        />
+
+    <EditTextPreference
+        android:key="pref_apikey"
+        android:title="API Key"
+        android:summary="Enter the API key for communicating with the backend server."
+        android:inputType="text"
         />
 
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_allowemptyentries"
-        android:summary="Allow entry of BIB number that does not exist in the database (Useful to be ON, if my chance some runners are not inputed in the database)"
+        android:summary="Allow entry of BIB number that does not exist in the database (Useful to be ON, you suspect that some runners are not entered in the database)"
         android:title="Allow non-registered BIBs" />
 
     <EditTextPreference
@@ -18,7 +25,7 @@
         android:key="pref_inputdigitsno"
         android:title="BIB number digits"
         android:summary="Number of digits for the BIB numbers (default and recommended: 3)"
-        android:numeric="integer"
+        android:inputType="number"
         />
 
     <EditTextPreference
@@ -26,23 +33,23 @@
         android:key="pref_timebetweenentries"
         android:title="Lock runner time"
         android:summary="Time (in minutes) after a successful entry of a runner, in which another entry of the same runner is not allowed. 0 = no lock"
-        android:numeric="integer"
+        android:inputType="number"
         />
 
     <EditTextPreference
         android:defaultValue="5000"
         android:key="pref_entryresettimer"
         android:title="Entry Reset Time"
-        android:summary="Duration (in miliseconds) after which the entered digits are reseted. This is set to avoid unintentional entries."
-        android:numeric="integer"
+        android:summary="Duration (in milliseconds) after which the entered digits are reset. This is set to avoid unintentional entries."
+        android:inputType="number"
         />
 
     <EditTextPreference
         android:defaultValue="400"
         android:key="pref_entryvisualconfirmtimer"
         android:title="[Visual] Entry Flashing Time"
-        android:summary="Duration (in miliseconds) of a keyboard flashing during an entry. Visual tweak."
-        android:numeric="integer"
+        android:summary="Duration (in milliseconds) of a keyboard flashing during an entry. Visual tweak."
+        android:inputType="number"
         />
 
 

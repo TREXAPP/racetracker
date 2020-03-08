@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragmentLogin"
-    tools:context="layout.Login">
+    tools:context="layout.LoginTab">
 
     <!-- TODO: Update blank fragment layout
     <TextView

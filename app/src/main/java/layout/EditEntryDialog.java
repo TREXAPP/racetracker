@@ -18,12 +18,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.trex.racetracker.EntryObj;
-import com.trex.racetracker.MainActivity;
+import com.trex.racetracker.Models.EntryObj;
+import com.trex.racetracker.Activities.MainActivity;
 import com.trex.racetracker.R;
 import com.trex.racetracker.StaticMethods;
 
-import static com.trex.racetracker.DbMethods.*;
+import static com.trex.racetracker.Database.DbMethods.*;
 import static com.trex.racetracker.StaticMethods.*;
 
 /**
@@ -127,7 +127,7 @@ public class EditEntryDialog extends DialogFragment {
                     PopulateInputEntriesListView(context,listView, getActivity());
                 }
                 if (fragment == ENTRIES) {
-                    String selection = Entries.getSelectionString(globals);
+                    String selection = EntriesTab.getSelectionString(globals);
                     Boolean leftJoin = globals.getBoolean("EntriesSelectionLeftJoin",true);
                     InitializeEntriesListView(context,listView, selection, leftJoin, getActivity());
                 }

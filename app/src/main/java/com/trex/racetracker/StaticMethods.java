@@ -23,6 +23,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.trex.racetracker.Activities.MainActivity;
+import com.trex.racetracker.Adapters.ActiveRacersExpandableAdapter;
+import com.trex.racetracker.Adapters.EntriesInputListAdapter;
+import com.trex.racetracker.Adapters.EntriesListAdapter;
+import com.trex.racetracker.Adapters.RacesAdapter;
+import com.trex.racetracker.Database.DatabaseHelper;
+import com.trex.racetracker.Models.ActiveRacerObj;
+import com.trex.racetracker.Models.EntryObj;
+import com.trex.racetracker.Models.RaceObj;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,10 +45,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import layout.Entries;
+import layout.EntriesTab;
 
-import static com.trex.racetracker.DbMethods.*;
-import static com.trex.racetracker.MainActivity.AUTHORITY;
+import static com.trex.racetracker.Database.DbMethods.*;
+import static com.trex.racetracker.Activities.MainActivity.AUTHORITY;
 
 /**
  * Created by Igor_2 on 03.11.2016.
@@ -676,7 +686,7 @@ public class StaticMethods {
         spEntries.setAdapter(adapter);
 
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-        spEntries.setSelection(Entries.getSpinnerSelected(globals));
+        spEntries.setSelection(EntriesTab.getSpinnerSelected(globals));
     }
 
     private static void InitializeEntriesSearchView(Context context, SearchView svEntries) {
