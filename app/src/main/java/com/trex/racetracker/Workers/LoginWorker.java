@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -66,22 +67,33 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
     }
 
     @Override
+    protected void onPreExecute() {
+        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
+        tvStatusTop.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        tvStatusTop.setText("Logging in ...");
+        // alertDialog = new AlertDialog.Builder(context).create();
+        // alertDialog.setTitle("Query returns");
+    }
+
+    @Override
     protected String doInBackground(String... params) {
         try {
-            //GET Request
-            //return RequestHandler.sendGet("https://prodevsblog.com/android_get.php");
             String type = params[0];
             String result = "";
             if (!type.equals("login")) {
                 return result;
             }
 
-            queryUrl = params[1];
-            Username = params[2];
-            Password = params[3];
-            Operator = params[4];
-            DeviceID = params[5];
-            LoginComment = params[6];
+            queryUrl = globals.getString("hostUrl", "") + "/timing/authenticate";
+            Username = params[1];
+            Password = params[2];
+            Operator = params[3];
+            DeviceID = params[4];
+            LoginComment = params[5];
+
+            if (TextUtils.isEmpty(Username) || TextUtils.isEmpty(Password)) {
+                return "Username and Password cannot be empty.";
+            }
 
             // POST Request
             JSONObject postDataParams = new JSONObject();
@@ -91,96 +103,12 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
             postDataParams.put("deviceid", DeviceID);
             postDataParams.put("logincomment", LoginComment);
 
-            response = RequestHelper.sendPost(queryUrl,postDataParams, globals);
+            response = RequestHelper.sendPost(queryUrl, postDataParams, globals, false);
             return response.getMessage();
         }
         catch(Exception e){
             return new String("Exception: " + e.getMessage());
         }
-//        String type = params[0];
-//        String result = "";
-//
-//        if (type.equals("login")) try {
-//
-//            queryUrl = params[1];
-//            Username = params[2];
-//            Password = params[3];
-//            Operator = params[4];
-//            DeviceID = params[5];
-//            LoginComment = params[6];
-//            URL url = new URL(queryUrl);
-//            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-//
-//            //TODO IJ: use this:
-////            URL url = new URL(exportUri.getUri());
-////            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-////            connection.setRequestMethod("GET");
-////            connection.setRequestProperty("Authorization", "Bearer " + token);
-//
-//            connection.setRequestMethod("POST");
-//            connection.setRequestProperty("x-api-key", globals.getString("x-api-key", ""));
-//            connection.setDoOutput(true);
-//            connection.setDoInput(true);
-//            OutputStream outputStream = connection.getOutputStream();
-//            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-//
-//            String post_data = "";
-//            if (!Username.equals("")) {
-//                if (!post_data.equals("")) post_data += "&";
-//                post_data += URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(Username, "UTF-8");
-//            }
-//            if (!Password.equals("")) {
-//                if (!post_data.equals("")) post_data += "&";
-//                post_data += URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(Password, "UTF-8");
-//            }
-//            if (!Operator.equals("")) {
-//                if (!post_data.equals("")) post_data += "&";
-//                post_data += URLEncoder.encode("operator", "UTF-8") + "=" + URLEncoder.encode(Operator, "UTF-8");
-//            }
-//            if (!DeviceID.equals("")) {
-//                if (!post_data.equals("")) post_data += "&";
-//                post_data += URLEncoder.encode("deviceid", "UTF-8") + "=" + URLEncoder.encode(DeviceID, "UTF-8");
-//            }
-//            if (!LoginComment.equals("")) {
-//                if (!post_data.equals("")) post_data += "&";
-//                post_data += URLEncoder.encode("logincomment", "UTF-8") + "=" + URLEncoder.encode(LoginComment, "UTF-8");
-//            }
-//
-//            bufferedWriter.write(post_data);
-//            bufferedWriter.flush();
-//            bufferedWriter.close();
-//            outputStream.close();
-//
-//            //now get the response
-//            InputStream inputStream = connection.getInputStream();
-////            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-//            String line = "";
-//        //    result = bufferedReader.toString();
-//            while ((line = bufferedReader.readLine()) != null) {
-//                result += line;
-//            }
-//            responseCode = connection.getResponseCode();
-//            bufferedReader.close();
-//            inputStream.close();
-//            connection.disconnect();
-//            return result;
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    return result;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
-        tvStatusTop.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        tvStatusTop.setText("Logging in ...");
-       // alertDialog = new AlertDialog.Builder(context).create();
-       // alertDialog.setTitle("Query returns");
     }
 
     @Override
@@ -198,28 +126,19 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
             int responseCode = response.getResponseCode();
             if (responseCode >= 200 && responseCode <= 299) {
 
-                String controlPoint = jsonResult.getString("CPName");
-                editor.putBoolean("islogin",true);
+                editor.putBoolean("loggedIn",true);
                 editor.putString("jwt-token",jsonResult.getString("token"));
                 editor.putString("username",Username);
                 editor.putString("password",Password);
                 editor.putString("operator",Operator);
-                editor.putString("controlpoint",controlPoint);
-
-                if (insertIntoLoginInfo(jsonResult, context)) {
-                    tvStatusTop.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
-                }
 
                 editor.commit();
-                InitializeLoginFragment(context, fragmentLogin,globals);
 
-                //login successful. Now synchronize the racers
-                final String TYPE_SYNC = "sync";
-                final String URL_SYNC = "https://api.trex.mk/timing/mobile/start-list";
-                final String COMMENT_SYNC = "";
+                tvStatusTop.setText("Login successful. Synchronizing Data ...");
 
-                SyncLoginInfoWorker syncLoginInfoWorker = new SyncLoginInfoWorker(context, fragmentLogin, viewRacers);
-                syncLoginInfoWorker.execute(TYPE_SYNC,URL_SYNC,Username,Operator,DeviceID,COMMENT_SYNC);
+                SyncDataWorker syncDataWorker = new SyncDataWorker(context, fragmentLogin, viewRacers);
+                syncDataWorker.execute();
+
                 Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -227,6 +146,9 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                 String errorString;
                 if (jsonResult.has("error")) {
                     errorString = jsonResult.getString("error");
+                    if (TextUtils.isEmpty(errorString) || errorString == "null") {
+                        errorString = "Error while authenticating user";
+                    }
                 } else {
                     errorString = "Error while authenticating user";
                 }
@@ -237,7 +159,9 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
                 tvStatusTop.setText("Error parsing login response");
                 tvStatusTop.setTextColor(Color.RED);
         } catch (JSONException e) {
-
+            Toast.makeText(context, "Error logging in: " + result, Toast.LENGTH_SHORT).show();
+            tvStatusTop.setText("Error logging in");
+            tvStatusTop.setTextColor(Color.RED);
             e.printStackTrace();
         }
 

@@ -80,7 +80,7 @@ public class StaticMethods {
         String Username = globals.getString("username","");
         String Operator = globals.getString("operator","");
         String controlPoint = globals.getString("controlpoint","");
-        if (globals.getBoolean("islogin",false)) loggedIn = true;
+        if (globals.getBoolean("loggedIn",false)) loggedIn = true;
         if (loggedIn) {
             //user is logged in. Show info and form for logout
             tvUsername.setText(Username);
@@ -790,7 +790,7 @@ public class StaticMethods {
 
 
 
-        if (globals.getBoolean("islogin",false)) {
+        if (globals.getBoolean("loggedIn",false)) {
             entryObj.setUserID(globals.getString("username",""));
             entryObj.setOperator(globals.getString("operator",""));
             String loginInfoWhere;
@@ -862,7 +862,7 @@ public class StaticMethods {
             }
         }
 
-        if (!globals.getBoolean("islogin",false)) {
+        if (!globals.getBoolean("loggedIn",false)) {
             if (!status.equals("too soon")) {
                 status = "not logged in";
             }

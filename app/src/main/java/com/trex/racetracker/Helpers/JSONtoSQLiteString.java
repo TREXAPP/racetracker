@@ -1,5 +1,6 @@
 package com.trex.racetracker.Helpers;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +15,10 @@ public class JSONtoSQLiteString {
     public JSONtoSQLiteString(JSONObject jsonString) {
         json = jsonString;
     }
+//
+//    public JSONtoSQLiteString(JSONArray jsonArray) {
+//        json = jsonArray;
+//    }
 
     public String CPID(int i) {
         String result;
@@ -338,10 +343,10 @@ public class JSONtoSQLiteString {
         return result;
     }
 
-    public String Racers_Comment(int i) {
+    public String RacersComment(int i) {
         String result;
         try {
-            result = json.getJSONObject(String.valueOf(i)).getString("Racers_Comment");
+            result = json.getJSONObject(String.valueOf(i)).getString("RacersComment");
         } catch (JSONException e) {
             result = null;
         }

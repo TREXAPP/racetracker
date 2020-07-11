@@ -94,7 +94,7 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
                 //ivSync.setVisibility(View.INVISIBLE);
             }
 
-            if (globals.getBoolean("islogin",false)) {
+            if (globals.getBoolean("loggedIn",false)) {
                 if (entryObj.getCountry().equals("") && (entryObj.getAge() == 0) && entryObj.getGender().equals("")) {
                     layoutWrapper.setBackgroundColor(Color.parseColor("#FFCC0000")); //red
                     if (entryObj.getFirstName().equals("") && entryObj.getLastName().equals("")) {

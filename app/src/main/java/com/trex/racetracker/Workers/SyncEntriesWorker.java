@@ -36,10 +36,12 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
     private Context context;
     private String type;
     private String payload;
+    private SharedPreferences globals;
 
 
     public SyncEntriesWorker(Context context) {
         this.context = context;
+        this.globals = context.getSharedPreferences(MainActivity.GLOBALS, 0);
 
     }
 
@@ -54,10 +56,10 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
         String result = "";
         //TODO get params here
         if (type.equals("sync_push_insert") || type.equals("sync_push_update")) try {
-            String queryUrl = params[1];
+            String queryUrl = globals.getString("hostUrl", "") + "/timing/mobile/instruction";
             URL url = new URL(queryUrl);
-            String rowsNo = params[2];
-            payload = params[3];
+            String rowsNo = params[1];
+            payload = params[2];
 
             String post_data = "";
 

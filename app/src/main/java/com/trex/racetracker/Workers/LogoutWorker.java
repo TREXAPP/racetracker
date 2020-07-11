@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.trex.racetracker.Database.DatabaseHelper;
 import com.trex.racetracker.Activities.MainActivity;
+import com.trex.racetracker.Helpers.RequestHelper;
+import com.trex.racetracker.Models.Response;
 import com.trex.racetracker.R;
 
 import org.json.JSONException;
@@ -46,6 +48,8 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
     private String DeviceID;
     private String LogoutComment;
     private Handler handler;
+    private SharedPreferences globals;
+    Response response;
 
 
     //constructor
@@ -53,7 +57,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         context = ctx;
         this.fragmentLogin = fragmentLogin;
         this.fragmentRacers = fragmentRacers;
-
+        this.globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
     }
 
     public LogoutWorker(Context ctx, View fragmentLogin, View fragmentRacers, Handler handler) {
@@ -61,78 +65,7 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         this.fragmentLogin = fragmentLogin;
         this.fragmentRacers = fragmentRacers;
         this.handler = handler;
-    }
-
-
-
-    @Override
-    protected String doInBackground(String... params) {
-        String type = params[0];
-        String result = "";
-
-        //if params[0] is 'login', then
-        //params[2]=Username
-        //params[3]=operator
-        //params[4]=DeviceID
-        //params[5]=logoutComment
-        //in this case the LoginWorker should be called in this manner: backgroundWorker.execute(type,url,username,password,operator,deviceid,logincomment)
-        if (type.equals("logout")) try {
-
-            queryUrl = params[1];
-            Username = params[2];
-            Operator = params[3];
-            DeviceID = params[4];
-            LogoutComment = params[5];
-            URL url = new URL(queryUrl);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
-            OutputStream outputStream = httpURLConnection.getOutputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-
-            String post_data = "";
-            if (!Username.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(Username, "UTF-8");
-            }
-            if (!Operator.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("operator", "UTF-8") + "=" + URLEncoder.encode(Operator, "UTF-8");
-            }
-            if (!DeviceID.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("deviceid", "UTF-8") + "=" + URLEncoder.encode(DeviceID, "UTF-8");
-            }
-            if (!LogoutComment.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("logoutcomment", "UTF-8") + "=" + URLEncoder.encode(LogoutComment, "UTF-8");
-            }
-
-            bufferedWriter.write(post_data);
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            outputStream.close();
-
-            //now get the response
-            InputStream inputStream = httpURLConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-            String line = "";
-            //    result = bufferedReader.toString();
-            while ((line = bufferedReader.readLine()) != null) {
-                result += line;
-            }
-            bufferedReader.close();
-            inputStream.close();
-            httpURLConnection.disconnect();
-            return result;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return result;
+        this.globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
     }
 
     @Override
@@ -144,6 +77,36 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
     }
 
     @Override
+    protected String doInBackground(String... params) {
+
+        try {
+
+            queryUrl = globals.getString("hostUrl", "") + "/timing/mobile/logout";
+            Username = params[0];
+            Operator = params[1];
+            DeviceID = params[2];
+            LogoutComment = params[3];
+            // POST Request
+            JSONObject postDataParams = new JSONObject();
+            postDataParams.put("username", Username);
+            postDataParams.put("operator", Operator);
+            postDataParams.put("deviceid", DeviceID);
+            postDataParams.put("logincomment", LogoutComment);
+
+            response = RequestHelper.sendPost(queryUrl, postDataParams, globals, true);
+            return response.getMessage();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response.getMessage();
+    }
+
+    @Override
     protected void onPostExecute(String result) {
         SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
         SharedPreferences.Editor editor = globals.edit();
@@ -151,28 +114,26 @@ public class LogoutWorker extends AsyncTask<String,Void,String> {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 
         try {
-            JSONObject jsonResult = new JSONObject(result);
-            if (jsonResult.has("islogout")) {
-                if (jsonResult.getString("islogout").equals("1")) {
-                    editor.putBoolean("islogin",false);
-                    editor.putString("username","");
-                    editor.putString("password","");
-                    editor.putString("operator","");
-                    editor.putString("controlpoint","");
-                    editor.commit();
 
-                //    InitializeLoginFragment(context, fragmentLogin,globals);
-                    deleteAllFromLoginInfo(context);
-                    setEntriesNotMine(context);
+            int responseCode = response.getResponseCode();
+            if (responseCode >= 200 && responseCode <= 299) {
+                editor.putBoolean("loggedIn",false);
+                editor.putString("username","");
+                editor.putString("password","");
+                editor.putString("jwt-token","");
+                editor.putString("operator","");
+                editor.putString("controlpoint","");
+                editor.commit();
 
-                    Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();
-                } else {
-                    tvStatusTop.setText(jsonResult.getString("logouterror"));
-                }
+                deleteAllFromLoginInfo(context);
+                setEntriesNotMine(context);
+
+                Toast.makeText(context, "Logout Successful!", Toast.LENGTH_SHORT).show();
+
             } else {
                 tvStatusTop.setText("Error with database! Contact the administrator.");
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         EditText etUsername = (EditText) fragmentLogin.findViewById(R.id.etUsername);

@@ -266,10 +266,14 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("AdminPass","run358");
 
         //when a user gets logged in this is set true. When no user is logged in it is false
-        if (!globals.contains("islogin")) editor.putBoolean("islogin",false);
+        if (!globals.contains("loggedIn")) editor.putBoolean("loggedIn",false);
 
         //unique api key for this race and mobile devices, for security reasons
-        if (!globals.contains("x-api-key")) editor.putString("x-api-key","AfCUyn2LWIkcSxVQ4PeEJHTXZGM79gBtDojFdba0");
+        if (!globals.contains("x-api-key")) editor.putString("x-api-key","lpNek3Vrva4H1YiOYArAwdpKLjzmKS1IgspkxDnt");
+
+        //base url of the server where the results are hosted
+//        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://api.trex.test");
+        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://192.168.10.10");
 
         //jwt token for currently logged user
         if (!globals.contains("jwt-token")) editor.putString("jwt-token","");

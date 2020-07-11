@@ -10,6 +10,7 @@ import com.trex.racetracker.Helpers.JSONtoSQLiteString;
 import com.trex.racetracker.Models.EntryObj;
 import com.trex.racetracker.Provider;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,39 +31,36 @@ public class DbMethods {
         mProvider = new Provider();
     }
 
-    public static boolean insertIntoLoginInfo(JSONObject jsonString, Context context) throws JSONException {
+    public static boolean insertIntoLoginInfo(JSONArray loginInfoJsonArray, Context context) throws JSONException {
 
-        JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
         Uri resultUri;
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_3_LOGIN_INFO);
 
         String result="0";
-        int i=0;
-        while (i < jsonString.length()-2) {
-            if (!result.equals("-1")) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(COL_3_1,jsontosqlite.CPID(i));
-                contentValues.put(COL_3_2,jsontosqlite.CPComment(i));
-                contentValues.put(COL_3_3,jsontosqlite.CPName(i));
-                contentValues.put(COL_3_4,jsontosqlite.CPNo(i));
-                contentValues.put(COL_3_5,jsontosqlite.RaceID(i));
-                contentValues.put(COL_3_6,jsontosqlite.RaceName(i));
-                contentValues.put(COL_3_7,jsontosqlite.RaceDescription(i));
-                contentValues.put(COL_3_8,jsontosqlite.UsersComment(i));
+        for (int i=0; i<loginInfoJsonArray.length(); i++) {
+            JSONObject loginInfoJsonObj = loginInfoJsonArray.getJSONObject(i);
 
-                resultUri = context.getContentResolver().insert(uri, contentValues);
-                //resultUri = mProvider.insert(uri, contentValues);
-                result = resultUri != null ? resultUri.getLastPathSegment() : "1";
-            }
-            i++;
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COL_3_CP_ID, loginInfoJsonObj.has("CPID") ? loginInfoJsonObj.getString("CPID") : null);
+            contentValues.put(COL_3_CP_COMMENT, loginInfoJsonObj.has("CPComment") ? loginInfoJsonObj.getString("CPComment") : null);
+            contentValues.put(COL_3_CP_NAME, loginInfoJsonObj.has("CPName") ? loginInfoJsonObj.getString("CPName") : null);
+            contentValues.put(COL_3_CP_NO, loginInfoJsonObj.has("CPNo") ? loginInfoJsonObj.getString("CPNo") : null);
+            contentValues.put(COL_3_RACE_ID, loginInfoJsonObj.has("RaceID") ? loginInfoJsonObj.getString("RaceID") : null);
+            contentValues.put(COL_3_RACE_NAME, loginInfoJsonObj.has("RaceName") ? loginInfoJsonObj.getString("RaceName") : null);
+            contentValues.put(COL_3_RACE_DESCRIPTION, loginInfoJsonObj.has("RaceDescription") ? loginInfoJsonObj.getString("RaceDescription") : null);
+            contentValues.put(COL_3_USERS_COMMENT, loginInfoJsonObj.has("UsersComment") ? loginInfoJsonObj.getString("UsersComment") : null);
+
+            resultUri = context.getContentResolver().insert(uri, contentValues);
+            result = resultUri != null ? resultUri.getLastPathSegment() : "1";
         }
+
         context.getContentResolver().notifyChange(uri, null, false);
-        if (!result.equals("-1")) return false;
+        if (result.equals("-1")) return false;
         else return true;
     }
 
     public static int deleteAllFromLoginInfo(Context context) {
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_3_LOGIN_INFO);
         return context.getContentResolver().delete(uri,"",null);
     }
 
@@ -73,7 +71,7 @@ public class DbMethods {
 
         String[] projection = new String[]{"DISTINCT RaceID", "RaceDescription", "RaceName"};
         String selection = null;
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_3_LOGIN_INFO);
         return context.getContentResolver().query(uri,projection,selection,null,"");
     }
 
@@ -92,7 +90,7 @@ public class DbMethods {
 */
         String[] projection = new String[]{"DISTINCT CPNo"};
         String sortOrder = "CPNo ASC";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_3_LOGIN_INFO);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
@@ -111,63 +109,65 @@ public class DbMethods {
 */
         String[] projection = new String[]{"DISTINCT CPNo, CPName"};
         String sortOrder = "CPNo ASC";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
-    public static boolean insertIntoActiveRacers(Context context, JSONObject jsonString) {
-        //SQLiteDatabase db = this.getWritableDatabase();
-        Uri resultUri;
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_1_NAME);
+    public static boolean insertIntoActiveRacers(JSONArray racersJsonArray, Context context) {
 
-        JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
+
+        Uri resultUri;
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_1_ACTIVE_RACERS);
+
         String result="0";
-        int i=0;
-        while (i < jsonString.length()-3) {
-            if (result != "-1") {
+        try {
+            for (int i=0; i<racersJsonArray.length(); i++) {
+                JSONObject racerJsonObj = racersJsonArray.getJSONObject(i);
+
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(COL_1_1,jsontosqlite.ActiveRacerID(i));
-                contentValues.put(COL_1_2,jsontosqlite.RacerID(i));
-                contentValues.put(COL_1_3,jsontosqlite.RaceID(i));
-                contentValues.put(COL_1_4,jsontosqlite.Age(i));
-                contentValues.put(COL_1_5,jsontosqlite.BIB(i));
-                contentValues.put(COL_1_6,jsontosqlite.ChipCode(i));
-                contentValues.put(COL_1_7,jsontosqlite.Hide(i));
-                contentValues.put(COL_1_8,jsontosqlite.Registered(i));
-                contentValues.put(COL_1_9,jsontosqlite.ActiveRacersTS(i));
-                contentValues.put(COL_1_10,jsontosqlite.ActiveRacersComment(i));
-                contentValues.put(COL_1_11,jsontosqlite.FirstName(i));
-                contentValues.put(COL_1_12,jsontosqlite.LastName(i));
-                contentValues.put(COL_1_13,jsontosqlite.Gender(i));
-                contentValues.put(COL_1_14,jsontosqlite.DateOfBirth(i));
-                contentValues.put(COL_1_15,jsontosqlite.YearBirth(i));
-                contentValues.put(COL_1_16,jsontosqlite.Nationality(i));
-                contentValues.put(COL_1_17,jsontosqlite.Country(i));
-                contentValues.put(COL_1_18,jsontosqlite.TeamID(i));
-                contentValues.put(COL_1_19,jsontosqlite.CityOfResidence(i));
-                contentValues.put(COL_1_20,jsontosqlite.TShirtSize(i));
-                contentValues.put(COL_1_21,jsontosqlite.Email(i));
-                contentValues.put(COL_1_22,jsontosqlite.Tel(i));
-                contentValues.put(COL_1_23,jsontosqlite.Food(i));
-                contentValues.put(COL_1_24,jsontosqlite.RacersTS(i));
-                contentValues.put(COL_1_25,jsontosqlite.Racers_Comment(i));
-                contentValues.put(COL_1_26,jsontosqlite.TeamName(i));
-                contentValues.put(COL_1_27,jsontosqlite.TeamDescription(i));
+                contentValues.put(COL_1_ACTIVE_RACER_ID, racerJsonObj.has("ActiveRacerID") ? racerJsonObj.getString("ActiveRacerID") : null);
+                contentValues.put(COL_1_RACER_ID, racerJsonObj.has("RacerID") ? racerJsonObj.getString("RacerID") : null);
+                contentValues.put(COL_1_RACE_ID, racerJsonObj.has("RaceID") ? racerJsonObj.getString("RaceID") : null);
+                contentValues.put(COL_1_AGE, racerJsonObj.has("Age") ? racerJsonObj.getString("Age") : null);
+                contentValues.put(COL_1_BIB, racerJsonObj.has("BIB") ? racerJsonObj.getString("BIB") : null);
+                contentValues.put(COL_1_CHIP_CODE, racerJsonObj.has("ChipCode") ? racerJsonObj.getString("ChipCode") : null);
+                contentValues.put(COL_1_HIDE, racerJsonObj.has("Hide") ? racerJsonObj.getString("Hide") : null);
+                contentValues.put(COL_1_REGISTERED, racerJsonObj.has("Registered") ? racerJsonObj.getString("Registered") : null);
+                contentValues.put(COL_1_ACTIVE_RACERS_TS, racerJsonObj.has("ActiveRacersTS") ? racerJsonObj.getString("ActiveRacersTS") : null);
+                contentValues.put(COL_1_ACTIVE_RACERS_COMMENT, racerJsonObj.has("ActiveRacersComment") ? racerJsonObj.getString("ActiveRacersComment") : null);
+                contentValues.put(COL_1_FIRST_NAME, racerJsonObj.has("FirstName") ? racerJsonObj.getString("FirstName") : null);
+                contentValues.put(COL_1_LAST_NAME, racerJsonObj.has("LastName") ? racerJsonObj.getString("LastName") : null);
+                contentValues.put(COL_1_GENDER, racerJsonObj.has("Gender") ? racerJsonObj.getString("Gender") : null);
+                contentValues.put(COL_1_DATE_OF_BIRTH, racerJsonObj.has("DateOfBirth") ? racerJsonObj.getString("DateOfBirth") : null);
+                contentValues.put(COL_1_YEAR_BIRTH, racerJsonObj.has("YearBirth") ? racerJsonObj.getString("YearBirth") : null);
+                contentValues.put(COL_1_NATIONALITY, racerJsonObj.has("Nationality") ? racerJsonObj.getString("Nationality") : null);
+                contentValues.put(COL_1_COUNTRY, racerJsonObj.has("Country") ? racerJsonObj.getString("Country") : null);
+                contentValues.put(COL_1_TEAM_ID, racerJsonObj.has("TeamID") ? racerJsonObj.getString("TeamID") : null);
+                contentValues.put(COL_1_CITY_OF_RESIDENCE, racerJsonObj.has("CityOfResidence") ? racerJsonObj.getString("CityOfResidence") : null);
+                contentValues.put(COL_1_T_SHIRT_SIZE, racerJsonObj.has("TShirtSize") ? racerJsonObj.getString("TShirtSize") : null);
+                contentValues.put(COL_1_EMAIL, racerJsonObj.has("Email") ? racerJsonObj.getString("Email") : null);
+                contentValues.put(COL_1_TEL, racerJsonObj.has("Tel") ? racerJsonObj.getString("Tel") : null);
+                contentValues.put(COL_1_FOOD, racerJsonObj.has("Food") ? racerJsonObj.getString("Food") : null);
+                contentValues.put(COL_1_RACERS_TS, racerJsonObj.has("RacersTS") ? racerJsonObj.getString("RacersTS") : null);
+                contentValues.put(COL_1_RACERS_COMMENT, racerJsonObj.has("RacersComment") ? racerJsonObj.getString("RacersComment") : null);
+                contentValues.put(COL_1_TEAM_NAME, racerJsonObj.has("TeamName") ? racerJsonObj.getString("TeamName") : null);
+                contentValues.put(COL_1_TEAM_DESCRIPTION, racerJsonObj.has("TeamDescription") ? racerJsonObj.getString("TeamDescription") : null);
 
                 resultUri = context.getContentResolver().insert(uri, contentValues);
-                //resultUri = mProvider.insert(uri, contentValues);
                 result = resultUri != null ? resultUri.getLastPathSegment() : "1";
-
-                //result = db.insert(TABLE_1_NAME,null,contentValues);
             }
-            i++;
+
+            if (result.equals("-1")) return false;
+            else return true;
+
+        } catch (Exception ex) {
+            return false;
         }
-        if (result.equals("-1")) return false;
-        else return true;
+
     }
 
     /**  get 6 columns from ActiveRacers to form the array used for the adapter on the listview
-     (the last 2 columns will be gotten from CPEntries)
+     (the last 2 columns will be from CPEntries)
      **/
     public static Cursor getActiveRacersForListView(Context context, String selection) {
         /*
@@ -184,12 +184,12 @@ public class DbMethods {
         */
         String[] projection = new String[]{"BIB","FirstName","LastName","Country","DateOfBirth","Gender","ActiveRacerID"};
         String sortOrder = "BIB ASC";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_1_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_1_ACTIVE_RACERS);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
     public static int deleteAllFromActiveRacers(Context context) {
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_1_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_1_ACTIVE_RACERS);
         return context.getContentResolver().delete(uri,"",null);
     }
 
@@ -203,7 +203,7 @@ public class DbMethods {
         String[] projection = new String[]{"Time","CPNo","CPName"};
         String selection = "ActiveRacerID='" + ActiveRacerID + "' AND Valid=1";
         String sortOrder = "Time DESC LIMIT 1";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
@@ -219,7 +219,7 @@ public class DbMethods {
         String[] projection = new String[]{"ActiveRacerID","FirstName","LastName", "Country", "Gender", "DateOfBirth", "RaceID"};
         String selection = "BIB = '" +  inputedBIB + "'";
         String sortOrder = "";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_1_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_1_ACTIVE_RACERS);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
@@ -253,7 +253,7 @@ public class DbMethods {
         String[] projection = new String[]{"CPID","CPName","CPNo", "RaceID"};
         //String selection = "BIB = " +  inputedBIB;
         //String sortOrder = "";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_3_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_3_LOGIN_INFO);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
 
     }
@@ -261,27 +261,27 @@ public class DbMethods {
     public static boolean insertIntoCPEntries(Context context, EntryObj entryObj, Boolean notifyChange) {
         String result;
         Uri resultUri;
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         //SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COL_2_1,entryObj.getEntryID());
-        contentValues.put(COL_2_2,entryObj.getCPID());
-        contentValues.put(COL_2_3,entryObj.getCPName());
-        contentValues.put(COL_2_4,entryObj.getUserID());
-        contentValues.put(COL_2_5,entryObj.getActiveRacerID());
-        contentValues.put(COL_2_6,entryObj.getBarcode());
-        contentValues.put(COL_2_7,entryObj.getTime());
-        contentValues.put(COL_2_8,entryObj.getEntryTypeID());
-        contentValues.put(COL_2_9,entryObj.getComment());
-        contentValues.put(COL_2_10,entryObj.isSynced());
-        contentValues.put(COL_2_11,entryObj.isMyEntry());
-        contentValues.put(COL_2_12,entryObj.getBIB());
-        contentValues.put(COL_2_13,entryObj.isValid());
-        contentValues.put(COL_2_14,entryObj.getOperator());
-        contentValues.put(COL_2_15,entryObj.getCPNo());
-        contentValues.put(COL_2_16,entryObj.getReasonInvalid());
-        contentValues.put(COL_2_17,entryObj.getTimeStamp());
+        contentValues.put(COL_2_ENTRY_ID,entryObj.getEntryID());
+        contentValues.put(COL_2_CP_ID,entryObj.getCPID());
+        contentValues.put(COL_2_CP_NAME,entryObj.getCPName());
+        contentValues.put(COL_2_USER_ID,entryObj.getUserID());
+        contentValues.put(COL_2_ACTIVE_RACER_ID,entryObj.getActiveRacerID());
+        contentValues.put(COL_2_BARCODE,entryObj.getBarcode());
+        contentValues.put(COL_2_TIME,entryObj.getTime());
+        contentValues.put(COL_2_ENTRY_TYPE_ID,entryObj.getEntryTypeID());
+        contentValues.put(COL_2_COMMENT,entryObj.getComment());
+        contentValues.put(COL_2_SYNCED,entryObj.isSynced());
+        contentValues.put(COL_2_MY_ENTRY,entryObj.isMyEntry());
+        contentValues.put(COL_2_BIB,entryObj.getBIB());
+        contentValues.put(COL_2_VALID,entryObj.isValid());
+        contentValues.put(COL_2_OPERATOR,entryObj.getOperator());
+        contentValues.put(COL_2_CO_NO,entryObj.getCPNo());
+        contentValues.put(COL_2_REASON_INVALID,entryObj.getReasonInvalid());
+        contentValues.put(COL_2_TIMESTAMP,entryObj.getTimeStamp());
 
         resultUri = context.getContentResolver().insert(uri, contentValues);
         result = resultUri != null ? resultUri.getLastPathSegment() : "1";
@@ -311,7 +311,7 @@ public class DbMethods {
         String[] projection = new String[]{"Time"};
         String selection = "BIB = '" +  inputedBIB + "' AND Valid = 1";
         String sortOrder = "Time DESC LIMIT 1";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         Cursor cursor = context.getContentResolver().query(uri,projection,selection,null,sortOrder);
         Date entryTime = null;
         if ((cursor != null ? cursor.getCount() : 0) >0) {
@@ -336,7 +336,7 @@ public class DbMethods {
         String[] projection = new String[]{"CPNo"};
         String selection = "BIB = '" +  inputedBIB + "' AND CPNo='" + cpNo + "' AND Valid=1";
         String sortOrder = "";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         Cursor cursor = context.getContentResolver().query(uri,projection,selection,null,sortOrder);
         if ((cursor != null ? cursor.getCount() : 0) >0) {
             result = true;
@@ -383,7 +383,7 @@ public class DbMethods {
         String[] projection = new String[]{"CPEntries.BIB","Time","TimeStamp","Synced"};
         String selection = whereClause + myEntriesClause + validClause;
         String sortOrder = orderbyClause + limitClause;
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
 
     }
@@ -416,7 +416,7 @@ public class DbMethods {
         String[] projection = new String[]{"LocalEntryID","EntryID","CPID","CPNo","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","TimeStamp"};
         String selection = whereClause;
         String sortOrder = orderbyClause + " Time ASC LIMIT 10 ";
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         return context.getContentResolver().query(uri,projection,selection,null,sortOrder);
     }
 
@@ -424,7 +424,7 @@ public class DbMethods {
         //SQLiteDatabase db = this.getWritableDatabase();
         //String query = "UPDATE " + TABLE_2_NAME + " SET myEntry=0 WHERE myEntry=1;";
         //db.execSQL(query);
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         ContentValues contentValues = new ContentValues();
         contentValues.put("myEntry","0");
         String selection = "myEntry=1";
@@ -437,7 +437,7 @@ public class DbMethods {
     public static int deleteEntry(Context context, String whereClause) {
         //SQLiteDatabase db = this.getWritableDatabase();
         //return db.delete(TABLE_2_NAME, whereClause,null);
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         return context.getContentResolver().delete(uri,whereClause,null);
     }
 
@@ -446,7 +446,7 @@ public class DbMethods {
         //String query = "UPDATE " + TABLE_2_NAME + " SET Valid=0, ReasonInvalid='Code 03: Manually deleted' WHERE " + whereClause + ";";
         //db.execSQL(query);
 
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         ContentValues contentValues = new ContentValues();
         contentValues.put("Synced","0");
         if (deleteBtnMode == EntriesInputListAdapter.RESTORE) {
@@ -478,7 +478,7 @@ public class DbMethods {
         }
         activeRacerCursor.close();
 
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         ContentValues cv = new ContentValues();
         cv.put("BIB",BIB);
         cv.put("Time",newDate);
@@ -497,7 +497,7 @@ public class DbMethods {
         //String query = "UPDATE " + TABLE_2_NAME + " SET BIB='" + BIB + "', Time='" + newDate  + "' WHERE " + whereClause + ";";
         //db.execSQL(query);
 
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         /*
         ContentValues cv = new ContentValues();
         cv.put("BIB",BIB);
@@ -513,7 +513,7 @@ public class DbMethods {
 
     public static boolean updateCPEntriesSynced(Context context, JSONObject jsonString) {
 
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
 
         JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
         int result=0;
@@ -523,8 +523,8 @@ public class DbMethods {
 
                 String whereClause = "myEntry = 1 AND LocalEntryID = " + jsontosqlite.LocalEntryID(i);
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(COL_2_1,jsontosqlite.EntryID(i));
-                contentValues.put(COL_2_10,"1");
+                contentValues.put(COL_2_ENTRY_ID,jsontosqlite.EntryID(i));
+                contentValues.put(COL_2_SYNCED,"1");
                 result = context.getContentResolver().update(uri, contentValues, whereClause, null);
                 //resultUri = context.getContentResolver().insert(uri, contentValues);
                 //resultUri = mProvider.insert(uri, contentValues);

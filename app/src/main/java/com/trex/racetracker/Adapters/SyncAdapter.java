@@ -37,7 +37,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     protected static final String TYPE_SYNC_PUSH_INSERT = "sync_push_insert";
     protected static final String TYPE_SYNC_PUSH_UPDATE = "sync_push_update";
-    protected static final String URL_SYNC_PUSH = "https://api.trex.mk/timing/mobile/instruction";
     private Context serviceContext;
     private LocalBroadcastManager mBroadcaster;
 
@@ -87,7 +86,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         synchronized (this) {
             final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
             if (globals.getBoolean("periodic_sync",true)) {
-                if (globals.getBoolean("islogin", false)) {
+                if (globals.getBoolean("loggedIn", false)) {
                     //long lastPullInMillis = globals.getLong("lastPullInMillis", 0);
                     long lastPushInMillis = globals.getLong("lastPushInMillis", 0);
                     SyncEntriesWorker syncEntriesWorker_insert = new SyncEntriesWorker(getContext());
@@ -109,7 +108,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             e.printStackTrace();
                             syncSuccess = false;
                         }
-                        syncEntriesWorker_insert.execute(TYPE_SYNC_PUSH_INSERT, URL_SYNC_PUSH, String.valueOf(insertRowsNo), insertJSON);
+                        syncEntriesWorker_insert.execute(TYPE_SYNC_PUSH_INSERT, String.valueOf(insertRowsNo), insertJSON);
                     }
                     //2. UPDATE
                     Cursor updateCursor = getEntriesForSync(getContext(), "myEntry = 1 AND EntryID IS NOT NULL AND Synced = 0", "");
@@ -124,7 +123,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             syncSuccess = false;
                         }
 
-                        syncEntriesWorker_update.execute(TYPE_SYNC_PUSH_UPDATE, URL_SYNC_PUSH, String.valueOf(updateRowsNo), updateJSON);
+                        syncEntriesWorker_update.execute(TYPE_SYNC_PUSH_UPDATE, String.valueOf(updateRowsNo), updateJSON);
                         //syncEntriesWorker.execute(TYPE_SYNC_PULL, URL_SYNC_PULL, String.valueOf(rowsNo), updateJSON);
                     }
 

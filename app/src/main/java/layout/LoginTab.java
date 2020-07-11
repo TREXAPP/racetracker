@@ -35,8 +35,6 @@ public class LoginTab extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     protected static final String TYPE_LOGIN = "login";
     protected static final String TYPE_LOGOUT= "logout";
-    protected static final String URL_LOGIN = "https://api.trex.mk/timing/authenticate";
-    protected static final String URL_LOGOUT = "https://api.trex.mk/timing/logout";
     protected static final String COMMENT_LOGIN = "";
     protected static final String COMMENT_LOGOUT = "";
 
@@ -86,7 +84,7 @@ public class LoginTab extends Fragment {
 
                 LoginWorker loginWorker = new LoginWorker(getContext(),fragmentLogin, fragmentRacers);
              //   String passwordEncrypted = EncryptPassword(etUsername.getText().toString(),etPassword.getText().toString());
-                loginWorker.execute(TYPE_LOGIN,URL_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
+                loginWorker.execute(TYPE_LOGIN,etUsername.getText().toString(),etPassword.getText().toString(),etOperator.getText().toString(),DeviceID,COMMENT_LOGIN);
                 TurnOffKeyboard(getActivity(),getContext());
 
             }

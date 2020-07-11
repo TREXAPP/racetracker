@@ -212,7 +212,7 @@ public class InputTab extends Fragment {
         });
 
         SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-        if (globals.getBoolean("islogin",false)) {
+        if (globals.getBoolean("loggedIn",false)) {
             disableEnableControls(true,layoutInput);
         } else {
             disableEnableControls(false,layoutInput);
@@ -264,7 +264,7 @@ public class InputTab extends Fragment {
     public void onResume() {
         super.onResume();
         SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-        if (globals.getBoolean("islogin",false)) {
+        if (globals.getBoolean("loggedIn",false)) {
             disableEnableControls(true,layoutInput);
         } else {
             disableEnableControls(false,layoutInput);
@@ -449,7 +449,7 @@ public class InputTab extends Fragment {
            // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
             InitializeInputFragment(getContext(),getView(), getActivity());
             SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-            if (globals.getBoolean("islogin",false)) {
+            if (globals.getBoolean("loggedIn",false)) {
                 disableEnableControls(true,layoutInput);
             } else {
                 disableEnableControls(false,layoutInput);

@@ -1,11 +1,13 @@
 package com.trex.racetracker.Workers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.TextView;
 
+import com.trex.racetracker.Activities.MainActivity;
 import com.trex.racetracker.Database.DatabaseHelper;
 import com.trex.racetracker.R;
 
@@ -40,12 +42,14 @@ public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
     private String DeviceID;
     private String SyncComment;
     private String mysqlQuery;
+    private SharedPreferences globals;
 
     //constructor
     public SyncLoginInfoWorker(Context ctx, View view, View viewRacers) {
         this.context = ctx;
         this.fragmentLogin = view;
         this.viewRacers = viewRacers;
+        this.globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
     }
 
     @Override
@@ -53,13 +57,7 @@ public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
         String type = params[0];
         String result = "";
 
-        if (type.equals("sync")) try {
-
-            queryUrl = params[1];
-            Username = params[2];
-            Operator = params[3];
-            DeviceID = params[4];
-            SyncComment = params[5];
+        try {
 
             //fetch all unique Races from SQLite, for which we will need the Racers from mysql
             //DatabaseHelper db = DatabaseHelper.getInstance(context);
@@ -77,12 +75,12 @@ public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
 
             mysqlQuery = "SELECT ";
             mysqlQuery += "ActiveRacerID, Racers.RacerID, RaceID, Age, BIB, ChipCode, Hide, Registered, ActiveRacers.Timestamp AS ActiveRacersTS, ActiveRacers.Comment AS ActiveRacersComment, ";
-            mysqlQuery += "FirstName, LastName, Gender, DateOfBirth, YearBirth, Nationality, Country, Teams.TeamID, CityOfResidence, TShirtSize, Email, Tel, Food, Racers.Timestamp AS RacersTS, Racers.Comment AS Racers_Comment,";
+            mysqlQuery += "FirstName, LastName, Gender, DateOfBirth, YearBirth, Nationality, Country, Teams.TeamID, CityOfResidence, TShirtSize, Email, Tel, Food, Racers.Timestamp AS RacersTS, Racers.Comment AS RacersComment,";
             mysqlQuery += "TeamName, TeamDescription ";
             mysqlQuery += "FROM ActiveRacers JOIN Racers ON ActiveRacers.RacerID = Racers.RacerID JOIN Teams ON Racers.TeamID = Teams.TeamID WHERE ";
             mysqlQuery += condition + ";";
 
-            URL url = new URL(queryUrl);
+            URL url = new URL(globals.getString("hostUrl", "") + "/timing/mobile/sync-data");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
@@ -140,9 +138,9 @@ public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected void onPreExecute() {
-
-        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
-        tvStatusTop.setText("Login successful. Synchronizing Racers ...");
+//
+//        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
+//        tvStatusTop.setText("Login successful. Synchronizing Racers ...");
     }
 
     @Override
@@ -165,7 +163,7 @@ public class SyncLoginInfoWorker extends AsyncTask<String,Void,String> {
                 if (jsonResult.getString("issync").equals("1")) {
                     //TODO - a logic not to write only in sqlite, but also to check for update if the record already exists
                     deleteAllFromActiveRacers(context);
-                    if (!insertIntoActiveRacers(context,jsonResult)) {
+                    if (!insertIntoActiveRacers(jsonResult.getJSONArray("runners"),context)) {
                         error += "Error while writing in SQLite, ActiveRaces table. Contact the administrator;";
                     }
 

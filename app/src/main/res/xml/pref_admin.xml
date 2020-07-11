@@ -14,6 +14,13 @@
         android:inputType="text"
         />
 
+    <EditTextPreference
+        android:key="pref_hostUrl"
+        android:title="Host URL"
+        android:summary="Base URL of the host server."
+        android:inputType="text"
+        />
+
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_allowemptyentries"

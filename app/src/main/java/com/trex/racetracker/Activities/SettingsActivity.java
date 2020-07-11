@@ -40,22 +40,23 @@ public class SettingsActivity extends AppCompatActivity {
         setupActionBar();
         Log.d(TAG, "onCreate");
         String Fragment = getIntent().getStringExtra("Fragment");
-        switch(Fragment) {
-            case "SyncFragment":
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new SynchronizationFragment()).commit();
-                break;
-            case "AdminFragment":
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new AdminFragment()).commit();
-                break;
-            case "AboutFragment":
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new AboutFragment()).commit();
-                break;
+        if (Fragment != null) {
+            switch(Fragment) {
+                case "SyncFragment":
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new SynchronizationFragment()).commit();
+                    break;
+                case "AdminFragment":
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new AdminFragment()).commit();
+                    break;
+                case "AboutFragment":
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new AboutFragment()).commit();
+                    break;
 
+            }
         }
-
     }
     public static class SynchronizationFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -151,6 +152,7 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putString("pref_entryvisualconfirmtimer",String.valueOf(globals.getInt("entryvisualconfirmtimer",400)));
                 editor.putString("pref_entryresettimer",String.valueOf(globals.getInt("pref_entryresettimer",15000)));
                 editor.putString("pref_apikey",globals.getString("x-api-key",""));
+                editor.putString("pref_hostUrl",globals.getString("hostUrl",""));
 
                 break;
 
@@ -201,6 +203,7 @@ public class SettingsActivity extends AppCompatActivity {
                 getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(false);
                 getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(false);
                 getPreferenceScreen().findPreference("pref_apikey").setEnabled(false);
+                getPreferenceScreen().findPreference("pref_hostUrl").setEnabled(false);
             } else {
                 getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(true);
@@ -208,6 +211,7 @@ public class SettingsActivity extends AppCompatActivity {
                 getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(true);
                 getPreferenceScreen().findPreference("pref_apikey").setEnabled(true);
+                getPreferenceScreen().findPreference("pref_hostUrl").setEnabled(true);
             }
 
         }
@@ -236,6 +240,7 @@ public class SettingsActivity extends AppCompatActivity {
                         getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_apikey").setEnabled(false);
+                        getPreferenceScreen().findPreference("pref_hostUrl").setEnabled(false);
                     } else {
                         getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(true);
@@ -243,6 +248,7 @@ public class SettingsActivity extends AppCompatActivity {
                         getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_apikey").setEnabled(true);
+                        getPreferenceScreen().findPreference("pref_hostUrl").setEnabled(true);
                     }
                     break;
                 case "pref_allowemptyentries":

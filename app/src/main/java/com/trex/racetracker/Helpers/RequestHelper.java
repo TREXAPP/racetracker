@@ -22,7 +22,8 @@ import java.util.Iterator;
 import javax.net.ssl.HttpsURLConnection;
 
 public class RequestHelper {
-    public static Response sendPost(String urlString , JSONObject postDataParams, SharedPreferences globals) throws Exception {
+
+    public static Response sendPost(String urlString, JSONObject postDataParams, SharedPreferences globals, boolean requiresJwt) throws Exception {
         URL url = new URL(urlString);
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -30,6 +31,7 @@ public class RequestHelper {
         connection.setConnectTimeout(20000);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("x-api-key", globals.getString("x-api-key", ""));
+        if (requiresJwt) { connection.setRequestProperty("Authorization", "Bearer " + globals.getString("jwt-token", "")); }
         connection.setDoInput(true);
         connection.setDoOutput(true);
 
@@ -58,26 +60,34 @@ public class RequestHelper {
         response.setMessage(stringBuffer.toString());
         return response;
     }
-    public static String sendGet(String url) throws IOException {
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        int responseCode = con.getResponseCode();
-        System.out.println("Response Code :: " + responseCode);
-        if (responseCode == HttpURLConnection.HTTP_OK) { // connection ok
-            BufferedReader in = new BufferedReader(new InputStreamReader( con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            return response.toString();
+    public static Response sendGet(String urlString, SharedPreferences globals, boolean requiresJwt) throws IOException {
+        URL obj = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("x-api-key", globals.getString("x-api-key", ""));
+        if (requiresJwt) { connection.setRequestProperty("Authorization", "Bearer " + globals.getString("jwt-token", "")); }
+        int responseCode = connection.getResponseCode();
+
+        BufferedReader bufferedReader;
+        Response response = new Response();
+        response.setResponseCode(connection.getResponseCode());
+        if (connection.getResponseCode() >= 200 && connection.getResponseCode() < 299) {
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         } else {
-            return "";
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
         }
+        StringBuffer stringBuffer = new StringBuffer("");
+        String line="";
+        while((line = bufferedReader.readLine()) != null) {
+            stringBuffer.append(line);
+            break;
+        }
+        bufferedReader.close();
+        response.setMessage(stringBuffer.toString());
+        return response;
     }
+
     private static String encodeParams(JSONObject params) throws Exception {
         StringBuilder result = new StringBuilder();
         boolean first = true;

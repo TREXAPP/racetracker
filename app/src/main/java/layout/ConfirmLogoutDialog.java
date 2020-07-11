@@ -78,8 +78,8 @@ public class ConfirmLogoutDialog extends DialogFragment {
                     etPassword.setText("");
 
                     final String DeviceID = globals.getString("deviceid","");
-                    LogoutWorker logoutWorker = new LogoutWorker(getContext(),fragmentLogin,fragmentRacers, handler);
-                    logoutWorker.execute(LoginTab.TYPE_LOGOUT, LoginTab.URL_LOGOUT,globals.getString("username",""),globals.getString("operator",""),DeviceID, LoginTab.COMMENT_LOGOUT);
+                    LogoutWorker logoutWorker = new LogoutWorker(getContext(), fragmentLogin, fragmentRacers, handler);
+                    logoutWorker.execute(globals.getString("username",""),globals.getString("operator",""),DeviceID, LoginTab.COMMENT_LOGOUT);
 
                     getDialog().dismiss();
                     //turn off keyboard:

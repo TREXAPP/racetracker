@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Projects-RaceTracker.iml" filepath="$PROJECT_DIR$/Projects-RaceTracker.iml" group="RaceTracker" />
-      <module fileurl="file://$PROJECT_DIR$/RaceTracker.iml" filepath="$PROJECT_DIR$/RaceTracker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/RaceTracker-app.iml" filepath="$PROJECT_DIR$/app/RaceTracker-app.iml" group="RaceTracker/app" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/RaceTracker.iml" filepath="$PROJECT_DIR$/.idea/RaceTracker.iml" group="RaceTracker" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="RaceTracker/app" />
     </modules>
   </component>
 </project>
