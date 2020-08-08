@@ -11,6 +11,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,14 +19,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 
+import com.trex.racetracker.AppCompatPreferenceActivity;
+import com.trex.racetracker.MainActivity;
+import com.trex.racetracker.R;
+
 
 /**
  * Created by Igor on 04.6.2017.
  */
 
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatActivity {
     private final static String TAG = "SettingsActivity";
-    public Context context;
+    public static Context context;
     public SettingsActivity() {}
 
     @Override
@@ -35,24 +40,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         setupActionBar();
         Log.d(TAG, "onCreate");
         String Fragment = getIntent().getStringExtra("Fragment");
-        switch(Fragment) {
-            case "SyncFragment":
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new SynchronizationFragment()).commit();
-                break;
-            case "AdminFragment":
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new AdminFragment()).commit();
-                break;
-            case "AboutFragment":
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new AboutFragment()).commit();
-                break;
+        if (Fragment != null) {
+            switch(Fragment) {
+                case "SyncFragment":
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new SynchronizationFragment()).commit();
+                    break;
+                case "AdminFragment":
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new AdminFragment()).commit();
+                    break;
+                case "AboutFragment":
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new AboutFragment()).commit();
+                    break;
 
+            }
         }
-
     }
-    public class SynchronizationFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SynchronizationFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private final static String TAG = "SynchronizationFragment";
 
@@ -66,7 +72,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                                               String key) {
-            SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+            SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
             SharedPreferences.Editor editor = globals.edit();
             switch (key) {
                 case "pref_periodic_sync":
@@ -106,12 +112,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            try {
-                getActionBar().setTitle("Synchronization Settings");
-            } catch (NullPointerException e) {
-                Log.e("setTitle","NullPointerException");
-            }
-            getSupportActionBar().setTitle("Synchronization Settings");
+//            try {
+//                getActionBar().setTitle("Synchronization Settings");
+//            } catch (NullPointerException e) {
+//                Log.e("setTitle","NullPointerException");
+//            }
+//            getSupportActionBar().setTitle("Synchronization Settings");
 
             Log.d(TAG, "onCreate");
             addPreferencesFromResource(R.xml.pref_sync);
@@ -127,11 +133,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     }
 
-    private void InitializePrefs(String tag) {
+    private static void InitializePrefs(String tag) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
 
-        SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+        SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
 
         switch (tag) {
             case SynchronizationFragment.TAG:
@@ -145,6 +151,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 editor.putString("pref_timebetweenentries",String.valueOf(globals.getInt("timebetweenentries",10)));
                 editor.putString("pref_entryvisualconfirmtimer",String.valueOf(globals.getInt("entryvisualconfirmtimer",400)));
                 editor.putString("pref_entryresettimer",String.valueOf(globals.getInt("pref_entryresettimer",15000)));
+                editor.putString("pref_apikey",globals.getString("x-api-key",""));
+                editor.putString("pref_hostUrl",globals.getString("hostUrl",""));
 
                 break;
 
@@ -154,7 +162,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         editor.commit();
     }
 
-    public class AdminFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class AdminFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private final static String TAG = "AdminFragment";
 
@@ -178,12 +186,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             InitializePrefs(TAG);
-            try {
-                getActionBar().setTitle("Administrator Settings");
-            } catch (NullPointerException e) {
-                Log.e("setTitle","NullPointerException");
-            }
-            getSupportActionBar().setTitle("Administrator Settings");
+//            try {
+//                getActionBar().setTitle("Administrator Settings");
+//            } catch (NullPointerException e) {
+//                Log.e("setTitle","NullPointerException");
+//            }
+//            getSupportActionBar().setTitle("Administrator Settings");
             Log.d(TAG, "onCreate");
             addPreferencesFromResource(R.xml.pref_admin);
 
@@ -206,7 +214,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         private boolean IsAdminPasswordOK(String pref_admin_lock) {
             //get hardcoded admin password
-            SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+            SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
             String hardcodedPass = globals.getString("AdminPass","");
             if (hardcodedPass.equals(pref_admin_lock)) {
                 return true;
@@ -217,7 +225,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+            SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
             SharedPreferences.Editor editor = globals.edit();
             switch (key) {
                 case "pref_admin_lock":
@@ -227,12 +235,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(false);
                         getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(false);
+                        getPreferenceScreen().findPreference("pref_apikey").setEnabled(false);
+                        getPreferenceScreen().findPreference("pref_hostUrl").setEnabled(false);
                     } else {
                         getPreferenceScreen().findPreference("pref_allowemptyentries").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_inputdigitsno").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_timebetweenentries").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_entryvisualconfirmtimer").setEnabled(true);
                         getPreferenceScreen().findPreference("pref_entryresettimer").setEnabled(true);
+                        getPreferenceScreen().findPreference("pref_apikey").setEnabled(true);
+                        getPreferenceScreen().findPreference("pref_hostUrl").setEnabled(true);
                     }
                     break;
                 case "pref_allowemptyentries":
@@ -255,14 +267,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     editor.putInt("entryresettimer",Integer.parseInt(sharedPreferences.getString(key,"15000")));
                     break;
 
+                case "pref_apikey":
+                    editor.putString("x-api-key",sharedPreferences.getString(key,""));
+                    break;
+
             }
             editor.apply();
         }
     }
 
-
-
-    public class AboutFragment extends PreferenceFragment {
+    public static class AboutFragment extends PreferenceFragment {
 
         private final static String TAG = "AboutFragment";
 
@@ -270,12 +284,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            try {
-                getActionBar().setTitle("About");
-            } catch (NullPointerException e) {
-                Log.e("setTitle","NullPointerException");
-            }
-            getSupportActionBar().setTitle("About");
+//            try {
+//                getActionBar().setTitle("About");
+//            } catch (NullPointerException e) {
+//                Log.e("setTitle","NullPointerException");
+//            }
+//            getSupportActionBar().setTitle("About");
 
             Log.d(TAG, "onCreate");
             addPreferencesFromResource(R.xml.pref_about);
@@ -299,9 +313,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Summary += "+389 78 833 228  |  ";
             Summary += "igority@gmail.com\n";
             Summary += "============================\n";
-            Summary += "Disclaimer: This app, along with the web tracking system was created solely for the purpose of the CAT™ tracking system, to be used for, but not exclusively, the Krali Marko Trails 2017 race\n";
+            Summary += "Disclaimer: This app, along with the web tracking system was created solely for the purpose of the RaceTracker tracking system, to be used for, but not exclusively, the races organized by TREX\n";
             Summary += "The Author holds the full rights of the app and the tracking system, and can be used only with his consent.\n";
-            Summary += "Any unauthorised using, copying, muliplying and modifying is strictly FORBIDDEN and on such actions will be responded legally.\n";
+            Summary += "Any unauthorised using, copying, multiplying and modifying is strictly FORBIDDEN and on such actions will be responded legally.\n";
             Summary += "\n\n";
 
 
