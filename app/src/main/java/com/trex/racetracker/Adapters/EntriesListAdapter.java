@@ -92,7 +92,7 @@ public class EntriesListAdapter extends ArrayAdapter<EntryObj> {
             tvBIB.setText(entryObj.getBIB());
 
             if (!entryObj.isSynced()) {
-                ivSync.setImageResource(R.drawable.error);
+                //ivSync.setImageResource(R.drawable.error);
                 //ivSync.setVisibility(View.VISIBLE);
             } else {
                 ivSync.setImageResource(R.drawable.success);

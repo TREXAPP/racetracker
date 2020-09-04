@@ -7,10 +7,10 @@ package com.trex.racetracker.Models;
 public class EntryObj {
 
     private Integer EntryID;
-    private Integer CPID;
+    private String CPID;
     private String CPName;
     private String UserID;
-    private Integer ActiveRacerID;
+    private String ActiveRacerID;
     private String Barcode;
     private String BIB;
     private String Time;
@@ -21,14 +21,16 @@ public class EntryObj {
     private String Operator;
     private boolean Valid;
     private String CPNo;
-    private Integer RaceID;
+    private String RaceID;
     private String FirstName;
     private String LastName;
     private String Country;
     private String Gender;
     private int Age;
     private String ReasonInvalid;
-    private Long TimeStamp;
+    private Long InsertTimeStamp;
+    private Long UpdateTimeStamp;
+    private Long DeleteTimeStamp;
 
 
     public EntryObj() {
@@ -52,14 +54,16 @@ public class EntryObj {
         this.Gender = null;
         this.Age = 0;
         this.ReasonInvalid = null;
-        this.TimeStamp = null;
+        this.InsertTimeStamp = null;
+        this.UpdateTimeStamp = null;
+        this.DeleteTimeStamp = null;
     }
 
     public Integer getEntryID() {
         return EntryID;
     }
 
-    public Integer getCPID() {
+    public String getCPID() {
         return CPID;
     }
 
@@ -71,7 +75,7 @@ public class EntryObj {
         return UserID;
     }
 
-    public Integer getActiveRacerID() {
+    public String getActiveRacerID() {
         return ActiveRacerID;
     }
 
@@ -107,7 +111,7 @@ public class EntryObj {
         EntryID = entryID;
     }
 
-    public void setCPID(Integer CPID) {
+    public void setCPID(String CPID) {
         this.CPID = CPID;
     }
 
@@ -119,7 +123,7 @@ public class EntryObj {
         Operator = operator;
     }
 
-    public void setActiveRacerID(Integer activeRacerID) {
+    public void setActiveRacerID(String activeRacerID) {
         ActiveRacerID = activeRacerID;
     }
 
@@ -175,11 +179,11 @@ public class EntryObj {
         this.CPNo = CPNo;
     }
 
-    public Integer getRaceID() {
+    public String getRaceID() {
         return RaceID;
     }
 
-    public void setRaceID(Integer raceID) {
+    public void setRaceID(String raceID) {
         RaceID = raceID;
     }
 
@@ -231,11 +235,27 @@ public class EntryObj {
         ReasonInvalid = reasonInvalid;
     }
 
-    public Long getTimeStamp() {
-        return this.TimeStamp;
+    public Long getInsertTimeStamp() {
+        return this.InsertTimeStamp;
     }
 
-    public void setTimeStamp(Long timeStamp) {
-        this.TimeStamp = timeStamp;
+    public void setInsertTimeStamp(Long insertTimeStamp) {
+        this.InsertTimeStamp = insertTimeStamp;
+    }
+
+    public Long getUpdateTimeStamp() {
+        return this.UpdateTimeStamp;
+    }
+
+    public void setUpdateTimeStamp(Long updateTimeStamp) {
+        this.UpdateTimeStamp = updateTimeStamp;
+    }
+
+    public Long getDeleteTimeStamp() {
+        return this.DeleteTimeStamp;
+    }
+
+    public void setDeleteTimeStamp(Long deleteTimeStamp) {
+        this.DeleteTimeStamp = deleteTimeStamp;
     }
 }

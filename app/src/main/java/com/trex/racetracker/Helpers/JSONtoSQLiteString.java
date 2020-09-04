@@ -432,10 +432,28 @@ public class JSONtoSQLiteString {
         }
         return result;
     }
-    public String Timestamp(int i) {
+    public String InsertTimestamp(int i) {
         String result;
         try {
-            result = json.getJSONObject(String.valueOf(i)).getString("Timestamp");
+            result = json.getJSONObject(String.valueOf(i)).getString("InsertTimestamp");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+    public String UpdateTimestamp(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("UpdateTimestamp");
+        } catch (JSONException e) {
+            result = null;
+        }
+        return result;
+    }
+    public String DeleteTimestamp(int i) {
+        String result;
+        try {
+            result = json.getJSONObject(String.valueOf(i)).getString("DeleteTimestamp");
         } catch (JSONException e) {
             result = null;
         }

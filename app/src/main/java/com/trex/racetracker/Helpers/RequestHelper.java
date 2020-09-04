@@ -27,8 +27,8 @@ public class RequestHelper {
         URL url = new URL(urlString);
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setReadTimeout(20000);
-        connection.setConnectTimeout(20000);
+//        connection.setReadTimeout(20000);
+//        connection.setConnectTimeout(20000);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("x-api-key", globals.getString("x-api-key", ""));
         if (requiresJwt) { connection.setRequestProperty("Authorization", "Bearer " + globals.getString("jwt-token", "")); }

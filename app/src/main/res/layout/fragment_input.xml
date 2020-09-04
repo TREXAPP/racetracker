@@ -15,22 +15,22 @@
         android:layout_weight="0"
         android:orientation="horizontal">
 
-        <TextClock
-            android:id="@+id/tvClock"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="3dp"
-            android:layout_weight="0.3"
-            android:background="@color/colorPrimaryDark"
-            android:elevation="1dp"
-            android:fontFamily="monospace"
-            android:format12Hour="h:mm:ssa"
-            android:format24Hour="H:mm:ss"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="05:12:31"
-            android:textColor="@color/colorPrimaryLighest"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+<!--        <TextClock-->
+<!--            android:id="@+id/tvClock"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="3dp"-->
+<!--            android:layout_weight="0.3"-->
+<!--            android:background="@color/colorPrimaryDark"-->
+<!--            android:elevation="1dp"-->
+<!--            android:fontFamily="monospace"-->
+<!--            android:format12Hour="h:mm:ssa"-->
+<!--            android:format24Hour="H:mm:ss"-->
+<!--            android:gravity="center_vertical|center_horizontal"-->
+<!--            android:text="05:12:31"-->
+<!--            android:textColor="@color/colorPrimaryLighest"-->
+<!--            android:textSize="30sp"-->
+<!--            android:textStyle="bold" />-->
 
         <TextView
             android:id="@+id/tvBIBEntry"
@@ -70,20 +70,20 @@
             <Button
                 android:id="@+id/btn1"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <Button
                 android:id="@+id/btn2"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
         </LinearLayout>
 
         <LinearLayout
@@ -95,11 +95,11 @@
             <Button
                 android:id="@+id/btn3"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="3"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
         </LinearLayout>
     </LinearLayout>
@@ -119,20 +119,20 @@
             <Button
                 android:id="@+id/btn4"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="4"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <Button
                 android:id="@+id/btn5"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="5"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
         </LinearLayout>
 
         <LinearLayout
@@ -144,11 +144,11 @@
             <Button
                 android:id="@+id/btn6"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="6"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
         </LinearLayout>
 
     </LinearLayout>
@@ -168,20 +168,20 @@
             <Button
                 android:id="@+id/btn7"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="7"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <Button
                 android:id="@+id/btn8"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="8"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
         </LinearLayout>
 
         <LinearLayout
@@ -193,11 +193,11 @@
             <Button
                 android:id="@+id/btn9"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
                 android:onClick="NumberClick"
                 android:text="9"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
         </LinearLayout>
 
     </LinearLayout>
@@ -217,11 +217,11 @@
             <Button
                 android:id="@+id/btn0"
                 android:layout_width="wrap_content"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_weight="1.55"
                 android:onClick="NumberClick"
                 android:text="0"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
         </LinearLayout>
 
@@ -234,17 +234,17 @@
             <Button
                 android:id="@+id/btnE"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:onClick="NumberClick"
                 android:text=" ←"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
         </LinearLayout>
 
     </LinearLayout>
 
     <ListView
         android:id="@+id/lvInputEntries"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="30dp"
         android:layout_weight="9999999999999999999999999" />

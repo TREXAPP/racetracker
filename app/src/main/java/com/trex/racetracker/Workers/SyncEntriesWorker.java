@@ -1,13 +1,21 @@
 package com.trex.racetracker.Workers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.trex.racetracker.Activities.MainActivity;
+import com.trex.racetracker.Helpers.RequestHelper;
+import com.trex.racetracker.Models.Response;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,12 +45,19 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
     private String type;
     private String payload;
     private SharedPreferences globals;
+    private String urlString;
+    private Response response;
+    private String updateSyncedWhereClause;
+    private long currentTimeMillis;
+    private LocalBroadcastManager mBroadcaster;
 
 
-    public SyncEntriesWorker(Context context) {
+    public SyncEntriesWorker(Context context, String updateSyncedWhereClause, long currentTimeMillis, LocalBroadcastManager mBroadcaster) {
         this.context = context;
         this.globals = context.getSharedPreferences(MainActivity.GLOBALS, 0);
-
+        this.updateSyncedWhereClause = updateSyncedWhereClause;
+        this.currentTimeMillis = currentTimeMillis;
+        this.mBroadcaster = mBroadcaster;
     }
 
     @Override
@@ -52,57 +67,15 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
 
     @Override
     protected String doInBackground(String... params) {
-        type = params[0];
+        payload = params[0];
         String result = "";
-        //TODO get params here
-        if (type.equals("sync_push_insert") || type.equals("sync_push_update")) try {
-            String queryUrl = globals.getString("hostUrl", "") + "/timing/mobile/instruction";
-            URL url = new URL(queryUrl);
-            String rowsNo = params[1];
-            payload = params[2];
 
-            String post_data = "";
-
-            if (!type.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8");
-            }
-
-            if (!rowsNo.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("rowsNo", "UTF-8") + "=" + URLEncoder.encode(rowsNo, "UTF-8");
-            }
-
-            if (!payload.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("payload", "UTF-8") + "=" + URLEncoder.encode(payload, "UTF-8");
-            }
-
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
-            OutputStream outputStream = httpURLConnection.getOutputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-
-            bufferedWriter.write(post_data);
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            outputStream.close();
-
-
-            //now get the response
-            InputStream inputStream = httpURLConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-            String line = "";
-            //    result = bufferedReader.toString();
-            while ((line = bufferedReader.readLine()) != null) {
-                result += line;
-            }
-            bufferedReader.close();
-            inputStream.close();
-            httpURLConnection.disconnect();
-            return result;
+        try {
+            urlString = globals.getString("hostUrl", "") + "/timing/mobile/instruction";
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("payload", payload);
+            response = RequestHelper.sendPost(urlString, jsonObject, globals, true);
+            return response.getMessage();
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -112,155 +85,90 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        /*
-        if (type.equals("sync_pull")) try {
-            String queryUrl = params[1];
-            URL url = new URL(queryUrl);
-            String username = params[2];
-            String last_pull_timestamp = params[3];
-
-            //debug
-            //last_pull_timestamp = "123";
-
-            String post_data = "";
-
-            if (!type.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("type", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8");
-            }
-
-            if (!username.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
-            }
-
-            if (!last_pull_timestamp.equals("")) {
-                if (!post_data.equals("")) post_data += "&";
-                post_data += URLEncoder.encode("last_pull_timestamp", "UTF-8") + "=" + URLEncoder.encode(last_pull_timestamp, "UTF-8");
-            }
-
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
-            OutputStream outputStream = httpURLConnection.getOutputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-
-            bufferedWriter.write(post_data);
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            outputStream.close();
-
-
-            //now get the response
-            InputStream inputStream = httpURLConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-            String line = "";
-            //    result = bufferedReader.toString();
-            while ((line = bufferedReader.readLine()) != null) {
-                result += line;
-            }
-            bufferedReader.close();
-            inputStream.close();
-            httpURLConnection.disconnect();
-            return result;
         } catch (Exception e) {
             e.printStackTrace();
-       }
-        */
-
-        if (result.equals("")) {
-            return null;
-        } else {
-            return result;
         }
 
+        return result;
     }
 
     @Override
     protected void onPostExecute(String result) {
+        SharedPreferences.Editor editor = globals.edit();
+        if (response != null) {
+            int responseCode = response.getResponseCode();
+            if (responseCode >= 200 && responseCode <= 299) {
+                int updated = updateCPEntriesSynced(context, updateSyncedWhereClause);
+                if (updated <= 0) {
+                    Log.d("SyncEntriesWorker", "Sync completed, but no entries were updated as synced");
+                }
+            } else {
+                Log.e("SyncEntriesWorker", "Sync completed, but error returned from server");
+            }
+        }
+
+        editor.putLong("lastPushInMillis",currentTimeMillis);
+        editor.putBoolean("syncInProgress", false);
+        editor.commit();
+
+        Intent intent = new Intent("com.trex.racetracker.REFRESH_LIST_INPUT");
+        mBroadcaster.sendBroadcast(intent);
+        intent.setAction("com.trex.racetracker.UPDATE_LAST_SYNC");
+        mBroadcaster.sendBroadcast(intent);
+        intent.setAction("com.trex.racetracker.REFRESH_LIST_ENTRIES");
+        mBroadcaster.sendBroadcast(intent);
+
         super.onPostExecute(result);
 
         //debug
+//
+//        if (result != null) {
+//
+//
+//            String error = "";
+//            if (type.equals("sync_push_insert") || type.equals("sync_push_update")) {
+//
+//                try {
+//                    JSONObject jsonResult = new JSONObject(result);
+//                    if (jsonResult.has("success")) {
+//                        if (jsonResult.getString("success").equals("1")) {
+//
+//                            if (!updateCPEntriesSynced(context, jsonResult)) {
+//                                error += "Error while writing in SQLite, CPEntries table. Contact the administrator;";
+//                            }
+//                            ;
+//
+//                        } else {
+//                            if (jsonResult.has("error")) {
+//                                error += jsonResult.getString("error");
+//                            } else {
+//                                error += "Error with webserver! Contact the administrator.";
+//                            }
+//                        }
+//                    } else {
+//                        error += "Error with database! Contact the administrator.";
+//
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
-        if (result != null) {
-
-
-            String error = "";
-            if (type.equals("sync_push_insert") || type.equals("sync_push_update")) {
-
-                try {
-                    JSONObject jsonResult = new JSONObject(result);
-                    if (jsonResult.has("success")) {
-                        if (jsonResult.getString("success").equals("1")) {
-
-                            if (!updateCPEntriesSynced(context, jsonResult)) {
-                                error += "Error while writing in SQLite, CPEntries table. Contact the administrator;";
-                            }
-                            ;
-
-                        } else {
-                            if (jsonResult.has("error")) {
-                                error += jsonResult.getString("error");
-                            } else {
-                                error += "Error with webserver! Contact the administrator.";
-                            }
-                        }
-                    } else {
-                        error += "Error with database! Contact the administrator.";
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-            Boolean changeDetected = false;
-            /*
-            if (type.equals("sync_pull")) {
-
-
-
-                try {
-                    JSONObject jsonResult = new JSONObject(result);
-
-                    if (jsonResult.has("success")) {
-                        if (jsonResult.getString("success").equals("1")) {
-                            if (jsonResult.has("rowsNo")) {
-                                changeDetected = true;
-                            }
-                            if (!insertPulledEntries(context, jsonResult)) {
-                                error += "Error while writing data from pull in SQLite, CPEntries table. Contact the administrator;";
-                            }
-                        } else {
-                            error += "Error: with database! Contact the administrator.";
-
-                        }
-                    } else {
-                        error += "Error reading data from API: syncEntries_pull.php! Contact the administrator.";
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            */
-
-            if (!error.equals("")) {
-                Log.e("Sync error", error);
-                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
-            } else {
-                SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-                SharedPreferences.Editor editor = globals.edit();
-                Long timeNow = System.currentTimeMillis();
-
-                editor.putLong("lastPushInMillis",timeNow);
-
-                editor.commit();
-            }
-        }
+//
+//            Boolean changeDetected = false;
+//
+//            if (!error.equals("")) {
+//                Log.e("Sync error", error);
+//                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+//            } else {
+//                SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
+//                SharedPreferences.Editor editor = globals.edit();
+//                Long timeNow = System.currentTimeMillis();
+//
+//                editor.putLong("lastPushInMillis",timeNow);
+//
+//                editor.commit();
+//            }
+        //}
     }
 }

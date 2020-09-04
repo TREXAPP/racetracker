@@ -2,94 +2,95 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal" android:layout_width="match_parent"
     android:id="@+id/layoutWrapper"
+    android:layout_width="match_parent"
     android:layout_height="46dp"
+    android:layout_margin="10dp"
+    android:background="@color/colorLightestGray"
     android:divider="@drawable/list_divider"
     android:gravity="center_vertical"
-    app:layout_anchorGravity="center_vertical"
-    android:layout_margin="10dp"
-    android:background="@color/colorLightestGray">
+    android:orientation="horizontal"
+    app:layout_anchorGravity="center_vertical">
 
     <TextView
-        android:text="222"
-        android:layout_height="match_parent"
         android:id="@+id/tvBIB"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-condensed"
-        android:textColor="@color/colorPrimaryDark"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
         android:layout_weight="0"
+        android:fontFamily="sans-serif-condensed"
         android:gravity="center"
-        android:layout_width="60dp" />
+        android:text="222"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="100">
+        android:layout_weight="100"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1"
+            android:id="@+id/layoutName"
             android:layout_width="match_parent"
-            android:paddingLeft="3dp"
             android:layout_height="20dp"
-            android:id="@+id/layoutName">
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingLeft="3dp">
 
             <TextView
-                android:text="Name"
-                android:layout_width="wrap_content"
                 android:id="@+id/tvName"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"
-                android:textSize="12sp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_vertical"
                 android:maxLines="1"
+                android:paddingLeft="2dp"
                 android:paddingRight="3dp"
-                android:paddingLeft="2dp" />
+                android:text="Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:text="LastName"
-                android:layout_width="wrap_content"
                 android:id="@+id/tvLastName"
-                android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"
-                android:textSize="12sp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="fill"
                 android:layout_weight="0"
-                android:layout_gravity="fill" />
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_vertical"
+                android:text="LastName"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1"
+            android:id="@+id/layoutTime"
             android:layout_width="match_parent"
-            android:paddingLeft="3dp"
             android:layout_height="20dp"
-            android:id="@+id/layoutTime">
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingLeft="3dp">
 
             <TextView
                 android:id="@+id/tvTime"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textStyle="bold"
-                android:fontFamily="monospace"
-                android:textSize="10sp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:fontFamily="monospace"
+                android:format12Hour="hh:mm:ss a"
+                android:format24Hour="hh:mm:ss"
                 android:gravity="center_vertical"
                 android:paddingLeft="2dp"
-                android:format24Hour="hh:mm:ss"
-                android:layout_gravity="left"
-                android:format12Hour="hh:mm:ss a"
-                android:text="14:23:51" />
-<!--
+                android:text="14:23:51"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+            <!--
             <TextView
                 android:text="14:25:31"
                 android:id="@+id/tvTime"
@@ -105,15 +106,15 @@
                 android:paddingLeft="2dp" /> -->
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_weight="0"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
+                android:id="@+id/layoutRacerInfo"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="right"
-                android:id="@+id/layoutRacerInfo">
+                android:layout_weight="0"
+                android:background="@color/colorPrimary"
+                android:orientation="horizontal"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp">
 
                 <ImageView
                     android:id="@+id/ivSync"
@@ -123,37 +124,37 @@
                     app:srcCompat="@android:drawable/ic_menu_upload_you_tube" />
 
                 <TextView
-                    android:text="MKD"
                     android:id="@+id/tvCountry"
+                    android:layout_width="30dp"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp"
                     android:layout_weight="0"
                     android:fontFamily="sans-serif-condensed"
-                    android:layout_width="30dp" />
+                    android:gravity="center"
+                    android:text="MKD"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:text="M"
                     android:id="@+id/tvGender"
+                    android:layout_width="16dp"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp"
                     android:layout_weight="0"
                     android:fontFamily="sans-serif-condensed"
-                    android:layout_width="16dp" />
+                    android:gravity="center"
+                    android:text="M"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:text="32"
                     android:id="@+id/tvAge"
+                    android:layout_width="16dp"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp"
                     android:layout_weight="0"
                     android:fontFamily="sans-serif-condensed"
-                    android:layout_width="16dp" />
+                    android:gravity="right"
+                    android:text="32"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -162,36 +163,36 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="0"
-        android:layout_width="wrap_content"
-        android:background="@color/colorPrimaryLighest">
+        android:background="@color/colorPrimaryLighest"
+        android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/ibtEdit"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_edit"
-            android:id="@+id/ibtEdit"
             android:layout_weight="0"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
-        android:background="@android:color/holo_red_dark"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="0"
-        android:layout_width="wrap_content">
+        android:background="@android:color/holo_red_dark"
+        android:orientation="vertical">
 
         <ImageButton
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
             android:id="@+id/ibtDelete"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0"
             android:scaleType="centerInside"
-            android:layout_width="50dp" />
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
     </LinearLayout>
 

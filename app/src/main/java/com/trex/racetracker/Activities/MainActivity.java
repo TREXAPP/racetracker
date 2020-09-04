@@ -319,6 +319,9 @@ public class MainActivity extends AppCompatActivity {
         //when was the last push of entries made. 0 = never
         if (!globals.contains("lastPushInMillis")) editor.putLong("lastPushInMillis",0);
 
+        //is there a sync in progress currently - always reset to false on start
+        editor.putBoolean("syncInProgress",false);
+
         //when was the last pull of entries made. 0 = never
         //if (!globals.contains("lastPullInMillis")) editor.putLong("lastPullInMillis",0);
 

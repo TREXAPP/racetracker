@@ -94,7 +94,7 @@ public class DeleteEntryDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
 
-                setEntryDeleted(context,"TimeStamp='" + entryObj.getTimeStamp() + "'", true, deleteBtnMode);
+                setEntryDeleted(context,"InsertTimeStamp='" + entryObj.getInsertTimeStamp() + "'", true, deleteBtnMode);
                 if (fragment == INPUT) {
                     PopulateInputEntriesListView(context, listView, activity);
                     Toast.makeText(context, "Entry deleted!", Toast.LENGTH_SHORT).show();

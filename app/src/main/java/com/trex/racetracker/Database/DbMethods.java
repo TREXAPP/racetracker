@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static com.trex.racetracker.Database.DatabaseHelper.*;
 import static com.trex.racetracker.StaticMethods.*;
@@ -31,24 +32,24 @@ public class DbMethods {
         mProvider = new Provider();
     }
 
-    public static boolean insertIntoLoginInfo(JSONArray loginInfoJsonArray, Context context) throws JSONException {
+    public static boolean insertIntoLoginInfo(JSONObject checkpointJson, JSONArray racesJsonArray, Context context) throws JSONException {
 
         Uri resultUri;
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_3_LOGIN_INFO);
 
         String result="0";
-        for (int i=0; i<loginInfoJsonArray.length(); i++) {
-            JSONObject loginInfoJsonObj = loginInfoJsonArray.getJSONObject(i);
+        for (int i=0; i<racesJsonArray.length(); i++) {
+            JSONObject raceJsonObj = racesJsonArray.getJSONObject(i);
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put(COL_3_CP_ID, loginInfoJsonObj.has("CPID") ? loginInfoJsonObj.getString("CPID") : null);
-            contentValues.put(COL_3_CP_COMMENT, loginInfoJsonObj.has("CPComment") ? loginInfoJsonObj.getString("CPComment") : null);
-            contentValues.put(COL_3_CP_NAME, loginInfoJsonObj.has("CPName") ? loginInfoJsonObj.getString("CPName") : null);
-            contentValues.put(COL_3_CP_NO, loginInfoJsonObj.has("CPNo") ? loginInfoJsonObj.getString("CPNo") : null);
-            contentValues.put(COL_3_RACE_ID, loginInfoJsonObj.has("RaceID") ? loginInfoJsonObj.getString("RaceID") : null);
-            contentValues.put(COL_3_RACE_NAME, loginInfoJsonObj.has("RaceName") ? loginInfoJsonObj.getString("RaceName") : null);
-            contentValues.put(COL_3_RACE_DESCRIPTION, loginInfoJsonObj.has("RaceDescription") ? loginInfoJsonObj.getString("RaceDescription") : null);
-            contentValues.put(COL_3_USERS_COMMENT, loginInfoJsonObj.has("UsersComment") ? loginInfoJsonObj.getString("UsersComment") : null);
+            contentValues.put(COL_3_CP_ID, checkpointJson.has("CPID") ? checkpointJson.getString("CPID") : null);
+            contentValues.put(COL_3_CP_COMMENT, checkpointJson.has("CPComment") ? checkpointJson.getString("CPComment") : null);
+            contentValues.put(COL_3_CP_NAME, checkpointJson.has("CPName") ? checkpointJson.getString("CPName") : null);
+            contentValues.put(COL_3_CP_NO, raceJsonObj.has("CPNo") ? raceJsonObj.getString("CPNo") : null);
+            contentValues.put(COL_3_RACE_ID, raceJsonObj.has("RaceID") ? raceJsonObj.getString("RaceID") : null);
+            contentValues.put(COL_3_RACE_NAME, raceJsonObj.has("RaceName") ? raceJsonObj.getString("RaceName") : null);
+            contentValues.put(COL_3_RACE_DESCRIPTION, raceJsonObj.has("RaceDescription") ? raceJsonObj.getString("RaceDescription") : null);
+            contentValues.put(COL_3_USERS_COMMENT, raceJsonObj.has("UsersComment") ? raceJsonObj.getString("UsersComment") : null);
 
             resultUri = context.getContentResolver().insert(uri, contentValues);
             result = resultUri != null ? resultUri.getLastPathSegment() : "1";
@@ -265,6 +266,7 @@ public class DbMethods {
         //SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
+        contentValues.put(COL_2_LOCAL_ENTRY_ID,UUID.randomUUID().toString());
         contentValues.put(COL_2_ENTRY_ID,entryObj.getEntryID());
         contentValues.put(COL_2_CP_ID,entryObj.getCPID());
         contentValues.put(COL_2_CP_NAME,entryObj.getCPName());
@@ -281,7 +283,9 @@ public class DbMethods {
         contentValues.put(COL_2_OPERATOR,entryObj.getOperator());
         contentValues.put(COL_2_CO_NO,entryObj.getCPNo());
         contentValues.put(COL_2_REASON_INVALID,entryObj.getReasonInvalid());
-        contentValues.put(COL_2_TIMESTAMP,entryObj.getTimeStamp());
+        contentValues.put(COL_2_INSERTTIMESTAMP,entryObj.getInsertTimeStamp());
+        contentValues.put(COL_2_UPDATETIMESTAMP,entryObj.getUpdateTimeStamp());
+        contentValues.put(COL_2_DELETETIMESTAMP,entryObj.getDeleteTimeStamp());
 
         resultUri = context.getContentResolver().insert(uri, contentValues);
         result = resultUri != null ? resultUri.getLastPathSegment() : "1";
@@ -296,18 +300,6 @@ public class DbMethods {
     }
 
     public static Date getDateForLastEntry(Context context, String inputedBIB) {
-        /*
-        String query = "SELECT Time FROM " + TABLE_2_NAME + " WHERE Valid=1 AND BIB='" + inputedBIB + "' ORDER BY Time DESC LIMIT 1;";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query,null);
-        Date entryTime = null;
-        if (cursor.getCount()>0) {
-            cursor.moveToFirst();
-            entryTime = formatDateTime(cursor.getString(0));
-        }
-        cursor.close();
-        return entryTime;
-*/
         String[] projection = new String[]{"Time"};
         String selection = "BIB = '" +  inputedBIB + "' AND Valid = 1";
         String sortOrder = "Time DESC LIMIT 1";
@@ -334,7 +326,7 @@ public class DbMethods {
         return result;
         */
         String[] projection = new String[]{"CPNo"};
-        String selection = "BIB = '" +  inputedBIB + "' AND CPNo='" + cpNo + "' AND Valid=1";
+        String selection = "BIB = '" +  inputedBIB + "' AND CPNo='" + cpNo + "' AND Valid=1 AND myEntry=1";
         String sortOrder = "";
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         Cursor cursor = context.getContentResolver().query(uri,projection,selection,null,sortOrder);
@@ -380,7 +372,7 @@ public class DbMethods {
 
         return cursor;
         */
-        String[] projection = new String[]{"CPEntries.BIB","Time","TimeStamp","Synced"};
+        String[] projection = new String[]{"CPEntries.BIB","Time","InsertTimeStamp","UpdateTimeStamp","DeleteTimeStamp","Synced"};
         String selection = whereClause + myEntriesClause + validClause;
         String sortOrder = orderbyClause + limitClause;
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
@@ -413,7 +405,7 @@ public class DbMethods {
             whereClause = " 1 ";
         }
 
-        String[] projection = new String[]{"LocalEntryID","EntryID","CPID","CPNo","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","TimeStamp"};
+        String[] projection = new String[]{"LocalEntryID","EntryID","CPID","CPNo","UserID","ActiveRacerID","Barcode","Time","EntryTypeID","Comment","BIB","Valid","Operator","ReasonInvalid","InsertTimeStamp","UpdateTimeStamp","DeleteTimeStamp"};
         String selection = whereClause;
         String sortOrder = orderbyClause + " Time ASC LIMIT 10 ";
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
@@ -449,6 +441,7 @@ public class DbMethods {
         Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
         ContentValues contentValues = new ContentValues();
         contentValues.put("Synced","0");
+        contentValues.put("DeleteTimestamp", System.currentTimeMillis());
         if (deleteBtnMode == EntriesInputListAdapter.RESTORE) {
             contentValues.put("Valid","1");
             contentValues.put("ReasonInvalid","Code 04: Restored from deleted.");
@@ -484,6 +477,7 @@ public class DbMethods {
         cv.put("Time",newDate);
         cv.put("Synced","0");
         cv.put("ActiveRacerID",activeRacerID);
+        cv.put("UpdateTimestamp", System.currentTimeMillis());
 
         if (notifyChange) {
             context.getContentResolver().notifyChange(uri, null, false);
@@ -521,7 +515,7 @@ public class DbMethods {
         while (i < jsonString.length()-2) {
             if (result != -1) {
 
-                String whereClause = "myEntry = 1 AND LocalEntryID = " + jsontosqlite.LocalEntryID(i);
+                String whereClause = "myEntry = 1 AND LocalEntryID = '" + jsontosqlite.LocalEntryID(i) + "'";
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(COL_2_ENTRY_ID,jsontosqlite.EntryID(i));
                 contentValues.put(COL_2_SYNCED,"1");
@@ -537,48 +531,12 @@ public class DbMethods {
         if (result == -1) return false;
         else return true;
     }
-/*
-    public static boolean insertPulledEntries(Context context, JSONObject jsonString) {
-        //SQLiteDatabase db = this.getWritableDatabase();
-        Uri resultUri;
-        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI,TABLE_2_NAME);
 
-        JSONtoSQLiteString jsontosqlite = new JSONtoSQLiteString(jsonString);
-        String result="0";
-        int i=0;
-        while (i < jsonString.length()-3) {
-            if (!result.equals("-1")) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(COL_2_1,jsontosqlite.EntryID(i));
-                contentValues.put(COL_2_2,jsontosqlite.CPID(i));
-                contentValues.put(COL_2_3,jsontosqlite.CPName(i));
-                contentValues.put(COL_2_4,jsontosqlite.UserID(i));
-                contentValues.put(COL_2_5,jsontosqlite.ActiveRacerID(i));
-                contentValues.put(COL_2_6,jsontosqlite.Barcode(i));
-                contentValues.put(COL_2_7,jsontosqlite.Time(i));
-                contentValues.put(COL_2_8,jsontosqlite.EntryTypeID(i));
-                contentValues.put(COL_2_9,jsontosqlite.CPComment(i));
-                contentValues.put(COL_2_10,"1");
-                contentValues.put(COL_2_11,"0");
-                contentValues.put(COL_2_12,jsontosqlite.BIB(i));
-                contentValues.put(COL_2_13,"1");
-                contentValues.put(COL_2_14,jsontosqlite.Operator(i));
-                contentValues.put(COL_2_15,jsontosqlite.CPNo(i));
-                contentValues.put(COL_2_16,NULL);
-                contentValues.put(COL_2_17,jsontosqlite.Timestamp(i));
-                //contentValues.put(COL_2_18,jsontosqlite.LocalEntryID(i));
+    public static int updateCPEntriesSynced(Context context, String whereClause) {
 
-
-                resultUri = context.getContentResolver().insert(uri, contentValues);
-                //resultUri = mProvider.insert(uri, contentValues);
-                result = resultUri != null ? resultUri.getLastPathSegment() : "1";
-
-                //result = db.insert(TABLE_1_NAME,null,contentValues);
-            }
-            i++;
-        }
-        if (result.equals("-1")) return false;
-        else return true;
+        Uri uri = Uri.withAppendedPath(mProvider.CONTENT_URI, TABLE_2_CP_ENTRIES);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_2_SYNCED,"1");
+        return context.getContentResolver().update(uri, contentValues, whereClause, null);
     }
-*/
 }

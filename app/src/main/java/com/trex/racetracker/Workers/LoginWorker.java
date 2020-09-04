@@ -118,9 +118,6 @@ public class LoginWorker extends AsyncTask<String,Void,String> {
       //  StaticMethods methods = new StaticMethods();
        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 
-        //TODO IJ - jwt token store in editor.put()
-        //all other info retrieved
-
         try {
             JSONObject jsonResult = new JSONObject(result);
             int responseCode = response.getResponseCode();

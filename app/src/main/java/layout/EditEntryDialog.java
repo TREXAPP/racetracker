@@ -117,7 +117,7 @@ public class EditEntryDialog extends DialogFragment {
                 int newSecs = Integer.parseInt(etSeconds.getText().toString());
 
                 String newDate = StaticMethods.formatEditedDate(oldDate,  newHours, newMins, newSecs);
-                String whereClause = "myEntry=1 AND TimeStamp='" + entryObj.getTimeStamp() + "'";
+                String whereClause = "myEntry=1 AND InsertTimeStamp='" + entryObj.getInsertTimeStamp() + "'";
                int rowsUpdated = updateEditedEntry(context,newBIB,newDate,whereClause, true);
                 Toast.makeText(context, rowsUpdated + " entries updated.", Toast.LENGTH_SHORT).show();
         //        handler.sendEmptyMessage(0);

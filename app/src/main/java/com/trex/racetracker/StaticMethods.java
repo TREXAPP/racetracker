@@ -132,7 +132,7 @@ public class StaticMethods {
 
     public static void PopulateInputEntriesListView (Context context, ListView lvInputEntries, Activity activity) {
         //DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        Cursor cursorInputEntries = getEntriesInput(context,true,true,10,"","Time DESC");
+        Cursor cursorInputEntries = getEntriesInput(context,true,true,4,"","Time DESC");
 
         EntryObj[] EntryObjArray = new EntryObj[cursorInputEntries.getCount()];
         int i=0;
@@ -141,8 +141,10 @@ public class StaticMethods {
 
             String BIB = cursorInputEntries.getString(0);
             String Time =  cursorInputEntries.getString(1);
-            Long TimeStamp =  cursorInputEntries.getLong(2);
-            String Synced = cursorInputEntries.getString(3);
+            Long InsertTimeStamp =  cursorInputEntries.getLong(2);
+            Long UpdateTimeStamp =  cursorInputEntries.getLong(3);
+            Long DeleteTimeStamp =  cursorInputEntries.getLong(4);
+            String Synced = cursorInputEntries.getString(5);
             String Name = null;
             String LastName = null;
             String Country = null;
@@ -169,8 +171,14 @@ public class StaticMethods {
             if (Time != null) EntryObjArray[i].setTime(Time);
             else EntryObjArray[i].setTime("");
 
-            if (TimeStamp != null) EntryObjArray[i].setTimeStamp(TimeStamp);
-            else EntryObjArray[i].setTimeStamp((long) 0);
+            if (InsertTimeStamp != null) EntryObjArray[i].setInsertTimeStamp(InsertTimeStamp);
+            else EntryObjArray[i].setInsertTimeStamp((long) 0);
+
+            if (UpdateTimeStamp != null) EntryObjArray[i].setUpdateTimeStamp(UpdateTimeStamp);
+            else EntryObjArray[i].setUpdateTimeStamp((long) 0);
+
+            if (DeleteTimeStamp != null) EntryObjArray[i].setDeleteTimeStamp(DeleteTimeStamp);
+            else EntryObjArray[i].setDeleteTimeStamp((long) 0);
 
             if (Name != null) EntryObjArray[i].setFirstName(Name);
             else EntryObjArray[i].setFirstName("");
@@ -218,7 +226,7 @@ public class StaticMethods {
             final String RaceID = cursorRaces.getString(0);
             String RaceDescription = cursorRaces.getString(1);
             String CPNo = "";
-            Cursor cursorCPNo = getDistinctCPNoFromLoginInfo(context,"RaceID=" + RaceID);
+            Cursor cursorCPNo = getDistinctCPNoFromLoginInfo(context,"RaceID='" + RaceID + "'");
             if (cursorCPNo != null && cursorCPNo.getCount()>0) {
                 cursorCPNo.moveToFirst();
                 while (!cursorCPNo.isAfterLast()) {
@@ -282,7 +290,7 @@ public class StaticMethods {
         while (!cursorDistinctRaces.isAfterLast()) {
 
             listDataHeader.add(cursorDistinctRaces.getString(1));
-            Cursor cursorRacers = getActiveRacersForListView(context,"RaceID=" + cursorDistinctRaces.getString(0));
+            Cursor cursorRacers = getActiveRacersForListView(context,"RaceID='" + cursorDistinctRaces.getString(0) + "'");
 
             List<ActiveRacerObj> childList = new ArrayList<ActiveRacerObj>();
             int j=0;
@@ -539,7 +547,7 @@ public class StaticMethods {
 
     public static void InitializeEntriesListView(Context context, ListView lvEntries, String selection, Boolean leftJoin, Activity activity) {
         //Cursor cursorEntries = getEntriesInput(context,true,true,10,selection,"Time DESC");
-        String[] projection = new String[]{"CPEntries.BIB","Time","TimeStamp","Synced","myEntry"};
+        String[] projection = new String[]{"CPEntries.BIB","Time","InsertTimeStamp","UpdateTimeStamp","DeleteTimeStamp","Synced","myEntry"};
         String table;
         if (leftJoin) {
             table = "ENTRIES_LEFTJOIN_ACTIVERACERS_LEFTJOIN_LOGININFO";
@@ -555,9 +563,11 @@ public class StaticMethods {
 
             String BIB = cursorEntries.getString(0);
             String Time =  cursorEntries.getString(1);
-            Long TimeStamp =  cursorEntries.getLong(2);
-            String Synced = cursorEntries.getString(3);
-            String myEntry = cursorEntries.getString(4);
+            Long InsertTimeStamp =  cursorEntries.getLong(2);
+            Long UpdateTimeStamp =  cursorEntries.getLong(3);
+            Long DeleteTimeStamp =  cursorEntries.getLong(4);
+            String Synced = cursorEntries.getString(5);
+            String myEntry = cursorEntries.getString(6);
             String Name = null;
             String LastName = null;
             String Country = null;
@@ -584,8 +594,14 @@ public class StaticMethods {
             if (Time != null) EntryObjArray[i].setTime(Time);
             else EntryObjArray[i].setTime("");
 
-            if (TimeStamp != null) EntryObjArray[i].setTimeStamp(TimeStamp);
-            else EntryObjArray[i].setTimeStamp((long) 0);
+            if (InsertTimeStamp != null) EntryObjArray[i].setInsertTimeStamp(InsertTimeStamp);
+            else EntryObjArray[i].setInsertTimeStamp((long) 0);
+
+            if (UpdateTimeStamp != null) EntryObjArray[i].setUpdateTimeStamp(UpdateTimeStamp);
+            else EntryObjArray[i].setUpdateTimeStamp((long) 0);
+
+            if (DeleteTimeStamp != null) EntryObjArray[i].setDeleteTimeStamp(DeleteTimeStamp);
+            else EntryObjArray[i].setDeleteTimeStamp((long) 0);
 
             if (Name != null) EntryObjArray[i].setFirstName(Name);
             else EntryObjArray[i].setFirstName("");
@@ -739,14 +755,14 @@ public class StaticMethods {
             racerFound = true;
             cursorRacers.moveToFirst();
             // ActiveRacerID, FirstName, LastName, Country, Gender, DateOfBirth
-            entryObj.setActiveRacerID(Integer.parseInt(cursorRacers.getString(0)));
+            entryObj.setActiveRacerID(cursorRacers.getString(0));
             entryObj.setFirstName(cursorRacers.getString(1));
             entryObj.setLastName(cursorRacers.getString(2));
             entryObj.setCountry(cursorRacers.getString(3));
             entryObj.setGender(cursorRacers.getString(4));
             entryObj.setAge(calculateAge(cursorRacers.getString(5)));
             raceID = cursorRacers.getString(6);
-            entryObj.setRaceID(Integer.parseInt(raceID));
+            entryObj.setRaceID(raceID);
 
         } else {
             entryObj.setActiveRacerID(null);
@@ -771,7 +787,7 @@ public class StaticMethods {
         Date timeNow = calendar.getTime();
         String formattedDate = df.format(timeNow);
         entryObj.setTime(formattedDate); //example format: 2016-11-14 07:13:28
-        entryObj.setTimeStamp(System.currentTimeMillis());
+        entryObj.setInsertTimeStamp(System.currentTimeMillis());
 
         //check if there is a previous entry close to this, whether to flag this entry valid true or false
         int timeBetweenEntries = globals.getInt("timebetweenentries",1);
@@ -811,7 +827,7 @@ public class StaticMethods {
 
             if (cursorCP.getCount() > 0) {
                 cursorCP.moveToFirst();
-                entryObj.setCPID(Integer.parseInt(cursorCP.getString(0)));
+                entryObj.setCPID(cursorCP.getString(0));
                 entryObj.setCPName(cursorCP.getString(1));
 
                 while (!cursorCP.isAfterLast()) {

@@ -56,7 +56,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_2_OPERATOR = "Operator";
     public static final String COL_2_CO_NO = "CPNo";
     public static final String COL_2_REASON_INVALID = "ReasonInvalid";
-    public static final String COL_2_TIMESTAMP = "TimeStamp";
+    public static final String COL_2_INSERTTIMESTAMP = "InsertTimeStamp";
+    public static final String COL_2_UPDATETIMESTAMP = "UpdateTimeStamp";
+    public static final String COL_2_DELETETIMESTAMP = "DeleteTimeStamp";
     public static final String COL_2_LOCAL_ENTRY_ID = "LocalEntryID";
 
     public static final String TABLE_3_LOGIN_INFO = "LoginInfo";
@@ -148,7 +150,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTable2Query += COL_2_OPERATOR + " VARCHAR,";   //Operator
         createTable2Query += COL_2_CO_NO + " VARCHAR,";   //CPNo
         createTable2Query += COL_2_REASON_INVALID + " TEXT,";    //ReasonInvalid
-        createTable2Query += COL_2_TIMESTAMP + " integer(4) not null default (strftime('%s','now')));";   //TimeStamp
+        createTable2Query += COL_2_INSERTTIMESTAMP + " integer(4) not null default (strftime('%s','now')),";   //TimeStamp
+        createTable2Query += COL_2_UPDATETIMESTAMP + " integer(4),";   //UpdateTimeStamp
+        createTable2Query += COL_2_DELETETIMESTAMP + " integer(4));";   //DeleteTimeStamp
 
         db.execSQL(createTable2Query);
 

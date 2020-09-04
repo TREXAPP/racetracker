@@ -31,6 +31,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import static com.trex.racetracker.Database.DbMethods.deleteAllFromActiveRacers;
+import static com.trex.racetracker.Database.DbMethods.deleteAllFromLoginInfo;
 import static com.trex.racetracker.Database.DbMethods.getDistinctRacesFromLoginInfo;
 import static com.trex.racetracker.Database.DbMethods.insertIntoActiveRacers;
 import static com.trex.racetracker.Database.DbMethods.insertIntoLoginInfo;
@@ -94,10 +95,15 @@ public class SyncDataWorker extends AsyncTask<String,Void,String> {
             int responseCode = response.getResponseCode();
             if (responseCode >= 200 && responseCode <= 299) {
                 // TODO v2 - insert into login info; then insert into active racers
-                if (jsonResult.has("checkpoints")) {
-                    if (!insertIntoLoginInfo(jsonResult.getJSONArray("checkpoints"), context)) {
+                deleteAllFromLoginInfo(context);
+                if (jsonResult.has("checkpoint") && jsonResult.has("races")) {
+                    JSONObject checkpointJson = jsonResult.getJSONObject("checkpoint");
+                    if (!insertIntoLoginInfo(checkpointJson, jsonResult.getJSONArray("races"), context)) {
                         tvStatusTop.setText("Warning: Error while writing in SQLite, LoginInfo table. Contact the administrator;");
                     }
+                    SharedPreferences.Editor editor = globals.edit();
+                    editor.putString("controlpoint", checkpointJson.getString("CPName"));
+                    editor.commit();
                     //TODO v2 - instead of delete/insert - insert if not exist, update if exists
                     deleteAllFromActiveRacers(context);
                     if (!insertIntoActiveRacers(jsonResult.getJSONArray("runners"), context)) {
@@ -116,51 +122,6 @@ public class SyncDataWorker extends AsyncTask<String,Void,String> {
             e.printStackTrace();
         }
 
-
-//        //do this:
-//        //1. parse the json string result and insert its contents into sqlite, table ActiveRacers
-//        //  first maybe check if those users are already in that sqlite, so either:
-//        //  - delete them all, then insert them all; or
-//        //  - check if it is already inserted AND its timestamp is the same (that means it is not updated) then skip that row
-//        //      else delete it if it exists with older timestamp and insert it again
-//        //2. Fill in a scrollable list view in tab Racers with record from the already inserted data into SQLite
-//        //  (if there are records inserted already, clear them all before inserting
-//        TextView tvStatusTop = (TextView) fragmentLogin.findViewById(R.id.tvStatusTop);
-//        String error = "";
-//        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-
-//        try {
-//            JSONObject jsonResult = new JSONObject(result);
-//            if (jsonResult.has("issync")) {
-//                if (jsonResult.getString("issync").equals("1")) {
-//                    //TODO - a logic not to write only in sqlite, but also to check for update if the record already exists
-//                    deleteAllFromActiveRacers(context);
-//                    if (!insertIntoActiveRacers(context,jsonResult)) {
-//                        error += "Error while writing in SQLite, ActiveRaces table. Contact the administrator;";
-//                    }
-//
-//                } else {
-//                    error += "Error while reading from web server sync.php. Contact the administrator;";
-//                }
-//            } else {
-//                error += "Error with database! Contact the administrator.";
-//
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-//        if (error.equals("")) {
-//            //TODO - testing
-//            //moved to loginworker!
-//           // StaticMethods methods = new StaticMethods();
-//           // SharedPreferences globals = context.getSharedPreferences(MainActivity.GLOBALS,0);
-//           // methods.InitializeRacersFragment(context, viewRacers, globals);
-//
-//            tvStatusTop.setText("Logged in");
-//        } else {
-//            tvStatusTop.setText(error);
-//        }
     }
 
 }
