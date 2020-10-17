@@ -50,6 +50,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int ACTION_UPDATE = 2;
     public static final int ACTION_DELETE = 3;
     public static final int ACTION_RESTORE = 4;
+    public static final int ACTION_INVALID = 5;
     public static final int ACTION_UNKNOWN = 9;
 
     // Global variables
@@ -145,11 +146,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                         editor.putBoolean("syncInProgress", false);
                         editor.commit();
 
-                        Intent intent = new Intent("com.trex.racetracker.REFRESH_LIST_INPUT");
-                        mBroadcaster.sendBroadcast(intent);
-                        intent.setAction("com.trex.racetracker.UPDATE_LAST_SYNC");
-                        mBroadcaster.sendBroadcast(intent);
-                        intent.setAction("com.trex.racetracker.REFRESH_LIST_ENTRIES");
+                        //wait 2 seconds before sending the intent
+//                        try {
+//                            wait(5000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+                        Intent intent = new Intent("com.trex.racetracker.REFRESH_UI");
                         mBroadcaster.sendBroadcast(intent);
                     }
                 }
@@ -232,6 +235,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private JSONObject generateJsonRow(Cursor cursor, SharedPreferences globals, int actionType, String timestamp) throws JSONException {
+        int valid =  cursor.getInt(11);
+        if (valid == 0 && actionType != ACTION_DELETE) {
+            actionType = ACTION_INVALID;
+        }
         JSONObject rowJSON = new JSONObject();
         rowJSON.put("LocalEntryID",cursor.getString(0));
         //rowJSON.put("EntryID",insertCursor.getString(1));

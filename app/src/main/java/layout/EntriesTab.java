@@ -244,7 +244,7 @@ public class EntriesTab extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         IntentFilter myFilter = new IntentFilter();
-        myFilter.addAction("com.trex.racetracker.REFRESH_LIST_ENTRIES");
+        myFilter.addAction("com.trex.racetracker.REFRESH_UI");
         if (mReceiver == null) mReceiver = InitializeBroadcastReceiver(getContext(),lvEntries,getActivity());
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mReceiver,myFilter);
     }
@@ -263,7 +263,7 @@ public class EntriesTab extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String sAction = intent.getAction();
-                if ("com.trex.racetracker.REFRESH_LIST_ENTRIES".equals(sAction) )
+                if ("com.trex.racetracker.REFRESH_UI".equals(sAction) )
                 {
                     String selection = getSelectionString(globals);
                     Boolean leftJoin = getLeftJoin(globals);

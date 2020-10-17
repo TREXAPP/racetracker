@@ -162,15 +162,13 @@ public class MainActivity extends AppCompatActivity {
         TogglePeriodicSync(mAccount, this);
 
         IntentFilter myFilter = new IntentFilter();
-        myFilter.addAction("com.trex.racetracker.UPDATE_LAST_SYNC");
-        myFilter.addAction("com.trex.racetracker.REFRESH_LIST_INPUT");
-        myFilter.addAction("com.trex.racetracker.REFRESH_LIST_ENTRIES");
+        myFilter.addAction("com.trex.racetracker.REFRESH_UI");
         if (mReceiver == null) mReceiver = InitializeBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,myFilter);
 
         //initialize info for sync
        // ivSyncToolbar.setVisibility(View.INVISIBLE);
-        tvSyncInfo.setText("Last sync: Never");
+        tvSyncInfo.setText("");
 
 
         //initialize search and filter for Entries
@@ -189,17 +187,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String sAction = intent.getAction();
-                if ("com.trex.racetracker.UPDATE_LAST_SYNC".equals(sAction) )
+                if ("com.trex.racetracker.REFRESH_UI".equals(sAction) )
                 {
-                    SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
-                    Long lastSync = globals.getLong("lastPushInMillis",0);
+                    MainActivity.this.runOnUiThread(new Runnable() {
 
-                    if (lastSync == 0) {
-                        tvSyncInfo.setText("Last sync: Never");
-                    } else {
-                        String dateString = new SimpleDateFormat("HH:mm:ss").format(new Date(lastSync));
-                        tvSyncInfo.setText("Last sync: " + dateString);
-                    }
+                        @Override
+                        public void run() {
+                            SharedPreferences globals = getSharedPreferences(MainActivity.GLOBALS,0);
+                            Long lastSync = globals.getLong("lastPushInMillis",0);
+
+                            if (lastSync == 0) {
+                                tvSyncInfo.setText("");
+                            } else {
+                                String dateString = new SimpleDateFormat("HH:mm:ss").format(new Date(lastSync));
+                                tvSyncInfo.setText("Last sync: " + dateString);
+                            }
+                        }
+                    });
+
                   //  ivSyncToolbar.setVisibility(View.INVISIBLE);
 
                 }
@@ -269,11 +274,13 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("loggedIn")) editor.putBoolean("loggedIn",false);
 
         //unique api key for this race and mobile devices, for security reasons
-        if (!globals.contains("x-api-key")) editor.putString("x-api-key","lpNek3Vrva4H1YiOYArAwdpKLjzmKS1IgspkxDnt");
+//        if (!globals.contains("x-api-key")) editor.putString("x-api-key","lpNek3Vrva4H1YiOYArAwdpKLjzmKS1IgspkxDnt");// <-dev
+        if (!globals.contains("x-api-key")) editor.putString("x-api-key","weG9TM2kK7u0oXWyfCPUCk8XSqkvpAc5s8q8IEt8"); // <-prod
 
         //base url of the server where the results are hosted
-//        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://api.trex.test");
-        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://192.168.10.10");
+//        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://api.trex.test"); // <-no
+//        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://192.168.10.10"); // <-dev
+        if (!globals.contains("hostUrl")) editor.putString("hostUrl","https://api.trex.mk"); // <-prod
 
         //jwt token for currently logged user
         if (!globals.contains("jwt-token")) editor.putString("jwt-token","");

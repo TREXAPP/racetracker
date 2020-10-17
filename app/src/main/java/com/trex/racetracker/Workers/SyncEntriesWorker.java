@@ -111,11 +111,13 @@ public class SyncEntriesWorker extends AsyncTask<String,Void,String> {
         editor.putBoolean("syncInProgress", false);
         editor.commit();
 
-        Intent intent = new Intent("com.trex.racetracker.REFRESH_LIST_INPUT");
-        mBroadcaster.sendBroadcast(intent);
-        intent.setAction("com.trex.racetracker.UPDATE_LAST_SYNC");
-        mBroadcaster.sendBroadcast(intent);
-        intent.setAction("com.trex.racetracker.REFRESH_LIST_ENTRIES");
+//        //wait 2 seconds before sending the intent
+//        try {
+//            wait(5000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        Intent intent = new Intent("com.trex.racetracker.REFRESH_UI");
         mBroadcaster.sendBroadcast(intent);
 
         super.onPostExecute(result);

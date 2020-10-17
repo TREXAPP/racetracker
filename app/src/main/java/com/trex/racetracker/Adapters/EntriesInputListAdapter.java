@@ -65,7 +65,7 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
         LinearLayout layoutRacerInfo = (LinearLayout) customView.findViewById(R.id.layoutRacerInfo);
         LinearLayout layoutName = (LinearLayout) customView.findViewById(R.id.layoutName);
         LinearLayout layoutTime = (LinearLayout) customView.findViewById(R.id.layoutTime);
-        ImageButton ibtEdit = (ImageButton) customView.findViewById(R.id.ibtEdit);
+//        ImageButton ibtEdit = (ImageButton) customView.findViewById(R.id.ibtEdit);
         ImageButton ibtDelete = (ImageButton) customView.findViewById(R.id.ibtDelete);
 
 
@@ -142,34 +142,34 @@ public class EntriesInputListAdapter extends ArrayAdapter<EntryObj> {
         });
 
 
-
-        ibtEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //TODO:
-                //open a custom popup with textview for BIB and Time(optional)
-                //on click OK, find and update the entry with the new racer (save the old bib and update with the new BIB, and all the other info - use the existing methods, modify if nessessery)
-
-               // Input.InputEditDismissHandler handler = new Input.InputEditDismissHandler();
-                final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-                String BIB = tvBIB.getText().toString();
-                String hours =  tvTime.getText().toString().substring(0,2);
-                String minutes =  tvTime.getText().toString().substring(3,5);
-                String seconds =  tvTime.getText().toString().substring(6,8);
-
-                //InputEditDismissHandler handler = new InputEditDismissHandler();
-               // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
-
-                EditEntryDialog dialog = new EditEntryDialog(getContext(),BIB,hours,minutes,seconds,entryObj,lvInputEntries, EditEntryDialog.INPUT);
-               // dialog.setTargetFragment(parentFragment, 300);
-               // dialog.setTargetFragment();
-                dialog.show(activity.getFragmentManager(),"editEntry");
-             //   dialog.show(getFragmentManager(),"editEntry");
-
-
-            }
-        });
+//
+//        ibtEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                //TODO:
+//                //open a custom popup with textview for BIB and Time(optional)
+//                //on click OK, find and update the entry with the new racer (save the old bib and update with the new BIB, and all the other info - use the existing methods, modify if nessessery)
+//
+//               // Input.InputEditDismissHandler handler = new Input.InputEditDismissHandler();
+//                final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+//                String BIB = tvBIB.getText().toString();
+//                String hours =  tvTime.getText().toString().substring(0,2);
+//                String minutes =  tvTime.getText().toString().substring(3,5);
+//                String seconds =  tvTime.getText().toString().substring(6,8);
+//
+//                //InputEditDismissHandler handler = new InputEditDismissHandler();
+//               // final SharedPreferences globals = getContext().getSharedPreferences(MainActivity.GLOBALS,0);
+//
+//                EditEntryDialog dialog = new EditEntryDialog(getContext(),BIB,hours,minutes,seconds,entryObj,lvInputEntries, EditEntryDialog.INPUT);
+//               // dialog.setTargetFragment(parentFragment, 300);
+//               // dialog.setTargetFragment();
+//                dialog.show(activity.getFragmentManager(),"editEntry");
+//             //   dialog.show(getFragmentManager(),"editEntry");
+//
+//
+//            }
+//        });
 
         return customView;
 

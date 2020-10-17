@@ -74,7 +74,7 @@ public class SyncDataWorker extends AsyncTask<String,Void,String> {
 
         try {
 
-            urlString = globals.getString("hostUrl", "") + "/timing/mobile/sync-data";
+            urlString = globals.getString("hostUrl", "") + "/timing/mobile/syncdata";
             response = RequestHelper.sendGet(urlString, globals, true);
             return response.getMessage();
 
