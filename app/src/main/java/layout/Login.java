@@ -39,8 +39,8 @@ public class Login extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     protected static final String TYPE_LOGIN = "login";
     protected static final String TYPE_LOGOUT= "logout";
-    protected static final String URL_LOGIN = "https://results.vodnomatka.mk/login.php";
-    protected static final String URL_LOGOUT = "https://results.vodnomatka.mk/logout.php";
+    protected static final String URL_LOGIN = "https://thelungrun.trex.mk/login.php";
+    protected static final String URL_LOGOUT = "https://thelungrun.trex.mk/logout.php";
     protected static final String COMMENT_LOGIN = "";
     protected static final String COMMENT_LOGOUT = "";
 

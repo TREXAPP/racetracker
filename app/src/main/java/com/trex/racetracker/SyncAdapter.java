@@ -44,8 +44,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     protected static final String TYPE_SYNC_PUSH_INSERT = "sync_push_insert";
     protected static final String TYPE_SYNC_PUSH_UPDATE = "sync_push_update";
    // protected static final String TYPE_SYNC_PULL = "sync_pull";
-    protected static final String URL_SYNC_PUSH = "https://results.vodnomatka.mk/syncEntries_push.php";
-   // protected static final String URL_SYNC_PULL = "https://results.vodnomatka.mk/syncEntries_pull.php";
+    protected static final String URL_SYNC_PUSH = "https://thelungrun.trex.mk/syncEntries_push.php";
+   // protected static final String URL_SYNC_PULL = "https://thelungrun.trex.mk/syncEntries_pull.php";
     private Context serviceContext;
     private LocalBroadcastManager mBroadcaster;
 
