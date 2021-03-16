@@ -47,9 +47,20 @@ import com.trex.racetracker.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import static com.trex.racetracker.Database.DbMethods.*;
 import static com.trex.racetracker.StaticMethods.*;
@@ -274,13 +285,15 @@ public class MainActivity extends AppCompatActivity {
         if (!globals.contains("loggedIn")) editor.putBoolean("loggedIn",false);
 
         //unique api key for this race and mobile devices, for security reasons
-//        if (!globals.contains("x-api-key")) editor.putString("x-api-key","lpNek3Vrva4H1YiOYArAwdpKLjzmKS1IgspkxDnt");// <-dev
-        if (!globals.contains("x-api-key")) editor.putString("x-api-key","weG9TM2kK7u0oXWyfCPUCk8XSqkvpAc5s8q8IEt8"); // <-prod
+        if (!globals.contains("x-api-key")) editor.putString("x-api-key","KFVyv4cLsPyHTqj5PAqyJVp8nJeWYs7mawcGxGvl");// <-dev
+//        if (!globals.contains("x-api-key")) editor.putString("x-api-key","8ZGwolUr9xWXd2zcuG9ay9XS2W6Ef7kp0qxoO7YZ"); // <-prod
+
+        disableSSLCertificateChecking(); // <- dev only (you can leave it on prod if ssl issues on server, but be careful)
 
         //base url of the server where the results are hosted
 //        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://api.trex.test"); // <-no
-//        if (!globals.contains("hostUrl")) editor.putString("hostUrl","http://192.168.10.10"); // <-dev
-        if (!globals.contains("hostUrl")) editor.putString("hostUrl","https://api.trex.mk"); // <-prod
+        if (!globals.contains("hostUrl")) editor.putString("hostUrl","https://192.168.10.10"); // <-dev
+//        if (!globals.contains("hostUrl")) editor.putString("hostUrl","https://api.ultratrail.mk"); // <-prod
 
         //jwt token for currently logged user
         if (!globals.contains("jwt-token")) editor.putString("jwt-token","");
@@ -658,6 +671,41 @@ public class MainActivity extends AppCompatActivity {
             Log.e("getTextFromNdefRecord", e.getMessage(), e);
         }
         return tagContent;
+    }
+
+    /**
+     * Disables the SSL certificate checking for new instances of {@link HttpsURLConnection} This has been created to
+     * aid testing on a local box, not for use on production.
+     */
+    public static void disableSSLCertificateChecking() {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                // Not implemented
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                // Not implemented
+            }
+        } };
+
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() { @Override public boolean verify(String hostname, SSLSession session) { return true; } });
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 }
 

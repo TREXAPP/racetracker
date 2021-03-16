@@ -107,28 +107,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 if (periodicSyncEnabled && loggedIn && !syncInProgress) {
 
-
                     editor.putBoolean("syncInProgress", true);
                     editor.apply();
-
-//                Handler syncInProgressHandler = new Handler();
-//                Runnable syncInProgressRunnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        SharedPreferences.Editor editor = globals.edit();
-//                        editor.putBoolean("syncInProgress", false);
-//                        editor.apply();
-//                    }
-//                };
-//                syncInProgressHandler.postDelayed(syncInProgressRunnable, 60000);
-
 
                     long lastPushInMillis = globals.getLong("lastPushInMillis", 0);
                     long currentTimeMillis = System.currentTimeMillis();
 
                     Cursor cursor = getEntriesForSync(getContext(), "myEntry = 1 AND Synced = 0", "");
-
                     int rowsNo = cursor.getCount();
+
                     if (rowsNo > 0) {
                         String updateSyncedWhereClause = generateUpdateSyncedWhereClause(cursor);
                         SyncEntriesWorker syncEntriesWorker = new SyncEntriesWorker(getContext(), updateSyncedWhereClause, currentTimeMillis, mBroadcaster);
@@ -140,18 +127,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             Log.d("error", "Error creating JSON string, PUSH");
                             e.printStackTrace();
                         }
+
                         syncEntriesWorker.execute(syncJsonString);
                     } else {
                         editor.putLong("lastPushInMillis", currentTimeMillis);
                         editor.putBoolean("syncInProgress", false);
                         editor.commit();
 
-                        //wait 2 seconds before sending the intent
-//                        try {
-//                            wait(5000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
                         Intent intent = new Intent("com.trex.racetracker.REFRESH_UI");
                         mBroadcaster.sendBroadcast(intent);
                     }
@@ -196,7 +178,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 String deleteTimeStamp = cursor.getString(16);
                 int valid = cursor.getInt(11);
 
-                if (insertTimeStamp != null && Long.parseLong(insertTimeStamp) > lastPushInMillis) {
+                if (insertTimeStamp != null) {
                     JSONObject rowJSON = generateJsonRow(cursor, globals, ACTION_INSERT, insertTimeStamp);
                     jsonArray.put(rowJSON);
                     if (deleteTimeStamp != null && Long.parseLong(deleteTimeStamp) > lastPushInMillis && valid == 0) {
@@ -208,7 +190,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     // if update and no delete - update
                     // if delete and no update - delete or restore - check valid
                     // if update and delete - update + delete or restore - check valid
-                    if (updateTimeStamp != null && Long.parseLong(updateTimeStamp) > lastPushInMillis) {
+                    if (updateTimeStamp != null) {
                         JSONObject rowJSON = generateJsonRow(cursor, globals, ACTION_UPDATE, updateTimeStamp);
                         jsonArray.put(rowJSON);
                         if (deleteTimeStamp != null && Long.parseLong(deleteTimeStamp) > lastPushInMillis) {
@@ -218,7 +200,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             jsonArray.put(rowJSON2);
                         }
                     } else {
-                        if (deleteTimeStamp != null && Long.parseLong(deleteTimeStamp) > lastPushInMillis) {
+                        if (deleteTimeStamp != null) {
                             int action = valid == 0 ? ACTION_DELETE : ACTION_RESTORE;
                             JSONObject rowJSON = generateJsonRow(cursor, globals, action, deleteTimeStamp);
                             jsonArray.put(rowJSON);
